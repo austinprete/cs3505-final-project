@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<spreadsheet version="version1">
+  <cell>
+    <contents>=B2*2</contents>
+    <name>a1</name>
+  </cell>
+  <cell>
+    <name>B2</name>
+    <contents>=c3/4</contents>
+  </cell>
+  <cell>
+    <name>c3</name>
+    <contents>6</contents>
+  </cell>
+  <cell>
+    <name>d4</name>
+    <contents>great red shark</contents>
+  </cell>
+</spreadsheet>
