@@ -39,9 +39,6 @@
     <Reference Include="Spreadsheet">
       <HintPath>..\Resources\Libraries\Spreadsheet.dll</HintPath>
     </Reference>
-    <Reference Include="SpreadsheetPanel">
-      <HintPath>..\Resources\Libraries\SpreadsheetPanel.dll</HintPath>
-    </Reference>
     <Reference Include="SpreadsheetUtilities">
       <HintPath>..\Resources\Libraries\SpreadsheetUtilities.dll</HintPath>
     </Reference>
@@ -78,6 +75,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpreadsheetPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SpreadsheetPanel.Designer.cs">
+      <DependentUpon>SpreadsheetPanel.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="HelpForm.resx">
       <DependentUpon>HelpForm.cs</DependentUpon>
     </EmbeddedResource>
