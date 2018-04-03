@@ -109,7 +109,7 @@ namespace SS
         /// <param name="row"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        
+
         public bool SetValue(int col, int row, string value)
         {
             return drawingPanel.SetValue(col, row, value);

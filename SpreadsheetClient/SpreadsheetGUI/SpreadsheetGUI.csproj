@@ -36,9 +36,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Formula\bin\Debug\Formula.dll</HintPath>
     </Reference>
-    <Reference Include="Spreadsheet">
-      <HintPath>..\Spreadsheet\bin\Debug\Spreadsheet.dll</HintPath>
-    </Reference>
     <Reference Include="SpreadsheetUtilities">
       <HintPath>..\SpreadsheetUtilities\bin\Debug\SpreadsheetUtilities.dll</HintPath>
     </Reference>
@@ -111,6 +108,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj">
+      <Project>{2816bfe5-a54b-4aff-a7b3-6e561def5132}</Project>
+      <Name>Spreadsheet</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
