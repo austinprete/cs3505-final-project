@@ -21,6 +21,13 @@ void session::read_message()
       boost::asio::buffer(data, max_length),
       [this, self](boost::system::error_code ec, std::size_t length) {
 
+        if ((boost::asio::error::eof == ec) ||
+            (boost::asio::error::connection_reset == ec))
+        {
+          cout<< "Client at address " << socket.remote_endpoint().address().to_string() << " disconnected" << endl;
+          return;
+        }
+
         if (!ec) {
           std::string data_str(data, length);
 
