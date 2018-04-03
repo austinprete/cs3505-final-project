@@ -28,7 +28,7 @@ private:
   std::vector<std::string> message_queue;
   void add_message_to_queue(const std::string &message);
 
-  void process_messages_in_queue();
+  bool process_message_in_queue();
   void process_message(std::string &message);
 };
 

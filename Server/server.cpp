@@ -25,8 +25,16 @@ server::server(boost::asio::io_service &io_service, int port)
 void server::run_server_loop()
 {
   while (true) {
-    sleep(1);
-    process_messages_in_queue();
+    bool idle = true;
+
+    // Returns true if there are still messages in the queue
+    if (process_message_in_queue()) {
+      idle = false;
+    };
+
+    if (idle) {
+      sleep(1);
+    }
   }
 }
 
@@ -51,13 +59,19 @@ void server::add_message_to_queue(const std::string &message)
   message_queue.push_back(message);
 }
 
-void server::process_messages_in_queue()
+/**
+ * Processes a single message from the queue
+ * @return true if there are still messages to process (queue not empty), false otherwise
+ */
+bool server::process_message_in_queue()
 {
-  for (int index = 0; index < message_queue.size(); index++) {
+  if (!message_queue.empty()) {
     string message = message_queue.at(0);
     process_message(message);
     message_queue.erase(message_queue.begin());
   }
+
+  return !message_queue.empty();
 }
 
 void server::process_message(string &message)
