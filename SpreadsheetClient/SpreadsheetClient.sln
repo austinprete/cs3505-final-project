@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetGUI", "SpreadsheetGUI\SpreadsheetGUI.csproj", "{DDD33A7E-16C5-4063-8DB1-B3AF6F396110}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resources", "Resources\Resources.csproj", "{8D77756A-6B4D-424F-B162-2E2EFBBC7F3E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spreadsheet", "Spreadsheet\Spreadsheet.csproj", "{2816BFE5-A54B-4AFF-A7B3-6E561DEF5132}"
 EndProject
@@ -33,13 +31,6 @@ Global
 		{DDD33A7E-16C5-4063-8DB1-B3AF6F396110}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DDD33A7E-16C5-4063-8DB1-B3AF6F396110}.Release|x86.ActiveCfg = Release|Any CPU
 		{DDD33A7E-16C5-4063-8DB1-B3AF6F396110}.Release|x86.Build.0 = Release|Any CPU
-		{8D77756A-6B4D-424F-B162-2E2EFBBC7F3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D77756A-6B4D-424F-B162-2E2EFBBC7F3E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8D77756A-6B4D-424F-B162-2E2EFBBC7F3E}.Debug|x86.Build.0 = Debug|Any CPU
-		{8D77756A-6B4D-424F-B162-2E2EFBBC7F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D77756A-6B4D-424F-B162-2E2EFBBC7F3E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D77756A-6B4D-424F-B162-2E2EFBBC7F3E}.Release|x86.ActiveCfg = Release|Any CPU
-		{8D77756A-6B4D-424F-B162-2E2EFBBC7F3E}.Release|x86.Build.0 = Release|Any CPU
 		{2816BFE5-A54B-4AFF-A7B3-6E561DEF5132}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2816BFE5-A54B-4AFF-A7B3-6E561DEF5132}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2816BFE5-A54B-4AFF-A7B3-6E561DEF5132}.Debug|x86.ActiveCfg = Debug|Any CPU
