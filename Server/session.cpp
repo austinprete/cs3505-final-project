@@ -4,6 +4,7 @@
  */
 
 #include <cstdlib>
+#include <istream>
 #include <iostream>
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
@@ -39,7 +40,8 @@ void session::read_message()
         if (!ec) {
 
           std::string data_str;
-          getline(std::istream(&buffer), data_str);
+          std::istream buffer_stream(&buffer);
+          std::getline(buffer_stream, data_str);
 
           message_queue.insert(message_queue.begin(), data_str);
 
