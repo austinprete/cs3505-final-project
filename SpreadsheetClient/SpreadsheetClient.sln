@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formula", "Formula\Formula.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuGUI", "MenuGUI\MenuGUI.csproj", "{22F39611-88E4-494F-A116-6EEB082C7BED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network", "Network\Network.csproj", "{6A7F7124-AC26-4CBF-97F8-69035E48D467}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,14 @@ Global
 		{22F39611-88E4-494F-A116-6EEB082C7BED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22F39611-88E4-494F-A116-6EEB082C7BED}.Release|x86.ActiveCfg = Release|Any CPU
 		{22F39611-88E4-494F-A116-6EEB082C7BED}.Release|x86.Build.0 = Release|Any CPU
+		{6A7F7124-AC26-4CBF-97F8-69035E48D467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A7F7124-AC26-4CBF-97F8-69035E48D467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A7F7124-AC26-4CBF-97F8-69035E48D467}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6A7F7124-AC26-4CBF-97F8-69035E48D467}.Debug|x86.Build.0 = Debug|Any CPU
+		{6A7F7124-AC26-4CBF-97F8-69035E48D467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A7F7124-AC26-4CBF-97F8-69035E48D467}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A7F7124-AC26-4CBF-97F8-69035E48D467}.Release|x86.ActiveCfg = Release|Any CPU
+		{6A7F7124-AC26-4CBF-97F8-69035E48D467}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Network;
 
 namespace MenuGUI
 {
@@ -24,7 +25,7 @@ namespace MenuGUI
 
         private void connectButton_Click(object sender, EventArgs e)
         {
-            //connect to server
+            //Networking.ConnectToServer([NetworkAction], serverNameTextBox);
         }
     }
 }
