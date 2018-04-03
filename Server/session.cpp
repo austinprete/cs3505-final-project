@@ -28,9 +28,11 @@ void session::read_message()
       '\3',
       [this, self](boost::system::error_code ec, std::size_t length) {
 
+        string client_address = socket.remote_endpoint().address().to_string();
+
         if ((boost::asio::error::eof == ec) ||
             (boost::asio::error::connection_reset == ec)) {
-          cout << "Client at address " << socket.remote_endpoint().address().to_string() << " disconnected" << endl;
+          cout << "Client at address " << client_address << " disconnected" << endl;
           return;
         }
 
@@ -45,7 +47,7 @@ void session::read_message()
           if (pos != std::string::npos)
             data_str = data_str.substr(0, pos);
 
-          std::cout << "Received message: " << data_str << std::endl;
+          std::cout << "Received message from " << client_address << ": " << data_str << std::endl;
 
           write_message(length);
         }
