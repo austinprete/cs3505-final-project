@@ -32,6 +32,7 @@ namespace SpreadsheetGUI
 
             // Assign event handlers
             spreadsheetPanel1.SelectionChanged += CellSelected;
+            spreadsheetPanel1.enterDel = EnterPressedOnPanel;
             FormClosing += SpreadsheetFormClosing;
             CellContentsTextBox.KeyDown += KeyDownHandler;
 
@@ -39,10 +40,17 @@ namespace SpreadsheetGUI
             spreadsheet = new Spreadsheet(s => true, s => s.ToUpper(), "ps6");
 
             // Sets control focus to the cell contents text box at startup
-            ActiveControl = CellContentsTextBox;
+            //ActiveControl = CellContentsTextBox;
 
             // Sets the UI to display the information for cell "A1" initially
             DisplayCellInfo(0, 0);
+        }
+
+        /// <summary>
+        /// Is called from spreadsheet panel and indicates that the enter button was pressed
+        /// </summary>
+        private void EnterPressedOnPanel() {
+            EnterButton_Click(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -56,6 +64,14 @@ namespace SpreadsheetGUI
 
             // Gets the coordinates for the currently selected cell from the spreadsheet panel.
             sender.GetSelection(out int col, out int row);
+
+            object originalObj = spreadsheet.GetCellContents(ConvertColRowToName(col, row));
+            string originalString = spreadsheet.GetCellContents(ConvertColRowToName(col, row)).ToString();
+            if (originalObj as Formula != null) {
+                originalString = "=" + originalString;
+            }
+            sender.SetValue(col,row, originalString);
+            
 
             // Update the UI to show the currently selected cell's information
             DisplayCellInfo(col, row);
@@ -133,7 +149,8 @@ namespace SpreadsheetGUI
             try
             {
                 // Attempts to set the contents of the cell to the user's input in the cell contents text box
-                ISet<string> dependents = spreadsheet.SetContentsOfCell(variableName, CellContentsTextBox.Text);
+                spreadsheetPanel1.GetValue(col, row, out string value);
+                ISet<string> dependents = spreadsheet.SetContentsOfCell(variableName, value);
 
                 ConvertNameToColRow(variableName, out int dependentCol, out int dependentRow);
 

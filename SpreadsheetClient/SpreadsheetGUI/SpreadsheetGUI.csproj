@@ -34,13 +34,13 @@
   <ItemGroup>
     <Reference Include="Formula, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Formula\bin\Debug\Formula.dll</HintPath>
+      <HintPath>..\Formula\obj\Debug\Formula.dll</HintPath>
     </Reference>
     <Reference Include="Spreadsheet">
-      <HintPath>..\Spreadsheet\bin\Debug\Spreadsheet.dll</HintPath>
+      <HintPath>..\Spreadsheet\obj\Debug\Spreadsheet.dll</HintPath>
     </Reference>
     <Reference Include="SpreadsheetUtilities">
-      <HintPath>..\SpreadsheetUtilities\bin\Debug\SpreadsheetUtilities.dll</HintPath>
+      <HintPath>..\SpreadsheetUtilities\obj\Debug\SpreadsheetUtilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -99,6 +99,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SpreadsheetPanel.resx">
+      <DependentUpon>SpreadsheetPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

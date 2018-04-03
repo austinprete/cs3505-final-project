@@ -52,6 +52,8 @@ namespace SS
         private const int COL_COUNT = 26;
         private const int ROW_COUNT = 99;
 
+        public delegate void EnterDelegate();
+        public EnterDelegate enterDel;
 
         /// <summary>
         /// Creates an empty SpreadsheetPanel
@@ -60,7 +62,7 @@ namespace SS
         public SpreadsheetPanel()
         {
 
-            InitializeComponent();
+            
 
             // The DrawingPanel is quite large, since it has 26 columns and 99 rows.  The
             // SpreadsheetPanel itself will usually be smaller, which is why scroll bars
@@ -88,6 +90,7 @@ namespace SS
             hScroll.Scroll += drawingPanel.HandleHScroll;
             vScroll.Scroll += drawingPanel.HandleVScroll;
 
+            InitializeComponent();
         }
 
 
@@ -158,13 +161,45 @@ namespace SS
             drawingPanel.GetSelection(out col, out row);
         }
 
+        /// <summary>
+        /// Detects when a key is pressed on the spreadsheet panel and updates the cell accordingly
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SpreadsheetPanel_KeyPress(object sender, KeyPressEventArgs e) {
+            int row, col;
+            GetSelection(out col, out row);
+            string currentValue;
+            GetValue(col, row, out currentValue);
+
+            //If backspace is pressed
+            if (e.KeyChar == Convert.ToChar(Keys.Back)) {
+                if (currentValue == "") {
+                    return;
+                }
+                currentValue = currentValue.Remove(currentValue.Length-1);
+                SetValue(col,row,currentValue);
+                return;
+            }
+
+            //If enter is pressed
+            if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+                enterDel();
+                return;
+            }
+
+            //Otherwise add the new key to the cell
+            currentValue += e.KeyChar;
+            SetValue(col, row, currentValue);
+        }
+
 
         /// <summary>
         /// When the SpreadsheetPanel is resized, we set the size and locations of the three
         /// components that make it up.
         /// </summary>
         /// <param name="eventargs"></param>
-        
+
         protected override void OnResize(EventArgs eventargs)
         {
             base.OnResize(eventargs);
@@ -220,12 +255,14 @@ namespace SS
 
         }
 
+        
+
 
         /// <summary>
         /// The panel where the spreadsheet grid is drawn.  It keeps track of the
         /// current selection as well as what is supposed to be drawn in each cell.
         /// </summary>
-        
+
         private class DrawingPanel : Panel
         {
             // Columns and rows are numbered beginning with 0.  This is the coordinate
@@ -496,5 +533,6 @@ namespace SS
 
         }
 
+        
     }
 }
