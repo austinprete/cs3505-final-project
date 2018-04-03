@@ -34,13 +34,13 @@
   <ItemGroup>
     <Reference Include="Formula, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\PS4\Resources\Libraries\Formula.dll</HintPath>
+      <HintPath>..\Formula\bin\Debug\Formula.dll</HintPath>
     </Reference>
     <Reference Include="Spreadsheet">
-      <HintPath>..\Resources\Libraries\Spreadsheet.dll</HintPath>
+      <HintPath>..\Spreadsheet\bin\Debug\Spreadsheet.dll</HintPath>
     </Reference>
     <Reference Include="SpreadsheetUtilities">
-      <HintPath>..\Resources\Libraries\SpreadsheetUtilities.dll</HintPath>
+      <HintPath>..\SpreadsheetUtilities\bin\Debug\SpreadsheetUtilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
