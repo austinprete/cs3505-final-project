@@ -15,8 +15,8 @@ using boost::asio::ip::tcp;
 
 using namespace std;
 
-session::session(tcp::socket socket)
-    : socket(std::move(socket))
+session::session(tcp::socket socket, server &spreadsheet_server)
+    : socket(std::move(socket)), spreadsheet_server(spreadsheet_server)
 {
 }
 
@@ -39,17 +39,19 @@ void session::read_message()
 
         if (!ec) {
 
-          std::string data_str;
+          std::string message_string;
           std::istream buffer_stream(&buffer);
-          std::getline(buffer_stream, data_str);
+          std::getline(buffer_stream, message_string);
 
-          message_queue.insert(message_queue.begin(), data_str);
+          message_queue.insert(message_queue.begin(), message_string);
 
-          std::string::size_type pos = data_str.find('\3');
-          if (pos != std::string::npos)
-            data_str = data_str.substr(0, pos);
+          std::string::size_type pos = message_string.find('\3');
+          if (pos != std::string::npos) {
+            message_string = message_string.substr(0, pos);
+          }
 
-          std::cout << "Received message from " << client_address << ": " << data_str << std::endl;
+          std::cout << "Received message from " << client_address << ": " << message_string << std::endl;
+          spreadsheet_server.add_message_to_queue(message_string);
 
           write_message(length);
         }
@@ -75,4 +77,9 @@ void session::write_message(std::size_t length)
 void session::start()
 {
   read_message();
+}
+
+const string session::get_address() const
+{
+  return this->socket.remote_endpoint().address().to_string();
 }
