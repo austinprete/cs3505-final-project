@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace MenuGUI
 {
-    public partial class Form1 : Form
+    public partial class PortalForm : Form
     {
-        public Form1()
+        public PortalForm()
         {
             InitializeComponent();
         }
