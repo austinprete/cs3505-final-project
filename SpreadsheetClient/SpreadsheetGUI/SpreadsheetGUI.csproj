@@ -36,9 +36,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Formula\obj\Debug\Formula.dll</HintPath>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="Spreadsheet">
       <HintPath>..\Spreadsheet\obj\Debug\Spreadsheet.dll</HintPath>
     </Reference>
+=======
+>>>>>>> 1c3f4ef0123cd9a7772d1bf611797b7d20a16cd9
     <Reference Include="SpreadsheetUtilities">
       <HintPath>..\SpreadsheetUtilities\obj\Debug\SpreadsheetUtilities.dll</HintPath>
     </Reference>

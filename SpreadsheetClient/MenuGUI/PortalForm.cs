@@ -16,5 +16,15 @@ namespace MenuGUI
         {
             InitializeComponent();
         }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void connectButton_Click(object sender, EventArgs e)
+        {
+            //connect to server
+        }
     }
 }
