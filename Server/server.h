@@ -1,3 +1,8 @@
+/**
+ * Mathew Beseris, Cindy Liao, Cole Perschon, and Austin Prete
+ * CS3505 - Spring 2018
+ */
+
 #ifndef SERVER_H
 #define SERVER_H
 

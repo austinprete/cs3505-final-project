@@ -1,3 +1,8 @@
+/**
+ * Mathew Beseris, Cindy Liao, Cole Perschon, and Austin Prete
+ * CS3505 - Spring 2018
+ */
+
 #ifndef SESSION_H
 #define SESSION_H
 
@@ -19,8 +24,8 @@ private:
   void write_message(std::size_t length);
 
   boost::asio::ip::tcp::socket socket;
-  enum { max_length = 1024 };
-  char data[max_length];
+  boost::asio::streambuf buffer;
+  std::vector<std::string> message_queue;
 };
 
 

@@ -1,3 +1,8 @@
+/**
+ * Mathew Beseris, Cindy Liao, Cole Perschon, and Austin Prete
+ * CS3505 - Spring 2018
+ */
+
 #include <cstdlib>
 #include <iostream>
 #include <boost/asio.hpp>
@@ -6,7 +11,6 @@
 
 using boost::asio::ip::tcp;
 using namespace std;
-
 
 int main(int argc, char *argv[])
 {

@@ -1,3 +1,8 @@
+/**
+ * Mathew Beseris, Cindy Liao, Cole Perschon, and Austin Prete
+ * CS3505 - Spring 2018
+ */
+
 #include <cstdlib>
 #include <iostream>
 #include <boost/asio.hpp>
@@ -17,22 +22,27 @@ session::session(tcp::socket socket)
 void session::read_message()
 {
   auto self(shared_from_this());
-  socket.async_read_some(
-      boost::asio::buffer(data, max_length),
+  boost::asio::async_read_until(
+      socket,
+      buffer,
+      '\3',
       [this, self](boost::system::error_code ec, std::size_t length) {
 
         if ((boost::asio::error::eof == ec) ||
-            (boost::asio::error::connection_reset == ec))
-        {
-          cout<< "Client at address " << socket.remote_endpoint().address().to_string() << " disconnected" << endl;
+            (boost::asio::error::connection_reset == ec)) {
+          cout << "Client at address " << socket.remote_endpoint().address().to_string() << " disconnected" << endl;
           return;
         }
 
         if (!ec) {
-          std::string data_str(data, length);
+
+          std::string data_str;
+          getline(std::istream(&buffer), data_str);
+
+          message_queue.insert(message_queue.begin(), data_str);
 
           std::string::size_type pos = data_str.find('\3');
-          if (pos!=std::string::npos)
+          if (pos != std::string::npos)
             data_str = data_str.substr(0, pos);
 
           std::cout << "Received message: " << data_str << std::endl;
@@ -48,9 +58,10 @@ void session::write_message(std::size_t length)
   auto self(shared_from_this());
   boost::asio::async_write(
       socket,
-      boost::asio::buffer(data, length),
+      boost::asio::buffer(message_queue.back()),
       [this, self](boost::system::error_code ec, std::size_t /*length*/) {
         if (!ec) {
+          message_queue.pop_back();
           read_message();
         }
       }
