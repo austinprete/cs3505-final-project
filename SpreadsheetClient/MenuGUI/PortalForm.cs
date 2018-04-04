@@ -43,6 +43,10 @@ namespace MenuGUI
                 ServerNameTextBox.Text = "Server Name";
                 ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
             }
+            else
+            {
+                Networking.ConnectToServer()
+            }
         }
 
         private void LoginButton_MouseEnter(object sender, EventArgs e)
