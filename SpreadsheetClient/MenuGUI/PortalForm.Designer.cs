@@ -62,7 +62,7 @@
             this.serverNameTextBox.Location = new System.Drawing.Point(43, 137);
             this.serverNameTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.serverNameTextBox.Name = "serverNameTextBox";
-            this.serverNameTextBox.Size = new System.Drawing.Size(281, 35);
+            this.serverNameTextBox.Size = new System.Drawing.Size(281, 44);
             this.serverNameTextBox.TabIndex = 1;
             this.serverNameTextBox.Text = "Server Name";
             this.serverNameTextBox.Click += new System.EventHandler(this.ServerNameTextBox_Click);
@@ -74,7 +74,7 @@
             this.serverLabel.Location = new System.Drawing.Point(38, 38);
             this.serverLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.serverLabel.Name = "serverLabel";
-            this.serverLabel.Size = new System.Drawing.Size(0, 18);
+            this.serverLabel.Size = new System.Drawing.Size(0, 25);
             this.serverLabel.TabIndex = 2;
             // 
             // TeamNameLabel
@@ -83,7 +83,7 @@
             this.TeamNameLabel.Font = new System.Drawing.Font("Arial", 16.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TeamNameLabel.Location = new System.Drawing.Point(99, 38);
             this.TeamNameLabel.Name = "TeamNameLabel";
-            this.TeamNameLabel.Size = new System.Drawing.Size(267, 38);
+            this.TeamNameLabel.Size = new System.Drawing.Size(354, 51);
             this.TeamNameLabel.TabIndex = 3;
             this.TeamNameLabel.Text = "PB and Jensens";
             this.TeamNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -95,14 +95,14 @@
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label1.Location = new System.Drawing.Point(37, 74);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(443, 24);
+            this.label1.Size = new System.Drawing.Size(576, 32);
             this.label1.TabIndex = 4;
             this.label1.Text = "Simply type in the desired server\'s IP address.";
             // 
             // PortalForm
             // 
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.ClientSize = new System.Drawing.Size(374, 229);

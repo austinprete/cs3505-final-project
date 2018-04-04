@@ -53,11 +53,23 @@ namespace MenuGUI
                 serverNameTextBox.Text = "Server Name";
                 serverNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
             }
-            else
+            else if (serverNameTextBox.Text != "Server Name")
             {
                 Networking.ConnectToServer(firstContact, serverNameTextBox.Text);
             }
         }
+        
+        private void LoginButton_MouseEnter(object sender, EventArgs e)
+        {
+            LoginButton.BackColor = Color.FromArgb(239, 239, 239);
+        }
+
+        private void LoginButton_MouseLeave(object sender, EventArgs e)
+        {
+            LoginButton.BackColor = Color.FromArgb(187, 187, 187);
+        }
+
+
         /// <summary>
         /// begin connection with server
         /// </summary>
@@ -69,6 +81,8 @@ namespace MenuGUI
             Networking.Send(theServer, "register");
             Networking.GetData(theServer);
         }
+
+
         /// <summary>
         /// Processes incoming data and adds it to the message buffer in the socket state
         /// </summary>
@@ -121,15 +135,5 @@ namespace MenuGUI
             Redraw();
             Networking.GetData(ss);*/
         }
-        private void LoginButton_MouseEnter(object sender, EventArgs e)
-        {
-            LoginButton.BackColor = Color.FromArgb(239, 239, 239);
-        }
-
-        private void LoginButton_MouseLeave(object sender, EventArgs e)
-        {
-            LoginButton.BackColor = Color.FromArgb(187, 187, 187);
-        }
-
     }
 }
