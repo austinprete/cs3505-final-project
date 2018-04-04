@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetGUI", "SpreadsheetGUI\SpreadsheetGUI.csproj", "{DDD33A7E-16C5-4063-8DB1-B3AF6F396110}"
 EndProject
@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetUtilities", "Spr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formula", "Formula\Formula.csproj", "{DAACFE35-F664-40C0-9181-20DAF728D6B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuGUI", "MenuGUI\MenuGUI.csproj", "{22F39611-88E4-494F-A116-6EEB082C7BED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortalGUI", "MenuGUI\PortalGUI.csproj", "{22F39611-88E4-494F-A116-6EEB082C7BED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network", "Network\Network.csproj", "{6A7F7124-AC26-4CBF-97F8-69035E48D467}"
 EndProject

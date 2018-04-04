@@ -18,14 +18,41 @@ namespace MenuGUI
             InitializeComponent();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void PortalForm_Click(object sender, EventArgs e)
         {
-
+            if (ServerNameTextBox.Text.Length == 0)
+            {
+                ServerNameTextBox.Text = "Server Name";
+                ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
+            }
         }
 
-        private void connectButton_Click(object sender, EventArgs e)
+        private void ServerNameTextBox_Click(object sender, EventArgs e)
         {
-            //Networking.ConnectToServer([NetworkAction], serverNameTextBox);
+            if (ServerNameTextBox.Text == "Server Name")
+            {
+                ServerNameTextBox.Text = "";
+                ServerNameTextBox.ForeColor = SystemColors.ControlText;
+            }
+        }
+
+        private void LoginButton_Click(object sender, EventArgs e)
+        {
+            if (ServerNameTextBox.Text.Length == 0)
+            {
+                ServerNameTextBox.Text = "Server Name";
+                ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
+            }
+        }
+
+        private void LoginButton_MouseEnter(object sender, EventArgs e)
+        {
+            LoginButton.BackColor = Color.FromArgb(239, 239, 239);
+        }
+
+        private void LoginButton_MouseLeave(object sender, EventArgs e)
+        {
+            LoginButton.BackColor = Color.FromArgb(187, 187, 187);
         }
     }
 }
