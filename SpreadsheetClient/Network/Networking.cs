@@ -47,7 +47,7 @@ namespace Network {
 
     public class Networking {
 
-        public const int DEFAULT_PORT = 11000;
+        public const int DEFAULT_PORT = 2112;
         //private static SocketState state;
         public delegate void NetworkAction(SocketState socketState);
 
