@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.LoginButton = new System.Windows.Forms.Button();
-            this.ServerNameTextBox = new System.Windows.Forms.TextBox();
+            this.serverNameTextBox = new System.Windows.Forms.TextBox();
             this.serverLabel = new System.Windows.Forms.Label();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
             this.TeamNameLabel = new System.Windows.Forms.Label();
@@ -53,20 +53,20 @@
             this.LoginButton.MouseEnter += new System.EventHandler(this.LoginButton_MouseEnter);
             this.LoginButton.MouseLeave += new System.EventHandler(this.LoginButton_MouseLeave);
             // 
-            // ServerNameTextBox
+            // serverNameTextBox
             // 
-            this.ServerNameTextBox.BackColor = System.Drawing.Color.White;
-            this.ServerNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ServerNameTextBox.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ServerNameTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(117)))), ((int)(((byte)(117)))), ((int)(((byte)(117)))));
-            this.ServerNameTextBox.Location = new System.Drawing.Point(43, 137);
-            this.ServerNameTextBox.Margin = new System.Windows.Forms.Padding(4);
-            this.ServerNameTextBox.Name = "ServerNameTextBox";
-            this.ServerNameTextBox.Size = new System.Drawing.Size(281, 44);
-            this.ServerNameTextBox.TabIndex = 1;
-            this.ServerNameTextBox.Text = "Server Name";
-            this.ServerNameTextBox.Click += new System.EventHandler(this.ServerNameTextBox_Click);
-            this.ServerNameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ServerNameTextBox_KeyPress);
+            this.serverNameTextBox.BackColor = System.Drawing.Color.White;
+            this.serverNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.serverNameTextBox.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.serverNameTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(117)))), ((int)(((byte)(117)))), ((int)(((byte)(117)))));
+            this.serverNameTextBox.Location = new System.Drawing.Point(43, 137);
+            this.serverNameTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.serverNameTextBox.Name = "serverNameTextBox";
+            this.serverNameTextBox.Size = new System.Drawing.Size(281, 35);
+            this.serverNameTextBox.TabIndex = 1;
+            this.serverNameTextBox.Text = "Server Name";
+            this.serverNameTextBox.Click += new System.EventHandler(this.ServerNameTextBox_Click);
+            this.serverNameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ServerNameTextBox_KeyPress);
             // 
             // serverLabel
             // 
@@ -74,7 +74,7 @@
             this.serverLabel.Location = new System.Drawing.Point(38, 38);
             this.serverLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.serverLabel.Name = "serverLabel";
-            this.serverLabel.Size = new System.Drawing.Size(0, 25);
+            this.serverLabel.Size = new System.Drawing.Size(0, 18);
             this.serverLabel.TabIndex = 2;
             // 
             // TeamNameLabel
@@ -83,7 +83,7 @@
             this.TeamNameLabel.Font = new System.Drawing.Font("Arial", 16.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TeamNameLabel.Location = new System.Drawing.Point(99, 38);
             this.TeamNameLabel.Name = "TeamNameLabel";
-            this.TeamNameLabel.Size = new System.Drawing.Size(354, 51);
+            this.TeamNameLabel.Size = new System.Drawing.Size(267, 38);
             this.TeamNameLabel.TabIndex = 3;
             this.TeamNameLabel.Text = "PB and Jensens";
             this.TeamNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -95,21 +95,21 @@
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label1.Location = new System.Drawing.Point(37, 74);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(576, 32);
+            this.label1.Size = new System.Drawing.Size(443, 24);
             this.label1.TabIndex = 4;
             this.label1.Text = "Simply type in the desired server\'s IP address.";
             // 
             // PortalForm
             // 
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.ClientSize = new System.Drawing.Size(374, 229);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.TeamNameLabel);
             this.Controls.Add(this.serverLabel);
-            this.Controls.Add(this.ServerNameTextBox);
+            this.Controls.Add(this.serverNameTextBox);
             this.Controls.Add(this.LoginButton);
             this.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -126,7 +126,7 @@
         #endregion
 
         private System.Windows.Forms.Button LoginButton;
-        private System.Windows.Forms.TextBox ServerNameTextBox;
+        private System.Windows.Forms.TextBox serverNameTextBox;
         private System.Windows.Forms.Label serverLabel;
         private System.Windows.Forms.FontDialog fontDialog1;
         private System.Windows.Forms.Label TeamNameLabel;
