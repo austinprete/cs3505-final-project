@@ -66,6 +66,7 @@
             this.ServerNameTextBox.TabIndex = 1;
             this.ServerNameTextBox.Text = "Server Name";
             this.ServerNameTextBox.Click += new System.EventHandler(this.ServerNameTextBox_Click);
+            this.ServerNameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ServerNameTextBox_KeyPress);
             // 
             // serverLabel
             // 

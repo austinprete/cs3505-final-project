@@ -36,6 +36,15 @@ namespace MenuGUI
             }
         }
 
+        private void ServerNameTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (ServerNameTextBox.Text == "Server Name")
+            {
+                ServerNameTextBox.Text = "";
+                ServerNameTextBox.ForeColor = SystemColors.ControlText;
+            }
+        }
+
         private void LoginButton_Click(object sender, EventArgs e)
         {
             if (ServerNameTextBox.Text.Length == 0)
@@ -45,7 +54,7 @@ namespace MenuGUI
             }
             else
             {
-                Networking.ConnectToServer()
+                //Networking.ConnectToServer();
             }
         }
 
@@ -58,5 +67,7 @@ namespace MenuGUI
         {
             LoginButton.BackColor = Color.FromArgb(187, 187, 187);
         }
+
+        
     }
 }
