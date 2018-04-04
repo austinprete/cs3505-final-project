@@ -68,6 +68,5 @@ namespace MenuGUI
             LoginButton.BackColor = Color.FromArgb(187, 187, 187);
         }
 
-        
     }
 }
