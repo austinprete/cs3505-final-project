@@ -45,36 +45,40 @@ void Session::ReadMessage()
   }
 
   auto self(shared_from_this());
-  boost::asio::async_read_until(
-      socket,
-      buffer,
-      '\3',
-      [this, self](boost::system::error_code ec, std::size_t length) {
+  try {
+    boost::asio::async_read_until(
+        socket,
+        buffer,
+        '\3',
+        [this, self](boost::system::error_code ec, std::size_t length) {
 
-        if ((boost::asio::error::eof == ec) ||
-            (boost::asio::error::connection_reset == ec)) {
-          Shutdown(ec);
-          return;
-        }
-
-        if (!ec) {
-
-          std::string message_string;
-          std::istream buffer_stream(&buffer);
-          std::getline(buffer_stream, message_string);
-
-          std::string::size_type pos = message_string.find('\3');
-          if (pos != std::string::npos) {
-            message_string = message_string.substr(0, pos);
+          if ((boost::asio::error::eof == ec) ||
+              (boost::asio::error::connection_reset == ec)) {
+            Shutdown(ec);
+            return;
           }
 
-          std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
-          inbound_queue->AddMessage(message_string);
+          if (!ec) {
 
-          ReadMessage();
+            std::string message_string;
+            std::istream buffer_stream(&buffer);
+            std::getline(buffer_stream, message_string);
+
+            std::string::size_type pos = message_string.find('\3');
+            if (pos != std::string::npos) {
+              message_string = message_string.substr(0, pos);
+            }
+
+            std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
+            inbound_queue->AddMessage(message_string);
+
+            ReadMessage();
+          }
         }
-      }
-  );
+    );
+  } catch (std::exception e) {
+    cout << "Encountered exception" << endl;
+  }
 }
 
 void Session::WriteOutboundMessage()
