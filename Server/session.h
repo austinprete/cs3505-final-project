@@ -9,15 +9,17 @@
 #include <cstdlib>
 #include <iostream>
 #include <boost/asio.hpp>
-#include "server.h"
+#include "message_queue.h"
 
 class session
     : public std::enable_shared_from_this<session>
 {
 public:
-  session(boost::asio::ip::tcp::socket socket, server& server);
+  session(boost::asio::ip::tcp::socket socket, message_queue *queue);
 
   void start();
+
+  void add_message_to_outbound_queue(std::string message);
 
 private:
   void read_message();
@@ -26,8 +28,9 @@ private:
 
   boost::asio::ip::tcp::socket socket;
   boost::asio::streambuf buffer;
-  std::vector<std::string> message_queue;
-  server &spreadsheet_server;
+  message_queue outbound_queue;
+
+  message_queue * queue;
 
   const std::string get_address() const;
 };

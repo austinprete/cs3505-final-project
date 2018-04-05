@@ -10,7 +10,9 @@
 #include <iostream>
 #include <vector>
 #include <boost/asio.hpp>
+#include "message_queue.h"
 
+#include "session.h"
 
 class server
 {
@@ -20,13 +22,14 @@ public:
   void run_server_loop();
 
 private:
+  std::vector<std::weak_ptr<session> > clients;
+
   void accept_connection();
 
   boost::asio::ip::tcp::acceptor acceptor;
   boost::asio::ip::tcp::socket socket;
 
-  std::vector<std::string> message_queue;
-  void add_message_to_queue(const std::string &message);
+  message_queue inbound_queue;
 
   bool process_message_in_queue();
   void process_message(std::string &message);

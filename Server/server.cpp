@@ -32,6 +32,8 @@ void server::run_server_loop()
       idle = false;
     };
 
+//
+
     if (idle) {
       sleep(1);
     }
@@ -46,17 +48,14 @@ void server::accept_connection()
         if (!ec) {
           std::cout << "Client connected from " << socket.remote_endpoint().address().to_string() << std::endl;
 
-          std::make_shared<session>(std::move(socket), (*this))->start();
+          shared_ptr<session> sesh = std::make_shared<session>(std::move(socket), (&inbound_queue));
+          sesh->start();
+          clients.push_back(sesh);
         }
 
         accept_connection();
       }
   );
-}
-
-void server::add_message_to_queue(const std::string &message)
-{
-  message_queue.push_back(message);
 }
 
 /**
@@ -65,13 +64,12 @@ void server::add_message_to_queue(const std::string &message)
  */
 bool server::process_message_in_queue()
 {
-  if (!message_queue.empty()) {
-    string message = message_queue.at(0);
+  if (!inbound_queue.is_empty()) {
+    string message = inbound_queue.pop_message();
     process_message(message);
-    message_queue.erase(message_queue.begin());
   }
 
-  return !message_queue.empty();
+  return !inbound_queue.is_empty();
 }
 
 void server::process_message(string &message)
@@ -99,5 +97,11 @@ void server::process_message(string &message)
     cout << "Running revert()" << endl;
   } else {
     cout << "ERROR: Received unrecognized message type \"" << message_type << "\"" << endl;
+  }
+
+  for (auto session : clients) {
+    if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
+      (*spt).add_message_to_outbound_queue("Response message");
+    }
   }
 }
