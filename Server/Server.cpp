@@ -83,11 +83,8 @@ void Server::ProcessMessage(string &message)
     cout << "ERROR: Received unrecognized message type \"" << message_type << "\"" << endl;
   }
 
-  for (auto session : clients) {
-    if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
-      (*spt).AddMessageToOutboundQueue("Response message");
-    }
-  }
+  std::string response_message = "Server received message: " + message;
+  SendMessageToClients(response_message);
 }
 
 /**
@@ -102,4 +99,15 @@ bool Server::ProcessMessageInQueue()
   }
 
   return !inbound_queue.IsEmpty();
+}
+
+void Server::SendMessageToClients(std::string &message) const
+{
+  for (auto session : clients) {
+    if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
+      if ((*spt).IsOpen()) {
+        (*spt).AddMessageToOutboundQueue("Response message");
+      }
+    }
+  }
 }

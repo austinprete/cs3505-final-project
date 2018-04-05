@@ -89,3 +89,8 @@ void Session::WriteOutboundMessage()
     );
   }
 }
+
+bool Session::IsOpen() const
+{
+  return socket.is_open();
+}

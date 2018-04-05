@@ -36,6 +36,8 @@ private:
   void ProcessMessage(std::string &message);
 
   bool ProcessMessageInQueue();
+
+  void SendMessageToClients(std::string &message) const;
 };
 
 #endif //SERVER_H

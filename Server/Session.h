@@ -22,6 +22,8 @@ public:
 
   const std::string GetAddress() const;
 
+  bool IsOpen() const;
+
   void Start();
 
 private:
