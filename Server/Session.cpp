@@ -9,19 +9,35 @@
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "message_queue.h"
-#include "session.h"
+#include "MessageQueue.h"
+#include "Session.h"
 
 using boost::asio::ip::tcp;
 
 using namespace std;
 
-session::session(boost::asio::ip::tcp::socket socket, message_queue *queue)
-    : socket(std::move(socket)), queue(queue)
+Session::Session(boost::asio::ip::tcp::socket socket, MessageQueue *queue)
+    : socket(std::move(socket)), inbound_queue(queue)
 {
 }
 
-void session::read_message()
+void Session::AddMessageToOutboundQueue(std::string message)
+{
+  outbound_queue.AddMessage(message);
+  WriteMessage(0);
+}
+
+const string Session::GetAddress() const
+{
+  return this->socket.remote_endpoint().address().to_string();
+}
+
+void Session::Start()
+{
+  ReadMessage();
+}
+
+void Session::ReadMessage()
 {
   auto self(shared_from_this());
   boost::asio::async_read_until(
@@ -50,44 +66,28 @@ void session::read_message()
           }
 
           std::cout << "Received message from " << client_address << ": " << message_string << std::endl;
-          queue->add_message(message_string);
+          inbound_queue->AddMessage(message_string);
 
-          write_message(length);
+          WriteMessage(length);
         }
       }
   );
 }
 
-void session::write_message(std::size_t length)
+void Session::WriteMessage(std::size_t length)
 {
-  if (!outbound_queue.is_empty()) {
+  if (!outbound_queue.IsEmpty()) {
     auto self(shared_from_this());
     boost::asio::async_write(
         socket,
-        boost::asio::buffer(outbound_queue.pop_message()),
+        boost::asio::buffer(outbound_queue.PopMessage()),
         [this, self](boost::system::error_code ec, std::size_t /*length*/) {
           if (!ec) {
-            read_message();
+            ReadMessage();
           }
         }
     );
   } else {
-    read_message();
+    ReadMessage();
   }
-}
-
-void session::start()
-{
-  read_message();
-}
-
-const string session::get_address() const
-{
-  return this->socket.remote_endpoint().address().to_string();
-}
-
-void session::add_message_to_outbound_queue(std::string message)
-{
-  outbound_queue.add_message(message);
-  write_message(0);
 }

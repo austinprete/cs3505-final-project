@@ -8,7 +8,7 @@
 #include <thread>
 #include <boost/asio.hpp>
 
-#include "server.h"
+#include "Server.h"
 
 using boost::asio::ip::tcp;
 using namespace std;
@@ -24,10 +24,10 @@ int main(int argc, char *argv[])
     boost::asio::io_service io_service;
     int port = atoi(argv[1]);
 
-    server spreadsheet_server(io_service, port);
+    Server spreadsheet_server(io_service, port);
 
     cout << "Running server on port " << port << endl;
-    std::thread server_loop_thread(&server::run_server_loop, &spreadsheet_server);
+    std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
     io_service.run();
   }
   catch (std::exception &e) {

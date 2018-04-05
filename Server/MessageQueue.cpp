@@ -4,22 +4,26 @@
  */
 
 #include <cstdlib>
-#include "message_queue.h"
+
+#include "MessageQueue.h"
 
 using namespace std;
 
-void message_queue::add_message(std::string message)
+MessageQueue::MessageQueue()
+    : queue()
+{}
+
+void MessageQueue::AddMessage(std::string message)
 {
   queue.push_back(message);
 }
 
-message_queue::message_queue()
-    : queue()
+bool MessageQueue::IsEmpty() const
 {
-
+  return queue.empty();
 }
 
-std::string message_queue::pop_message()
+std::string MessageQueue::PopMessage()
 {
   if (!queue.empty()) {
     string message = queue.at(0);
@@ -28,9 +32,4 @@ std::string message_queue::pop_message()
   }
 
   return NULL;
-}
-
-bool message_queue::is_empty() const
-{
-  return queue.empty();
 }

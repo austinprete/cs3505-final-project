@@ -9,15 +9,16 @@
 #include <vector>
 #include <string>
 
-class message_queue
+class MessageQueue
 {
 public:
-  void add_message(std::string);
-  message_queue();
+  MessageQueue();
 
-  std::string pop_message();
+  void AddMessage(std::string message);
 
-  bool is_empty() const;
+  bool IsEmpty() const;
+
+  std::string PopMessage();
 
 private:
   std::vector<std::string> queue;

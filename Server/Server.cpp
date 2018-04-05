@@ -9,30 +9,28 @@
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "session.h"
-#include "server.h"
+#include "Session.h"
+#include "Server.h"
 
 using boost::asio::ip::tcp;
 using namespace std;
 
-server::server(boost::asio::io_service &io_service, int port)
+Server::Server(boost::asio::io_service &io_service, int port)
     : acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
       socket(io_service)
 {
-  accept_connection();
+  AcceptConnection();
 }
 
-void server::run_server_loop()
+void Server::RunServerLoop()
 {
   while (true) {
     bool idle = true;
 
     // Returns true if there are still messages in the queue
-    if (process_message_in_queue()) {
+    if (ProcessMessageInQueue()) {
       idle = false;
     };
-
-//
 
     if (idle) {
       sleep(1);
@@ -40,7 +38,7 @@ void server::run_server_loop()
   }
 }
 
-void server::accept_connection()
+void Server::AcceptConnection()
 {
   acceptor.async_accept(
       socket,
@@ -48,31 +46,17 @@ void server::accept_connection()
         if (!ec) {
           std::cout << "Client connected from " << socket.remote_endpoint().address().to_string() << std::endl;
 
-          shared_ptr<session> sesh = std::make_shared<session>(std::move(socket), (&inbound_queue));
-          sesh->start();
+          shared_ptr<Session> sesh = std::make_shared<Session>(std::move(socket), (&inbound_queue));
+          sesh->Start();
           clients.push_back(sesh);
         }
 
-        accept_connection();
+        AcceptConnection();
       }
   );
 }
 
-/**
- * Processes a single message from the queue
- * @return true if there are still messages to process (queue not empty), false otherwise
- */
-bool server::process_message_in_queue()
-{
-  if (!inbound_queue.is_empty()) {
-    string message = inbound_queue.pop_message();
-    process_message(message);
-  }
-
-  return !inbound_queue.is_empty();
-}
-
-void server::process_message(string &message)
+void Server::ProcessMessage(string &message)
 {
   vector<string> tokenized_message;
   split(tokenized_message, message, boost::is_any_of(" \t"), boost::token_compress_on);
@@ -101,7 +85,21 @@ void server::process_message(string &message)
 
   for (auto session : clients) {
     if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
-      (*spt).add_message_to_outbound_queue("Response message");
+      (*spt).AddMessageToOutboundQueue("Response message");
     }
   }
+}
+
+/**
+ * Processes a single message from the queue
+ * @return true if there are still messages to process (queue not empty), false otherwise
+ */
+bool Server::ProcessMessageInQueue()
+{
+  if (!inbound_queue.IsEmpty()) {
+    string message = inbound_queue.PopMessage();
+    ProcessMessage(message);
+  }
+
+  return !inbound_queue.IsEmpty();
 }
