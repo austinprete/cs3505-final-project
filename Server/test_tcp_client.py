@@ -2,8 +2,12 @@
 # Run with: python test_tcp_client.py
 
 import socket
+import sys
 
-host = raw_input("Enter hostname: ")
+host = "localhost"
+
+if len(sys.argv) == 2:
+    host = sys.argv[1]
 
 port = 2112  # The same port as used by the server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
