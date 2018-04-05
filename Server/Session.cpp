@@ -40,6 +40,10 @@ void Session::Start()
 
 void Session::ReadMessage()
 {
+  if (!IsOpen()) {
+    return;
+  }
+
   auto self(shared_from_this());
   boost::asio::async_read_until(
       socket,
@@ -77,6 +81,9 @@ void Session::ReadMessage()
 
 void Session::WriteOutboundMessage()
 {
+  if (!IsOpen()) {
+    return;
+  }
   if (!outbound_queue.IsEmpty()) {
     auto self(shared_from_this());
     boost::asio::async_write(
