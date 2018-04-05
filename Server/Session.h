@@ -34,7 +34,7 @@ private:
 
   void ReadMessage();
 
-  void WriteMessage(std::size_t length);
+  void WriteOutboundMessage();
 };
 
 

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
+#include <utility>
 
 #include "MessageQueue.h"
 #include "Session.h"
@@ -23,8 +24,8 @@ Session::Session(boost::asio::ip::tcp::socket socket, MessageQueue *queue)
 
 void Session::AddMessageToOutboundQueue(std::string message)
 {
-  outbound_queue.AddMessage(message);
-  WriteMessage(0);
+  outbound_queue.AddMessage(std::move(message));
+  WriteOutboundMessage();
 }
 
 const string Session::GetAddress() const
@@ -68,13 +69,13 @@ void Session::ReadMessage()
           std::cout << "Received message from " << client_address << ": " << message_string << std::endl;
           inbound_queue->AddMessage(message_string);
 
-          WriteMessage(length);
+          WriteOutboundMessage();
         }
       }
   );
 }
 
-void Session::WriteMessage(std::size_t length)
+void Session::WriteOutboundMessage()
 {
   if (!outbound_queue.IsEmpty()) {
     auto self(shared_from_this());

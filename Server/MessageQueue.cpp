@@ -31,5 +31,5 @@ std::string MessageQueue::PopMessage()
     return message;
   }
 
-  return NULL;
+  return nullptr;
 }
