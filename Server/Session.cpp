@@ -69,7 +69,7 @@ void Session::ReadMessage()
           std::cout << "Received message from " << client_address << ": " << message_string << std::endl;
           inbound_queue->AddMessage(message_string);
 
-          WriteOutboundMessage();
+          ReadMessage();
         }
       }
   );
@@ -84,11 +84,8 @@ void Session::WriteOutboundMessage()
         boost::asio::buffer(outbound_queue.PopMessage()),
         [this, self](boost::system::error_code ec, std::size_t /*length*/) {
           if (!ec) {
-            ReadMessage();
           }
         }
     );
-  } else {
-    ReadMessage();
   }
 }
