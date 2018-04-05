@@ -6,8 +6,9 @@
 #ifndef MESSAGE_QUEUE_H
 #define MESSAGE_QUEUE_H
 
-#include <vector>
+#include <mutex>
 #include <string>
+#include <vector>
 
 class MessageQueue
 {
@@ -22,6 +23,7 @@ public:
 
 private:
   std::vector<std::string> queue;
+  std::mutex queue_mutex;
 };
 
 

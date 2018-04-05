@@ -4,6 +4,8 @@
  */
 
 #include <cstdlib>
+#include <thread>
+#include <mutex>
 
 #include "MessageQueue.h"
 
@@ -15,6 +17,7 @@ MessageQueue::MessageQueue()
 
 void MessageQueue::AddMessage(std::string message)
 {
+  std::lock_guard<std::mutex> guard(queue_mutex);
   queue.push_back(message);
 }
 
@@ -25,6 +28,8 @@ bool MessageQueue::IsEmpty() const
 
 std::string MessageQueue::PopMessage()
 {
+  std::lock_guard<std::mutex> guard(queue_mutex);
+
   if (!queue.empty()) {
     string message = queue.at(0);
     queue.erase(queue.begin());
