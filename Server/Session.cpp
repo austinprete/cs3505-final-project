@@ -55,7 +55,7 @@ void Session::ReadMessage()
 
         if ((boost::asio::error::eof == ec) ||
             (boost::asio::error::connection_reset == ec)) {
-          cout << "Client at address " << client_address << " disconnected" << endl;
+          Shutdown(ec);
           return;
         }
 
@@ -90,7 +90,11 @@ void Session::WriteOutboundMessage()
         socket,
         boost::asio::buffer(outbound_queue.PopMessage()),
         [this, self](boost::system::error_code ec, std::size_t /*length*/) {
-          if (!ec) {
+          if ((boost::asio::error::eof == ec) ||
+              (boost::asio::error::connection_reset == ec)) {
+
+            Shutdown(ec);
+            return;
           }
         }
     );
@@ -100,4 +104,12 @@ void Session::WriteOutboundMessage()
 bool Session::IsOpen() const
 {
   return socket.is_open();
+}
+
+void Session::Shutdown(boost::system::error_code ec)
+{
+  string client_address = socket.remote_endpoint().address().to_string();
+  cout << "Client at address " << client_address << " disconnected" << endl;
+  socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+  socket.close();
 }

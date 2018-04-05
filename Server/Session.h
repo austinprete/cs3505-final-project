@@ -36,6 +36,8 @@ private:
 
   void ReadMessage();
 
+  void Shutdown(boost::system::error_code ec);
+
   void WriteOutboundMessage();
 };
 
