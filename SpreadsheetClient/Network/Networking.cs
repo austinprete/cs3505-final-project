@@ -188,6 +188,8 @@ namespace Network {
         /// <param name="ss">The socketstate containing the socket</param>
         /// <param name="message">The message to send</param>
         public static void Send(SocketState ss, string message) {
+
+            message += (char)3;
             // Append a newline, since that is our protocol's terminating character for a message.
             try {
                 //TODO we shouldn't have a new line
