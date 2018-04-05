@@ -8,6 +8,7 @@ Session.o: Session.h Session.cpp MessageQueue.h
 	g++ -std=c++11 -g -c Session.cpp
 
 MessageQueue.o: MessageQueue.h MessageQueue.cpp
+	g++ -std=c++11 -g -c MessageQueue.cpp
 
 clean:
 	rm *.o a.out
