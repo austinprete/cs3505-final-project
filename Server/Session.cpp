@@ -51,8 +51,6 @@ void Session::ReadMessage()
       '\3',
       [this, self](boost::system::error_code ec, std::size_t length) {
 
-        string client_address = socket.remote_endpoint().address().to_string();
-
         if ((boost::asio::error::eof == ec) ||
             (boost::asio::error::connection_reset == ec)) {
           Shutdown(ec);
@@ -70,7 +68,7 @@ void Session::ReadMessage()
             message_string = message_string.substr(0, pos);
           }
 
-          std::cout << "Received message from " << client_address << ": " << message_string << std::endl;
+          std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
           inbound_queue->AddMessage(message_string);
 
           ReadMessage();
@@ -108,8 +106,7 @@ bool Session::IsOpen() const
 
 void Session::Shutdown(boost::system::error_code ec)
 {
-  string client_address = socket.remote_endpoint().address().to_string();
-  cout << "Client at address " << client_address << " disconnected" << endl;
+  cout << "Client at address " << GetAddress() << " disconnected" << endl;
   socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
   socket.close();
 }

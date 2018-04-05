@@ -17,6 +17,7 @@ while True:
     message = raw_input('Message: ')
 
     if message == "exit":
+        sys.exit(-1)
         break
 
     s.sendall(message + b'\3')

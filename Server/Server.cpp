@@ -106,7 +106,7 @@ void Server::SendMessageToClients(std::string &message) const
   for (auto session : clients) {
     if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
       if ((*spt).IsOpen()) {
-        (*spt).AddMessageToOutboundQueue("Response message");
+        (*spt).AddMessageToOutboundQueue(message);
       }
     }
   }
