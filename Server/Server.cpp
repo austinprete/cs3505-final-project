@@ -3,7 +3,7 @@
  * CS3505 - Spring 2018
  */
 
-#include <cstdlib>
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <boost/asio.hpp>
@@ -48,9 +48,11 @@ void Server::AcceptConnection()
         if (!ec) {
           std::cout << "Client connected from " << socket.remote_endpoint().address().to_string() << std::endl;
 
-          shared_ptr<Session> session = std::make_shared<Session>(std::move(socket), current_session_id, (&inbound_queue));
+          shared_ptr<Session> session = std::make_shared<Session>(std::move(socket), current_session_id,
+                                                                  (&inbound_queue));
           session->Start();
-          clients.insert( std::pair<long, std::weak_ptr<Session> >(current_session_id, session));
+
+          clients.emplace(std::make_pair(current_session_id, session));
 
           current_session_id++;
         }
@@ -88,8 +90,6 @@ void Server::ProcessMessage(long client_id, string &message)
     cout << "ERROR: Received unrecognized message type \"" << message_type << "\"" << endl;
   }
 
-  std::string response_message = "Server received message: " + message;
-  SendMessageToClient(client_id, response_message);
 }
 
 /**
@@ -115,8 +115,8 @@ void Server::SendMessageToAllClients(string message) const
   message.append(" ");
   message += '\3';
 
-  for (auto it = clients.begin(); it != clients.end(); ++it) {
-    weak_ptr<Session> session = it->second;
+  for (const auto &client : clients) {
+    weak_ptr<Session> session = client.second;
 
     if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
       if ((*spt).IsOpen()) {
@@ -133,7 +133,7 @@ void Server::SendMessageToClient(long client_id, string message) const
 
   auto search = clients.find(client_id);
 
-  if(search != clients.end()) {
+  if (search != clients.end()) {
     weak_ptr<Session> session = search->second;
 
     if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
