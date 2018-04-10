@@ -1,4 +1,4 @@
-﻿namespace MenuGUI1
+﻿namespace MenuGUI
 {
     partial class MenuForm
     {
@@ -39,11 +39,12 @@
             // 
             // SpreadsheetListBox
             // 
+            this.SpreadsheetListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.SpreadsheetListBox.FormattingEnabled = true;
             this.SpreadsheetListBox.ItemHeight = 25;
-            this.SpreadsheetListBox.Location = new System.Drawing.Point(405, 49);
+            this.SpreadsheetListBox.Location = new System.Drawing.Point(526, 49);
             this.SpreadsheetListBox.Name = "SpreadsheetListBox";
-            this.SpreadsheetListBox.Size = new System.Drawing.Size(1100, 579);
+            this.SpreadsheetListBox.Size = new System.Drawing.Size(827, 629);
             this.SpreadsheetListBox.TabIndex = 0;
             // 
             // ServerNameLabel
@@ -52,42 +53,54 @@
             this.ServerNameLabel.Font = new System.Drawing.Font("Arial", 16.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ServerNameLabel.Location = new System.Drawing.Point(12, 12);
             this.ServerNameLabel.Name = "ServerNameLabel";
-            this.ServerNameLabel.Size = new System.Drawing.Size(285, 51);
+            this.ServerNameLabel.Size = new System.Drawing.Size(446, 51);
             this.ServerNameLabel.TabIndex = 1;
-            this.ServerNameLabel.Text = "Server Name";
+            this.ServerNameLabel.Text = "lab1-11.eng.utah.edu";
             // 
             // LogOutButton
             // 
+            this.LogOutButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(187)))), ((int)(((byte)(187)))));
+            this.LogOutButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LogOutButton.Location = new System.Drawing.Point(21, 66);
             this.LogOutButton.Name = "LogOutButton";
-            this.LogOutButton.Size = new System.Drawing.Size(144, 45);
+            this.LogOutButton.Size = new System.Drawing.Size(166, 65);
             this.LogOutButton.TabIndex = 2;
             this.LogOutButton.Text = "Log Out";
-            this.LogOutButton.UseVisualStyleBackColor = true;
+            this.LogOutButton.UseVisualStyleBackColor = false;
+            this.LogOutButton.MouseEnter += new System.EventHandler(this.LogOutButton_MouseEnter);
+            this.LogOutButton.MouseLeave += new System.EventHandler(this.LogOutButton_MouseLeave);
             // 
             // LoadButton
             // 
-            this.LoadButton.Location = new System.Drawing.Point(85, 181);
+            this.LoadButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(187)))), ((int)(((byte)(187)))));
+            this.LoadButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LoadButton.Location = new System.Drawing.Point(526, 693);
             this.LoadButton.Name = "LoadButton";
-            this.LoadButton.Size = new System.Drawing.Size(133, 44);
+            this.LoadButton.Size = new System.Drawing.Size(135, 65);
             this.LoadButton.TabIndex = 3;
             this.LoadButton.Text = "Load";
-            this.LoadButton.UseVisualStyleBackColor = true;
+            this.LoadButton.UseVisualStyleBackColor = false;
+            this.LoadButton.MouseEnter += new System.EventHandler(this.LoadButton_MouseEnter);
+            this.LoadButton.MouseLeave += new System.EventHandler(this.LoadButton_MouseLeave);
             // 
             // CreateNewButton
             // 
-            this.CreateNewButton.Location = new System.Drawing.Point(85, 266);
+            this.CreateNewButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(187)))), ((int)(((byte)(187)))));
+            this.CreateNewButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CreateNewButton.Location = new System.Drawing.Point(674, 693);
             this.CreateNewButton.Name = "CreateNewButton";
-            this.CreateNewButton.Size = new System.Drawing.Size(133, 54);
+            this.CreateNewButton.Size = new System.Drawing.Size(208, 65);
             this.CreateNewButton.TabIndex = 4;
             this.CreateNewButton.Text = "Create New";
-            this.CreateNewButton.UseVisualStyleBackColor = true;
+            this.CreateNewButton.UseVisualStyleBackColor = false;
+            this.CreateNewButton.MouseEnter += new System.EventHandler(this.CreateNewButton_MouseEnter);
+            this.CreateNewButton.MouseLeave += new System.EventHandler(this.CreateNewButton_MouseLeave);
             // 
             // SpreadsheetInformationLabel
             // 
             this.SpreadsheetInformationLabel.AutoSize = true;
             this.SpreadsheetInformationLabel.Font = new System.Drawing.Font("Arial", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SpreadsheetInformationLabel.Location = new System.Drawing.Point(400, 12);
+            this.SpreadsheetInformationLabel.Location = new System.Drawing.Point(520, 12);
             this.SpreadsheetInformationLabel.Name = "SpreadsheetInformationLabel";
             this.SpreadsheetInformationLabel.Size = new System.Drawing.Size(532, 32);
             this.SpreadsheetInformationLabel.TabIndex = 5;
@@ -95,20 +108,25 @@
             // 
             // TeamInformationLinkLabel
             // 
+            this.TeamInformationLinkLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(119)))), ((int)(((byte)(119)))), ((int)(((byte)(119)))));
             this.TeamInformationLinkLabel.AutoSize = true;
             this.TeamInformationLinkLabel.Font = new System.Drawing.Font("Arial", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TeamInformationLinkLabel.Location = new System.Drawing.Point(540, 728);
+            this.TeamInformationLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(119)))), ((int)(((byte)(119)))), ((int)(((byte)(119)))));
+            this.TeamInformationLinkLabel.Location = new System.Drawing.Point(595, 814);
             this.TeamInformationLinkLabel.Name = "TeamInformationLinkLabel";
             this.TeamInformationLinkLabel.Size = new System.Drawing.Size(192, 32);
             this.TeamInformationLinkLabel.TabIndex = 6;
             this.TeamInformationLinkLabel.TabStop = true;
             this.TeamInformationLinkLabel.Text = "Meet the Devs";
+            this.TeamInformationLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.TeamInformationLinkLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(119)))), ((int)(((byte)(119)))), ((int)(((byte)(119)))));
             // 
             // MenuForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1974, 779);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.ClientSize = new System.Drawing.Size(1974, 1052);
             this.Controls.Add(this.TeamInformationLinkLabel);
             this.Controls.Add(this.SpreadsheetInformationLabel);
             this.Controls.Add(this.CreateNewButton);
@@ -116,8 +134,10 @@
             this.Controls.Add(this.LogOutButton);
             this.Controls.Add(this.ServerNameLabel);
             this.Controls.Add(this.SpreadsheetListBox);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "MenuForm";
-            this.Text = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Spreadsheet Application";
             this.Load += new System.EventHandler(this.MenuForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

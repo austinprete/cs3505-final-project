@@ -79,6 +79,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MenuGUI1\MenuGUI.csproj">
+      <Project>{d3abd88a-c0c6-42a1-800e-866b2bb3fc9d}</Project>
+      <Name>MenuGUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Network\Network.csproj">
       <Project>{6a7f7124-ac26-4cbf-97f8-69035e48d467}</Project>
       <Name>Network</Name>

@@ -38,7 +38,7 @@
             // 
             // LoginButton
             // 
-            this.LoginButton.BackColor = System.Drawing.Color.DarkGray;
+            this.LoginButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(187)))), ((int)(((byte)(187)))));
             this.LoginButton.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.LoginButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LoginButton.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -117,6 +117,7 @@
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "PortalForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Spreadsheet Application";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PortalForm_FormClosing);
             this.Click += new System.EventHandler(this.PortalForm_Click);

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MenuGUI1.Properties
+namespace MenuGUI.Properties
 {
 
 

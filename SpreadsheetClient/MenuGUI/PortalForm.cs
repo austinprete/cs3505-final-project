@@ -38,9 +38,7 @@ namespace MenuGUI
             {
                 ServerNameTextBox.Text = "";
                 ServerNameTextBox.ForeColor = SystemColors.ControlText;
-
             }
-
         }
 
         private void ServerNameTextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -49,23 +47,24 @@ namespace MenuGUI
             {
                 ServerNameTextBox.Text = "";
                 ServerNameTextBox.ForeColor = SystemColors.ControlText;
-
             }
-
         }
 
         private void LoginButton_Click(object sender, EventArgs e)
         {
             if (ServerNameTextBox.Text.Length == 0)
             {
-                LoginButton.BackColor = Color.FromArgb(105, 109, 192);
+                //LoginButton.BackColor = Color.FromArgb(105, 109, 192);
                 ServerNameTextBox.Text = "Server Name";
                 ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
             }
             else if (ServerNameTextBox.Text != "Server Name")
             {
-                LoginButton.BackColor = Color.FromArgb(105, 105, 105);
+                //LoginButton.BackColor = Color.FromArgb(105, 105, 105);
                 Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                this.Hide();
+                MenuForm mf = new MenuForm();
+                mf.Show();
             }
         }
 
@@ -87,8 +86,11 @@ namespace MenuGUI
         {
             if (e.KeyCode == Keys.Enter)
             {
-                LoginButton.BackColor = Color.FromArgb(50, 50, 50);
+                //LoginButton.BackColor = Color.FromArgb(50, 50, 50);
                 Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                this.Hide();
+                MenuForm mf = new MenuForm();
+                mf.Show();
             }
         }
         /// <summary>
