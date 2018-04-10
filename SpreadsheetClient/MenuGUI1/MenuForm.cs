@@ -7,13 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using Network;
 namespace MenuGUI
 {
     public partial class MenuForm : Form
     {
-        public MenuForm()
+        private SocketState ss;
+        public MenuForm(SocketState ss)
         {
+            this.ss = ss;
             InitializeComponent();
         }
 

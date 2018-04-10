@@ -17,7 +17,7 @@ namespace MenuGUI
     public partial class PortalForm : Form
     {
 
-        private SocketState theServer;
+        private SocketState server_socket;
         public PortalForm()
         {
             InitializeComponent();
@@ -62,8 +62,9 @@ namespace MenuGUI
             {
                 //LoginButton.BackColor = Color.FromArgb(105, 105, 105);
                 Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                LoginButton.Enabled = false;
                 this.Hide();
-                MenuForm mf = new MenuForm();
+                MenuForm mf = new MenuForm(server_socket);
                 mf.Show();
             }
         }
@@ -88,8 +89,9 @@ namespace MenuGUI
             {
                 //LoginButton.BackColor = Color.FromArgb(50, 50, 50);
                 Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                LoginButton.Enabled = false;
                 this.Hide();
-                MenuForm mf = new MenuForm();
+                MenuForm mf = new MenuForm(server_socket);
                 mf.Show();
             }
         }
@@ -99,10 +101,10 @@ namespace MenuGUI
         /// <param name="socketstate"></param>
         private void firstContact(SocketState socketstate)
         {
-            theServer = socketstate;
-            theServer.callMe = ProcessMessage;
-            Networking.Send(theServer, "register");
-            Networking.GetData(theServer);
+            server_socket = socketstate;
+            server_socket.callMe = ProcessMessage;
+            Networking.Send(server_socket, "register");
+            Networking.GetData(server_socket);
         }
 
 
