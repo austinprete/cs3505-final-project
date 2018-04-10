@@ -4,6 +4,8 @@
 import socket
 import sys
 
+import time
+
 host = "localhost"
 
 if len(sys.argv) == 2:
@@ -17,9 +19,17 @@ while True:
     message = raw_input('Message: ')
 
     if message == "exit":
+        sys.exit(-1)
         break
 
     s.sendall(message + b'\3')
+
+    time.sleep(1)
     data = s.recv(1024)
-    print("Received response: %s" % repr(data))
+    message_parts = data.split('\x03')
+
+    message_parts = filter(lambda x: x, message_parts)
+
+    for part in message_parts:
+        print("Received response: %s" % part)
 s.close()

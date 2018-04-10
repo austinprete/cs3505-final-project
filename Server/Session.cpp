@@ -17,14 +17,14 @@ using boost::asio::ip::tcp;
 
 using namespace std;
 
-Session::Session(boost::asio::ip::tcp::socket socket, MessageQueue *queue)
-    : socket(std::move(socket)), inbound_queue(queue)
+Session::Session(boost::asio::ip::tcp::socket socket, long session_id, MessageQueue *queue)
+    : socket(std::move(socket)), inbound_queue(queue), id(session_id)
 {
 }
 
 void Session::AddMessageToOutboundQueue(std::string message)
 {
-  outbound_queue.AddMessage(std::move(message));
+  outbound_queue.AddMessage(this->id, std::move(message));
   WriteOutboundMessage();
 }
 
@@ -40,50 +40,63 @@ void Session::Start()
 
 void Session::ReadMessage()
 {
+  if (!IsOpen()) {
+    return;
+  }
+
   auto self(shared_from_this());
-  boost::asio::async_read_until(
-      socket,
-      buffer,
-      '\3',
-      [this, self](boost::system::error_code ec, std::size_t length) {
+  try {
+    boost::asio::async_read_until(
+        socket,
+        buffer,
+        '\3',
+        [this, self](boost::system::error_code ec, std::size_t length) {
 
-        string client_address = socket.remote_endpoint().address().to_string();
-
-        if ((boost::asio::error::eof == ec) ||
-            (boost::asio::error::connection_reset == ec)) {
-          cout << "Client at address " << client_address << " disconnected" << endl;
-          return;
-        }
-
-        if (!ec) {
-
-          std::string message_string;
-          std::istream buffer_stream(&buffer);
-          std::getline(buffer_stream, message_string);
-
-          std::string::size_type pos = message_string.find('\3');
-          if (pos != std::string::npos) {
-            message_string = message_string.substr(0, pos);
+          if ((boost::asio::error::eof == ec) ||
+              (boost::asio::error::connection_reset == ec)) {
+            Shutdown(ec);
+            return;
           }
 
-          std::cout << "Received message from " << client_address << ": " << message_string << std::endl;
-          inbound_queue->AddMessage(message_string);
+          if (!ec) {
 
-          ReadMessage();
+            std::string message_string;
+            std::istream buffer_stream(&buffer);
+            std::getline(buffer_stream, message_string);
+
+            std::string::size_type pos = message_string.find('\3');
+            if (pos != std::string::npos) {
+              message_string = message_string.substr(0, pos);
+            }
+
+            std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
+            inbound_queue->AddMessage(this->id, message_string);
+
+            ReadMessage();
+          }
         }
-      }
-  );
+    );
+  } catch (std::exception e) {
+    cout << "Encountered exception" << endl;
+  }
 }
 
 void Session::WriteOutboundMessage()
 {
+  if (!IsOpen()) {
+    return;
+  }
   if (!outbound_queue.IsEmpty()) {
     auto self(shared_from_this());
     boost::asio::async_write(
         socket,
-        boost::asio::buffer(outbound_queue.PopMessage()),
+        boost::asio::buffer(outbound_queue.PopMessage().second),
         [this, self](boost::system::error_code ec, std::size_t /*length*/) {
-          if (!ec) {
+          if ((boost::asio::error::eof == ec) ||
+              (boost::asio::error::connection_reset == ec)) {
+
+            Shutdown(ec);
+            return;
           }
         }
     );
@@ -93,4 +106,11 @@ void Session::WriteOutboundMessage()
 bool Session::IsOpen() const
 {
   return socket.is_open();
+}
+
+void Session::Shutdown(boost::system::error_code ec)
+{
+  cout << "Client at address " << GetAddress() << " disconnected" << endl;
+  socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+  socket.close();
 }

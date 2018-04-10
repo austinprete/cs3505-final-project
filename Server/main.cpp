@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     cout << "Running server on port " << port << endl;
     std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
     io_service.run();
+    server_loop_thread.join();
   }
   catch (std::exception &e) {
     std::cerr << "Exception: " << e.what() << "\n";

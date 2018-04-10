@@ -15,14 +15,14 @@ class MessageQueue
 public:
   MessageQueue();
 
-  void AddMessage(std::string message);
+  void AddMessage(long client_id, std::string message);
 
   bool IsEmpty() const;
 
-  std::string PopMessage();
+  std::pair<long, std::string> PopMessage();
 
 private:
-  std::vector<std::string> queue;
+  std::vector<std::pair<long, std::string> > queue;
   std::mutex queue_mutex;
 };
 
