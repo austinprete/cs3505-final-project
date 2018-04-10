@@ -107,6 +107,15 @@ namespace MenuGUI
         private void ProcessMessage(SocketState ss)
         {
             string data = ss.sb.ToString();
+            //check if it's a "Connection_Accepted" message
+            if(data.Substring(0, 7) == "connect")
+            {
+                //remove "connect_accepted"
+                data = data.Substring(17);
+                string[] spreadsheet_list = data.Split('\n');
+                ListBox list_box = new ListBox();
+                list_box.DataSource = data;
+            }
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
