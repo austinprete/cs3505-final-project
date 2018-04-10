@@ -106,7 +106,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.ClientSize = new System.Drawing.Size(512, 265);
+            this.ClientSize = new System.Drawing.Size(408, 254);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.TeamNameLabel);
             this.Controls.Add(this.serverLabel);
