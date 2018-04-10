@@ -54,6 +54,7 @@ namespace SS
 
         public delegate void EnterDelegate();
         public EnterDelegate enterDel;
+        public EnterDelegate startEditingCell;
 
         /// <summary>
         /// Creates an empty SpreadsheetPanel
@@ -166,6 +167,8 @@ namespace SS
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SpreadsheetPanel_KeyPress(object sender, KeyPressEventArgs e) {
+            startEditingCell();
+
             int row, col;
             GetSelection(out col, out row);
             string currentValue;

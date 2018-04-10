@@ -8,11 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Network;
+using System.Diagnostics;
+
+
 
 namespace MenuGUI
 {
     public partial class PortalForm : Form
     {
+
         private SocketState theServer;
         public PortalForm()
         {

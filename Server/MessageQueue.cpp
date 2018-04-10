@@ -18,7 +18,7 @@ MessageQueue::MessageQueue()
 void MessageQueue::AddMessage(long client_id, std::string message)
 {
   std::lock_guard<std::mutex> guard(queue_mutex);
-  queue.push_back(std::make_pair(client_id, message));
+  queue.emplace_back(client_id, message);
 }
 
 bool MessageQueue::IsEmpty() const
@@ -36,5 +36,5 @@ pair<long, string> MessageQueue::PopMessage()
     return message_pair;
   }
 
-  return std::make_pair<long, string>(NULL, NULL);
+  return std::make_pair<long, string>(-1, nullptr);
 }
