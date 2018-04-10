@@ -10,6 +10,9 @@
 
 #include "Server.h"
 
+#include "Dependencies/rapidxml-1.13/rapidxml_utils.hpp"
+#include "Spreadsheet.h"
+
 using boost::asio::ip::tcp;
 using namespace std;
 
