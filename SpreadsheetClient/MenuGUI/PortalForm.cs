@@ -108,7 +108,7 @@ namespace MenuGUI
         {
             string data = ss.sb.ToString();
             //check if it's a "Connection_Accepted" message
-            if(data.Substring(0, 7) == "connect")
+            if (data.Substring(0, 7) == "connect")
             {
                 //remove "connect_accepted"
                 data = data.Substring(17);
