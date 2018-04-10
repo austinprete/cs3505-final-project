@@ -38,7 +38,7 @@ namespace MenuGUI
             {
                 ServerNameTextBox.Text = "";
                 ServerNameTextBox.ForeColor = SystemColors.ControlText;
-                
+
             }
 
         }
@@ -49,7 +49,7 @@ namespace MenuGUI
             {
                 ServerNameTextBox.Text = "";
                 ServerNameTextBox.ForeColor = SystemColors.ControlText;
-                
+
             }
 
         }
@@ -68,7 +68,7 @@ namespace MenuGUI
                 Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
             }
         }
-        
+
         private void LoginButton_MouseEnter(object sender, EventArgs e)
         {
             LoginButton.BackColor = Color.FromArgb(239, 239, 239);
@@ -127,7 +127,7 @@ namespace MenuGUI
 
         private void PortalForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            for (int i = 0; i < Networking.connectedSockets.Count; i ++)
+            for (int i = 0; i < Networking.connectedSockets.Count; i++)
             {
                 Networking.connectedSockets[i].Close();
             }
