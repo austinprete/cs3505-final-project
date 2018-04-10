@@ -17,14 +17,14 @@ using boost::asio::ip::tcp;
 
 using namespace std;
 
-Session::Session(boost::asio::ip::tcp::socket socket, MessageQueue *queue)
-    : socket(std::move(socket)), inbound_queue(queue)
+Session::Session(boost::asio::ip::tcp::socket socket, long session_id, MessageQueue *queue)
+    : socket(std::move(socket)), inbound_queue(queue), id(session_id)
 {
 }
 
 void Session::AddMessageToOutboundQueue(std::string message)
 {
-  outbound_queue.AddMessage(std::move(message));
+  outbound_queue.AddMessage(this->id, std::move(message));
   WriteOutboundMessage();
 }
 
@@ -70,7 +70,7 @@ void Session::ReadMessage()
             }
 
             std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
-            inbound_queue->AddMessage(message_string);
+            inbound_queue->AddMessage(this->id, message_string);
 
             ReadMessage();
           }
@@ -90,7 +90,7 @@ void Session::WriteOutboundMessage()
     auto self(shared_from_this());
     boost::asio::async_write(
         socket,
-        boost::asio::buffer(outbound_queue.PopMessage()),
+        boost::asio::buffer(outbound_queue.PopMessage().second),
         [this, self](boost::system::error_code ec, std::size_t /*length*/) {
           if ((boost::asio::error::eof == ec) ||
               (boost::asio::error::connection_reset == ec)) {

@@ -15,10 +15,10 @@ MessageQueue::MessageQueue()
     : queue()
 {}
 
-void MessageQueue::AddMessage(std::string message)
+void MessageQueue::AddMessage(long client_id, std::string message)
 {
   std::lock_guard<std::mutex> guard(queue_mutex);
-  queue.push_back(message);
+  queue.push_back(std::make_pair(client_id, message));
 }
 
 bool MessageQueue::IsEmpty() const
@@ -26,15 +26,15 @@ bool MessageQueue::IsEmpty() const
   return queue.empty();
 }
 
-std::string MessageQueue::PopMessage()
+pair<long, string> MessageQueue::PopMessage()
 {
   std::lock_guard<std::mutex> guard(queue_mutex);
 
   if (!queue.empty()) {
-    string message = queue.at(0);
+    pair<long, string> message_pair = queue.at(0);
     queue.erase(queue.begin());
-    return message;
+    return message_pair;
   }
 
-  return nullptr;
+  return std::make_pair<long, string>(NULL, NULL);
 }

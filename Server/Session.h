@@ -16,7 +16,7 @@ class Session
     : public std::enable_shared_from_this<Session>
 {
 public:
-  Session(boost::asio::ip::tcp::socket socket, MessageQueue *queue);
+  Session(boost::asio::ip::tcp::socket socket, long session_id, MessageQueue *queue);
 
   void AddMessageToOutboundQueue(std::string message);
 
@@ -28,8 +28,10 @@ public:
 
 private:
   boost::asio::ip::tcp::socket socket;
+  long id;
 
   boost::asio::streambuf buffer;
+
   MessageQueue *inbound_queue;
 
   MessageQueue outbound_queue;
