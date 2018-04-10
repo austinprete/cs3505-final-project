@@ -8,6 +8,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <map>
 #include <vector>
 #include <boost/asio.hpp>
 
@@ -24,7 +25,9 @@ public:
   void RunServerLoop();
 
 private:
-  std::vector<std::weak_ptr<Session> > clients;
+  static long current_session_id;
+
+  std::map<long, std::weak_ptr<Session> > clients;
 
   boost::asio::ip::tcp::acceptor acceptor;
   boost::asio::ip::tcp::socket socket;
@@ -33,11 +36,15 @@ private:
 
   void AcceptConnection();
 
-  void ProcessMessage(std::string &message);
+  void ProcessMessage(long client_id, std::string &message);
 
   bool ProcessMessageInQueue();
 
-  void SendMessageToClients(std::string &message) const;
+  void SendMessageToAllClients(std::string message) const;
+
+  void SendMessageToClient(long client_id, std::string message) const;
+
+  void RegisterClient(long client_id);
 };
 
 #endif //SERVER_H

@@ -15,6 +15,8 @@
 using boost::asio::ip::tcp;
 using namespace std;
 
+long Server::current_session_id = 0;
+
 Server::Server(boost::asio::io_service &io_service, int port)
     : acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
       socket(io_service)
@@ -46,9 +48,11 @@ void Server::AcceptConnection()
         if (!ec) {
           std::cout << "Client connected from " << socket.remote_endpoint().address().to_string() << std::endl;
 
-          shared_ptr<Session> sesh = std::make_shared<Session>(std::move(socket), (&inbound_queue));
-          sesh->Start();
-          clients.push_back(sesh);
+          shared_ptr<Session> session = std::make_shared<Session>(std::move(socket), current_session_id, (&inbound_queue));
+          session->Start();
+          clients.insert( std::pair<long, std::weak_ptr<Session> >(current_session_id, session));
+
+          current_session_id++;
         }
 
         AcceptConnection();
@@ -56,7 +60,7 @@ void Server::AcceptConnection()
   );
 }
 
-void Server::ProcessMessage(string &message)
+void Server::ProcessMessage(long client_id, string &message)
 {
   vector<string> tokenized_message;
   split(tokenized_message, message, boost::is_any_of(" \t"), boost::token_compress_on);
@@ -64,6 +68,7 @@ void Server::ProcessMessage(string &message)
   string message_type = tokenized_message.at(0);
 
   if (message_type == "register") {
+    RegisterClient(client_id);
     cout << "Running register()" << endl;
   } else if (message_type == "disconnect") {
     cout << "Running disconnect()" << endl;
@@ -84,7 +89,7 @@ void Server::ProcessMessage(string &message)
   }
 
   std::string response_message = "Server received message: " + message;
-  SendMessageToClients(response_message);
+  SendMessageToClient(client_id, response_message);
 }
 
 /**
@@ -94,20 +99,54 @@ void Server::ProcessMessage(string &message)
 bool Server::ProcessMessageInQueue()
 {
   if (!inbound_queue.IsEmpty()) {
-    string message = inbound_queue.PopMessage();
-    ProcessMessage(message);
+    std::pair<long, string> message_pair = inbound_queue.PopMessage();
+
+    long client_id = message_pair.first;
+    string message = message_pair.second;
+
+    ProcessMessage(client_id, message);
   }
 
   return !inbound_queue.IsEmpty();
 }
 
-void Server::SendMessageToClients(std::string &message) const
+void Server::SendMessageToAllClients(string message) const
 {
-  for (auto session : clients) {
+  message.append(" ");
+  message += '\3';
+
+  for (auto it = clients.begin(); it != clients.end(); ++it) {
+    weak_ptr<Session> session = it->second;
+
     if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
       if ((*spt).IsOpen()) {
-        (*spt).AddMessageToOutboundQueue("Response message");
+        (*spt).AddMessageToOutboundQueue(message);
       }
     }
   }
+}
+
+void Server::SendMessageToClient(long client_id, string message) const
+{
+  message.append(" ");
+  message += '\3';
+
+  auto search = clients.find(client_id);
+
+  if(search != clients.end()) {
+    weak_ptr<Session> session = search->second;
+
+    if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
+      if ((*spt).IsOpen()) {
+        (*spt).AddMessageToOutboundQueue(message);
+      }
+    }
+  }
+}
+
+void Server::RegisterClient(long client_id)
+{
+  // temporarily hardcoding example message
+  string accept_message = "connect_accepted sales\nmarketing ideas\nanother_spreadsheet\n";
+  SendMessageToClient(client_id, accept_message);
 }
