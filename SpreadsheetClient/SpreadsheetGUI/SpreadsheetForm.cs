@@ -507,7 +507,10 @@ namespace SpreadsheetGUI
         {
             //sent revert to server 
         }
-    
 
+        private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            TerminateConnection();
+        }
     }
 }
