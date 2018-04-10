@@ -13,9 +13,11 @@ class Spreadsheet
 {
 
 public:
-  static Spreadsheet *LoadSpreadsheetFromFile(std::string path);
-
   Spreadsheet();
+
+  void WriteSpreadsheetToFile(std::string path) const;
+
+  static Spreadsheet *LoadSpreadsheetFromFile(std::string path);
 
 private:
   std::map<std::string, std::string> spreadsheet_map;

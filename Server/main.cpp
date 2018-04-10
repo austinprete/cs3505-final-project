@@ -18,25 +18,28 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  try {
-    if (argc != 2) {
-      cerr << "Usage: server <port>\n";
-      return 1;
-    }
+//  try {
+//    if (argc != 2) {
+//      cerr << "Usage: server <port>\n";
+//      return 1;
+//    }
+//
+//    boost::asio::io_service io_service;
+//    int port = atoi(argv[1]);
+//
+//    Server spreadsheet_server(io_service, port);
+//
+//    cout << "Running server on port " << port << endl;
+//    std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
+//    io_service.run();
+//    server_loop_thread.join();
+//  }
+//  catch (std::exception &e) {
+//    std::cerr << "Exception: " << e.what() << "\n";
+//  }
 
-    boost::asio::io_service io_service;
-    int port = atoi(argv[1]);
-
-    Server spreadsheet_server(io_service, port);
-
-    cout << "Running server on port " << port << endl;
-    std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
-    io_service.run();
-    server_loop_thread.join();
-  }
-  catch (std::exception &e) {
-    std::cerr << "Exception: " << e.what() << "\n";
-  }
+  Spreadsheet* sheet = Spreadsheet::LoadSpreadsheetFromFile("output.sprd");
+  sheet->WriteSpreadsheetToFile("output.sprd");
 
   return 0;
 }
