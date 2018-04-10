@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using SpreadsheetUtilities;
 using SS;
+using Network;
 
 namespace SpreadsheetGUI
 {
@@ -20,21 +21,27 @@ namespace SpreadsheetGUI
         private List<Keys> lastKeyPresses = new List<Keys>();
         private static List<Keys> konamiCode = new List<Keys> { Keys.Up, Keys.Up, Keys.Down, Keys.Down, Keys.Left, Keys.Right, Keys.Left, Keys.Right, Keys.B, Keys.A };
 
+        private SocketState serverSocket;
+
         //these variables are to keep track of what commands were pressed
         //private bool revert, undo, edit;
         /// <summary>
         /// The constructor for the spreadsheet form, performs the intial
         /// set up such as setting event handlers.
         /// </summary>
-        public SpreadsheetForm()
+        public SpreadsheetForm(SocketState socket)
         {
             InitializeComponent();
+
+            serverSocket = socket;
+            serverSocket.callMe = ProcessMessage;
 
             Size = new Size(1200, 600);
 
             // Assign event handlers
             spreadsheetPanel1.SelectionChanged += CellSelected;
             spreadsheetPanel1.enterDel = EnterPressedOnPanel;
+            spreadsheetPanel1.startEditingCell = StartEditingCell;
             FormClosing += SpreadsheetFormClosing;
             CellContentsTextBox.KeyDown += KeyDownHandler;
 
@@ -50,11 +57,28 @@ namespace SpreadsheetGUI
         }
 
         /// <summary>
+        /// A command was received from the server, we need to process it
+        /// </summary>
+        /// <param name="ss"></param>
+        private void ProcessMessage(SocketState ss) {
+
+        }
+
+        private void StartEditingCell() {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row) + (Char)3);
+        }
+
+        /// <summary>
         /// Is called from spreadsheet panel and indicates that the enter button was pressed
         /// </summary>
         private void EnterPressedOnPanel()
         {
-            EnterButton_Click(this, EventArgs.Empty);
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            Networking.Send(serverSocket, "unfocus" + (Char)3);
+            Networking.Send(serverSocket, "edit " + ConvertColRowToName(col, row) + ":" + spreadsheet.GetCellContents(ConvertColRowToName(col,row)).ToString() + (Char)3);
+            Networking.GetData(serverSocket);
+            //EnterButton_Click(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -231,7 +255,7 @@ namespace SpreadsheetGUI
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Open a new spreadsheet window
-            new SpreadsheetForm().Show();
+            //new SpreadsheetForm().Show();
         }
 
         /// <summary>
