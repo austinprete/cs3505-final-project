@@ -146,6 +146,7 @@ void Server::SendMessageToClient(long client_id, string message) const
 
 void Server::RegisterClient(long client_id)
 {
-  string accept_message = "connect_accepted ";
+  // temporarily hardcoding example message
+  string accept_message = "connect_accepted sales\nmarketing ideas\nanother_spreadsheet\n";
   SendMessageToClient(client_id, accept_message);
 }
