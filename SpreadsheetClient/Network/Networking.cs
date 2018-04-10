@@ -48,6 +48,7 @@ namespace Network {
     public class Networking {
 
         public const int DEFAULT_PORT = 2112;
+       
         //private static SocketState state;
         public delegate void NetworkAction(SocketState socketState);
 
@@ -142,7 +143,10 @@ namespace Network {
             state.callMe(state);
         }
 
-
+        /// <summary>
+        /// handshake when it gets created
+        /// </summary>
+        /// <param name="ar"></param>
         private static void ReceiveCallback(IAsyncResult ar) {
             SocketState state = (SocketState)ar.AsyncState;
             try {
@@ -209,7 +213,7 @@ namespace Network {
             state.theSocket.BeginReceive(state.messageBuffer, 0, state.messageBuffer.Length, SocketFlags.None, ReceiveCallback, state);
         }
 
-        public static void ServerAwaitingClientLoop(NetworkAction action) {
+        /*public static void ServerAwaitingClientLoop(NetworkAction action) {
             TcpListener listener = new TcpListener(DEFAULT_PORT);
             listener.Start();
             ConnectionState cs = new ConnectionState(listener, action);
@@ -226,6 +230,6 @@ namespace Network {
             ss.callMe = cs.callMe;
             ss.callMe(ss);
             cs.listener.BeginAcceptSocket(AcceptNewClient, cs);
-        }
+        }*/
     }
 }
