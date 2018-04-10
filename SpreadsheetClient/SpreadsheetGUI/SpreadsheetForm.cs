@@ -6,7 +6,8 @@ using System.Windows.Forms;
 using SpreadsheetUtilities;
 using SS;
 using Network;
-
+using System.Diagnostics;
+using System.Threading;
 
 namespace SpreadsheetGUI
 {
@@ -24,6 +25,13 @@ namespace SpreadsheetGUI
 
         private SocketState serverSocket;
 
+        private bool timeout;
+        private double current_time;
+
+        private Stopwatch stopwatch = new Stopwatch();
+
+        int pingDelay;
+
         //these variables are to keep track of what commands were pressed
         //private bool revert, undo, edit;
         /// <summary>
@@ -36,6 +44,8 @@ namespace SpreadsheetGUI
 
             serverSocket = socket;
             serverSocket.callMe = ProcessMessage;
+
+            pingDelay = 0;
 
             Size = new Size(1200, 600);
 
@@ -54,20 +64,59 @@ namespace SpreadsheetGUI
 
             // Sets the UI to display the information for cell "A1" initially
             DisplayCellInfo(0, 0);
+            timeout = false;
+            current_time = 0;
+
+            //var thread = new Thread(send_ping);
+            //thread.Start();
+
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Interval = 10000;
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(send_ping);
+            timer.Enabled = true;
 
         }
-
+        /// <summary>
+        /// send ping every 60 sec
+        /// </summary>
+        private void send_ping(object source, System.Timers.ElapsedEventArgs e)
+        {
+            pingDelay += 10;
+            if (pingDelay == 60)//Connection is dead, terminate it
+            {
+                TerminateConnection();
+            }
+            Networking.Send(serverSocket, "ping ");
+            
+        }
         /// <summary>
         /// A command was received from the server, we need to process it
         /// </summary>
         /// <param name="ss"></param>
-        private void ProcessMessage(SocketState ss) {
-
+        private void ProcessMessage(SocketState ss) 
+        {
+            string data = ss.sb.ToString();
+            if(data.Substring(0,13) == "ping_response")
+            {
+                timeout = false;
+                pingDelay = 0;
+            }
+            else if(data.Substring(0,5) == "ping")
+            {
+                Networking.Send(serverSocket, "ping_response ");
+            }
         }
 
-        private void StartEditingCell() {
+        private void TerminateConnection()
+        {
+            Networking.Send(serverSocket, "disconnect ");
+            serverSocket.theSocket.Close();
+        }
+
+        private void StartEditingCell()
+        {
             spreadsheetPanel1.GetSelection(out int col, out int row);
-            Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row) + (Char)3);
+            Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row));
         }
 
         /// <summary>
@@ -76,8 +125,8 @@ namespace SpreadsheetGUI
         private void EnterPressedOnPanel()
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
-            Networking.Send(serverSocket, "unfocus" + (Char)3);
-            Networking.Send(serverSocket, "edit " + ConvertColRowToName(col, row) + ":" + spreadsheet.GetCellContents(ConvertColRowToName(col,row)).ToString() + (Char)3);
+            Networking.Send(serverSocket, "unfocus ");
+            Networking.Send(serverSocket, "edit " + ConvertColRowToName(col, row) + ":" + spreadsheet.GetCellContents(ConvertColRowToName(col, row)).ToString());
             Networking.GetData(serverSocket);
             //EnterButton_Click(this, EventArgs.Empty);
         }
@@ -457,6 +506,11 @@ namespace SpreadsheetGUI
         private void revertToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //sent revert to server 
+        }
+
+        private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            TerminateConnection();
         }
     }
 }
