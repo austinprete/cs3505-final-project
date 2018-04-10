@@ -36,5 +36,5 @@ pair<long, string> MessageQueue::PopMessage()
     return message_pair;
   }
 
-  return std::make_pair<long, string>(NULL, nullptr);
+  return std::make_pair<long, string>(-1, nullptr);
 }
