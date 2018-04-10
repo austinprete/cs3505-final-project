@@ -35,6 +35,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "SpreadsheetPanel";
+            this.Size = new System.Drawing.Size(421, 345);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpreadsheetPanel_KeyPress);
             this.ResumeLayout(false);
 

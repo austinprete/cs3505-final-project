@@ -20,6 +20,8 @@ namespace SpreadsheetGUI
         private List<Keys> lastKeyPresses = new List<Keys>();
         private static List<Keys> konamiCode = new List<Keys> { Keys.Up, Keys.Up, Keys.Down, Keys.Down, Keys.Left, Keys.Right, Keys.Left, Keys.Right, Keys.B, Keys.A };
 
+        //these variables are to keep track of what commands were pressed
+        //private bool revert, undo, edit;
         /// <summary>
         /// The constructor for the spreadsheet form, performs the intial
         /// set up such as setting event handlers.
@@ -44,12 +46,14 @@ namespace SpreadsheetGUI
 
             // Sets the UI to display the information for cell "A1" initially
             DisplayCellInfo(0, 0);
+
         }
 
         /// <summary>
         /// Is called from spreadsheet panel and indicates that the enter button was pressed
         /// </summary>
-        private void EnterPressedOnPanel() {
+        private void EnterPressedOnPanel()
+        {
             EnterButton_Click(this, EventArgs.Empty);
         }
 
@@ -67,11 +71,12 @@ namespace SpreadsheetGUI
 
             object originalObj = spreadsheet.GetCellContents(ConvertColRowToName(col, row));
             string originalString = spreadsheet.GetCellContents(ConvertColRowToName(col, row)).ToString();
-            if (originalObj as Formula != null) {
+            if (originalObj as Formula != null)
+            {
                 originalString = "=" + originalString;
             }
-            sender.SetValue(col,row, originalString);
-            
+            sender.SetValue(col, row, originalString);
+
 
             // Update the UI to show the currently selected cell's information
             DisplayCellInfo(col, row);
@@ -417,6 +422,16 @@ namespace SpreadsheetGUI
                 lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
             }
 
+        }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //send undo to server
+        }
+
+        private void revertToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //sent revert to server 
         }
     }
 }

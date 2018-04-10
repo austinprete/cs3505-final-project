@@ -55,8 +55,6 @@ namespace SS
         public delegate void EnterDelegate();
         public EnterDelegate enterDel;
 
-        //these variables are to keep track of what commands were pressed
-        private bool revert, undo, edit;
         /// <summary>
         /// Creates an empty SpreadsheetPanel
         /// </summary>
@@ -90,10 +88,7 @@ namespace SS
             hScroll.Scroll += drawingPanel.HandleHScroll;
             vScroll.Scroll += drawingPanel.HandleVScroll;
 
-            //initialize the flags 
-            undo = false;
-            edit = false;
-            revert = false;
+            
             InitializeComponent();
         }
 
