@@ -4,6 +4,8 @@
 
 #include <string>
 #include <iostream>
+#include <boost/algorithm/string.hpp>
+#include <regex>
 
 #include "Spreadsheet.h"
 #include "Dependencies/rapidxml-1.13/rapidxml.hpp"
@@ -22,8 +24,6 @@ void Spreadsheet::WriteSpreadsheetToFile(std::string path) const
   xml_node<> *root_node = doc.allocate_node(node_element, "spreadsheet");
   doc.append_node(root_node);
 
-  root_node->append_node(doc.allocate_node(node_element, "spreadsheet2"));
-
   for (auto &cell : spreadsheet_map) {
     xml_node<> *cell_node = doc.allocate_node(node_element, "cell");
 
@@ -35,6 +35,58 @@ void Spreadsheet::WriteSpreadsheetToFile(std::string path) const
 
     root_node->append_node(cell_node);
   }
+
+  ofstream outfile;
+  outfile.open(path, ios::out | ios::trunc);
+
+  outfile << doc;
+}
+
+void Spreadsheet::ChangeCellContents(std::string cell_name, const std::string new_contents)
+{
+  boost::to_upper(cell_name);
+
+  regex cell_name_pattern("^[A-Z]{1}[1-9]{1}[0-9]{0,1}$");
+
+  if (!regex_match(cell_name, cell_name_pattern)) {
+    return;
+  }
+
+  auto search = spreadsheet_map.find(cell_name);
+
+
+  if (search != spreadsheet_map.end()) {
+    (*search).second = new_contents;
+  } else {
+    spreadsheet_map.insert(std::make_pair(cell_name, new_contents));
+  }
+}
+
+std::string Spreadsheet::GetFullStateString() const
+{
+  ostringstream full_state_stream;
+
+  for (const auto &cell : spreadsheet_map) {
+    string name = cell.first;
+    string contents = cell.second;
+
+    full_state_stream << name << ":" << contents << "\n";
+  }
+
+  return full_state_stream.str();
+}
+
+void Spreadsheet::CreateSpreadsheetsMapXmlFile(const string &folder)
+{
+  string path = folder + "/spreadsheets_map.xml";
+
+  xml_document<> doc;
+  xml_node<> *root_node = doc.allocate_node(node_element, "spreadsheets");
+  doc.append_node(root_node);
+
+  xml_node<> *id_node = doc.allocate_node(node_element, "current_id", "0");
+
+  root_node->append_node(id_node);
 
   ofstream outfile;
   outfile.open(path, ios::out | ios::trunc);

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <thread>
 #include <boost/asio.hpp>
+#include <boost/filesystem.hpp>
 
 #include "Server.h"
 
@@ -18,28 +19,34 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-//  try {
-//    if (argc != 2) {
-//      cerr << "Usage: server <port>\n";
-//      return 1;
-//    }
-//
-//    boost::asio::io_service io_service;
-//    int port = atoi(argv[1]);
-//
-//    Server spreadsheet_server(io_service, port);
-//
-//    cout << "Running server on port " << port << endl;
-//    std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
-//    io_service.run();
-//    server_loop_thread.join();
-//  }
-//  catch (std::exception &e) {
-//    std::cerr << "Exception: " << e.what() << "\n";
-//  }
+  const string spreadsheets_dir = "spreadsheets";
 
-  Spreadsheet* sheet = Spreadsheet::LoadSpreadsheetFromFile("output.sprd");
-  sheet->WriteSpreadsheetToFile("output.sprd");
+  if (boost::filesystem::exists(spreadsheets_dir)) {
+
+  } else {
+    boost::filesystem::create_directory(spreadsheets_dir);
+    Spreadsheet::CreateSpreadsheetsMapXmlFile(spreadsheets_dir);
+  }
+
+  try {
+    if (argc != 2) {
+      cerr << "Usage: server <port>\n";
+      return 1;
+    }
+
+    boost::asio::io_service io_service;
+    int port = atoi(argv[1]);
+
+    Server spreadsheet_server(io_service, port);
+
+    cout << "Running server on port " << port << endl;
+    std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
+    io_service.run();
+    server_loop_thread.join();
+  }
+  catch (std::exception &e) {
+    std::cerr << "Exception: " << e.what() << "\n";
+  }
 
   return 0;
 }

@@ -15,7 +15,13 @@ class Spreadsheet
 public:
   Spreadsheet();
 
+  void ChangeCellContents(std::string cell_name, std::string new_contents);
+
+  std::string GetFullStateString() const;
+
   void WriteSpreadsheetToFile(std::string path) const;
+
+  static void CreateSpreadsheetsMapXmlFile(const std::string &folder);
 
   static Spreadsheet *LoadSpreadsheetFromFile(std::string path);
 
