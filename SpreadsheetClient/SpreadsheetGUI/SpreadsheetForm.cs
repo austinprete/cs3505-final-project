@@ -96,14 +96,27 @@ namespace SpreadsheetGUI
         private void ProcessMessage(SocketState ss) 
         {
             string data = ss.sb.ToString();
-            if(data.Substring(0,13) == "ping_response")
-            {
-                timeout = false;
-                pingDelay = 0;
+            string[] parts = data.Split((Char)3);
+
+            //It's an incomplete message, wait for later
+            if (parts.Length == 1) {
+                return;
             }
-            else if(data.Substring(0,5) == "ping")
-            {
-                Networking.Send(serverSocket, "ping_response ");
+            
+            foreach (string p in parts) {
+                if (p == "" || p == ((Char)3).ToString()) {
+                    ss.sb.Remove(0, 1);
+                    continue;
+                }
+
+                if (p.StartsWith("ping_response")) {
+                    timeout = false;
+                    pingDelay = 0;
+                    ss.sb.Remove(0,p.Length);
+                } else if (p.StartsWith("ping")) {
+                    Networking.Send(serverSocket, "ping_response ");
+                    ss.sb.Remove(0, p.Length);
+                }
             }
         }
 
