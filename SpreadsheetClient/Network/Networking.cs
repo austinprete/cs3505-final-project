@@ -134,6 +134,7 @@ namespace Network {
             try {
                 // Complete the connection.
                 state.theSocket.EndConnect(ar);
+                System.Diagnostics.Debug.WriteLine("connected!");
             } catch (Exception e) {
                 System.Diagnostics.Debug.WriteLine("Unable to connect to server. Error occured: " + e);
                 return;
