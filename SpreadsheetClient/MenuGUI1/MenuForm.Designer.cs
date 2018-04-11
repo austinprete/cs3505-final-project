@@ -43,7 +43,7 @@
             this.SpreadsheetListBox.FormattingEnabled = true;
             this.SpreadsheetListBox.ItemHeight = 20;
             this.SpreadsheetListBox.Location = new System.Drawing.Point(394, 39);
-            this.SpreadsheetListBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SpreadsheetListBox.Margin = new System.Windows.Forms.Padding(2);
             this.SpreadsheetListBox.Name = "SpreadsheetListBox";
             this.SpreadsheetListBox.Size = new System.Drawing.Size(621, 504);
             this.SpreadsheetListBox.TabIndex = 0;
@@ -64,7 +64,7 @@
             this.LogOutButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(187)))), ((int)(((byte)(187)))));
             this.LogOutButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LogOutButton.Location = new System.Drawing.Point(16, 53);
-            this.LogOutButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.LogOutButton.Margin = new System.Windows.Forms.Padding(2);
             this.LogOutButton.Name = "LogOutButton";
             this.LogOutButton.Size = new System.Drawing.Size(124, 52);
             this.LogOutButton.TabIndex = 2;
@@ -78,12 +78,13 @@
             this.LoadButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(187)))), ((int)(((byte)(187)))));
             this.LoadButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LoadButton.Location = new System.Drawing.Point(394, 554);
-            this.LoadButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.LoadButton.Margin = new System.Windows.Forms.Padding(2);
             this.LoadButton.Name = "LoadButton";
             this.LoadButton.Size = new System.Drawing.Size(101, 52);
             this.LoadButton.TabIndex = 3;
             this.LoadButton.Text = "Load";
             this.LoadButton.UseVisualStyleBackColor = false;
+            this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
             this.LoadButton.MouseEnter += new System.EventHandler(this.LoadButton_MouseEnter);
             this.LoadButton.MouseLeave += new System.EventHandler(this.LoadButton_MouseLeave);
             // 
@@ -92,7 +93,7 @@
             this.CreateNewButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(187)))), ((int)(((byte)(187)))));
             this.CreateNewButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CreateNewButton.Location = new System.Drawing.Point(506, 554);
-            this.CreateNewButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.CreateNewButton.Margin = new System.Windows.Forms.Padding(2);
             this.CreateNewButton.Name = "CreateNewButton";
             this.CreateNewButton.Size = new System.Drawing.Size(156, 52);
             this.CreateNewButton.TabIndex = 4;
@@ -142,7 +143,7 @@
             this.Controls.Add(this.ServerNameLabel);
             this.Controls.Add(this.SpreadsheetListBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MenuForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Spreadsheet Application";

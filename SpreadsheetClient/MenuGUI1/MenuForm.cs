@@ -13,10 +13,17 @@ namespace MenuGUI
     public partial class MenuForm : Form
     {
         private SocketState ss;
-        public MenuForm(SocketState ss)
+        string[] spreadsheet_names;
+        public MenuForm(string[] names, SocketState ss)
         {
+            spreadsheet_names = names;
             this.ss = ss;
             InitializeComponent();
+            foreach(string n in names)
+            {
+                SpreadsheetListBox.Items.Add(n);
+            }
+            SpreadsheetListBox.DataSource = spreadsheet_names;
         }
 
         private void MenuForm_Load(object sender, EventArgs e)
@@ -53,6 +60,12 @@ namespace MenuGUI
         private void CreateNewButton_MouseLeave(object sender, EventArgs e)
         {
             CreateNewButton.BackColor = Color.FromArgb(187, 187, 187);
+        }
+
+        private void LoadButton_Click(object sender, EventArgs e)
+        {
+            string name = (string)SpreadsheetListBox.SelectedValue;
+            Networking.Send(ss, "load " + name);
         }
     }
 }
