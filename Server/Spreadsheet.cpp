@@ -4,7 +4,9 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/classification.hpp>
 #include <regex>
 
 #include "Spreadsheet.h"
@@ -14,6 +16,7 @@
 
 using namespace std;
 using namespace rapidxml;
+using namespace boost;
 
 Spreadsheet::Spreadsheet() : spreadsheet_map()
 {}
@@ -28,7 +31,10 @@ void Spreadsheet::WriteSpreadsheetToFile(std::string path) const
     xml_node<> *cell_node = doc.allocate_node(node_element, "cell");
 
     xml_node<> *name_node = doc.allocate_node(node_element, "name", cell.first.c_str());
-    xml_node<> *contents_node = doc.allocate_node(node_element, "contents", cell.second.c_str());
+
+    string joined_contents = boost::algorithm::join(cell.second, "\n");
+
+    xml_node<> *contents_node = doc.allocate_node(node_element, "contents", joined_contents.c_str());
 
     cell_node->append_node(name_node);
     cell_node->append_node(contents_node);
@@ -42,7 +48,7 @@ void Spreadsheet::WriteSpreadsheetToFile(std::string path) const
   outfile << doc;
 }
 
-void Spreadsheet::ChangeCellContents(std::string cell_name, const std::string new_contents)
+void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_contents)
 {
   boost::to_upper(cell_name);
 
@@ -54,11 +60,12 @@ void Spreadsheet::ChangeCellContents(std::string cell_name, const std::string ne
 
   auto search = spreadsheet_map.find(cell_name);
 
-
   if (search != spreadsheet_map.end()) {
-    (*search).second = new_contents;
+    (*search).second.push_back(new_contents);
   } else {
-    spreadsheet_map.insert(std::make_pair(cell_name, new_contents));
+    vector<string> contents_history;
+    contents_history.push_back(new_contents);
+    spreadsheet_map.insert(std::make_pair(cell_name, contents_history));
   }
 }
 
@@ -68,7 +75,7 @@ std::string Spreadsheet::GetFullStateString() const
 
   for (const auto &cell : spreadsheet_map) {
     string name = cell.first;
-    string contents = cell.second;
+    string contents = cell.second.back();
 
     full_state_stream << name << ":" << contents << "\n";
   }
@@ -96,7 +103,6 @@ void Spreadsheet::CreateSpreadsheetsMapXmlFile(const string &folder)
 
 Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(string path)
 {
-//  file<> file = new file(path);
   rapidxml::file<> xmlFile(path.c_str());
   xml_document<> doc;
   doc.parse<0>(xmlFile.data());
@@ -110,11 +116,42 @@ Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(string path)
     string name = current_cell->first_node("name")->value();
     string contents = current_cell->first_node("contents")->value();
 
-    sheet->spreadsheet_map.insert(std::make_pair(name, contents));
+    vector<string> contents_history;
+
+    split(contents_history, contents, is_from_range('\n', '\n'));
+
+    sheet->spreadsheet_map.insert(std::make_pair(name, contents_history));
 
 
     current_cell = current_cell->next_sibling();
   }
 
   return sheet;
+}
+
+std::map<int, Spreadsheet *> Spreadsheet::LoadSpreadsheetsMapFromXml(const std::string &folder)
+{
+  auto *spreadsheets = new map<int, Spreadsheet *>();
+
+  string path = folder + "/spreadsheets_map.xml";
+
+  rapidxml::file<> xmlFile(path.c_str());
+  xml_document<> doc;
+  doc.parse<0>(xmlFile.data());
+
+  xml_node<> *current_sheet = doc.first_node("spreadsheets")->first_node("spreadsheet");
+
+  while (current_sheet) {
+
+    int id = stoi(current_sheet->first_node("id")->value());
+    string file = current_sheet->first_node("file")->value();
+
+    Spreadsheet *sheet = LoadSpreadsheetFromFile(folder + "/" + file);
+
+    spreadsheets->insert(std::make_pair(id, sheet));
+
+    current_sheet = current_sheet->next_sibling();
+  }
+
+  return (*spreadsheets);
 }

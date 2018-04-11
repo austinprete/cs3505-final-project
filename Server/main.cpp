@@ -28,25 +28,35 @@ int main(int argc, char *argv[])
     Spreadsheet::CreateSpreadsheetsMapXmlFile(spreadsheets_dir);
   }
 
-  try {
-    if (argc != 2) {
-      cerr << "Usage: server <port>\n";
-      return 1;
-    }
+  auto spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml(spreadsheets_dir);
 
-    boost::asio::io_service io_service;
-    int port = atoi(argv[1]);
+  auto search = spreadsheets.find(0);
 
-    Server spreadsheet_server(io_service, port);
-
-    cout << "Running server on port " << port << endl;
-    std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
-    io_service.run();
-    server_loop_thread.join();
+  if (search != spreadsheets.end()) {
+    (*search).second->ChangeCellContents("A1", "new_val");
+    cout << (*search).second->GetFullStateString() << endl;
   }
-  catch (std::exception &e) {
-    std::cerr << "Exception: " << e.what() << "\n";
-  }
+
+
+//  try {
+//    if (argc != 2) {
+//      cerr << "Usage: server <port>\n";
+//      return 1;
+//    }
+//
+//    boost::asio::io_service io_service;
+//    int port = atoi(argv[1]);
+//
+//    Server spreadsheet_server(io_service, port);
+//
+//    cout << "Running server on port " << port << endl;
+//    std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
+//    io_service.run();
+//    server_loop_thread.join();
+//  }
+//  catch (std::exception &e) {
+//    std::cerr << "Exception: " << e.what() << "\n";
+//  }
 
   return 0;
 }
