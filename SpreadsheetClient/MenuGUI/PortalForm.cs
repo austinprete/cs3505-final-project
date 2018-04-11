@@ -62,13 +62,12 @@ namespace MenuGUI
             {
                 //LoginButton.BackColor = Color.FromArgb(105, 105, 105);
                 //Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                LoginButton.Enabled = false;
+                ServerNameTextBox.Text = "Server Name";
+                ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
                 this.Hide();
                 MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
                 mf.ShowDialog();
                 this.Show();
-                LoginButton.Enabled = true;
-
             }
         }
 
@@ -90,16 +89,27 @@ namespace MenuGUI
         {
             if (e.KeyCode == Keys.Enter)
             {
-                //LoginButton.BackColor = Color.FromArgb(50, 50, 50);
-                //Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                LoginButton.Enabled = false;
-                this.Hide();
-                MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
-                mf.ShowDialog();
-                this.Show();
-                LoginButton.Enabled = true;
+                if (ServerNameTextBox.Text.Length == 0)
+                {
+                    //LoginButton.BackColor = Color.FromArgb(105, 109, 192);
+                    ServerNameTextBox.Text = "Server Name";
+                    ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
+                }
+                else if (ServerNameTextBox.Text != "Server Name")
+                {
+                    //LoginButton.BackColor = Color.FromArgb(105, 105, 105);
+                    //Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                    ServerNameTextBox.Text = "Server Name";
+                    ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
+                    this.Hide();
+                    MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
+                    mf.ShowDialog();
+                    this.Show();
+                }
             }
         }
+
+
         /// <summary>
         /// begin connection with server
         /// </summary>
