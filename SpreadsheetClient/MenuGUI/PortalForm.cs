@@ -16,11 +16,12 @@ namespace MenuGUI
 {
     public partial class PortalForm : Form
     {
-        private string[] spreadsheet_list;
+        private List<string> spreadsheet_list;
         private SocketState server_socket;
         public PortalForm()
         {
             InitializeComponent();
+            spreadsheet_list = new List<string>();
         }
 
         private void PortalForm_Click(object sender, EventArgs e)
@@ -35,24 +36,35 @@ namespace MenuGUI
 
         private void LoginButton_Click(object sender, EventArgs e)
         {
-            if (ServerNameTextBox.Text.Length == 0)
+            //if (ServerNameTextBox.Text.Length == 0)
+            //{
+            //    //LoginButton.BackColor = Color.FromArgb(105, 109, 192);
+            //    ServerNameTextBox.Text = "Server Name";
+            //    ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
+            //}
+            //else if (ServerNameTextBox.Text != "Server Name")
+            //{
+            LoginButton.Enabled = false;
+            ServerNameTextBox.Enabled = false;
+            try
             {
-                //LoginButton.BackColor = Color.FromArgb(105, 109, 192);
-                ServerNameTextBox.Text = "Server Name";
-                ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
-            }
-            else if (ServerNameTextBox.Text != "Server Name")
-            {
-                //LoginButton.BackColor = Color.FromArgb(105, 105, 105);
                 Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
                 ServerNameTextBox.Text = "Server Name";
                 ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
-                firstContact(server_socket);
-               /* this.Hide();
-                MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
-                mf.ShowDialog();
-                this.Show();*/
             }
+            catch
+            {
+                MessageBox.Show("Unable to connect to server.");
+                LoginButton.Enabled = true;
+                ServerNameTextBox.Enabled = true;
+            }
+
+            //firstContact(server_socket);
+            /* this.Hide();
+             MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
+             mf.ShowDialog();
+             this.Show();*/
+            //}
         }
 
         private void LoginButton_MouseEnter(object sender, EventArgs e)
@@ -64,7 +76,7 @@ namespace MenuGUI
         {
             LoginButton.BackColor = Color.FromArgb(187, 187, 187);
         }
-       
+
         private void create_menu()
         {
             //this.Hide();
@@ -84,7 +96,7 @@ namespace MenuGUI
             server_socket.callMe = ProcessMessage;
             Networking.Send(server_socket, "register");
             Networking.GetData(server_socket);
-           // create_menu();
+            // create_menu();
         }
 
 
@@ -100,7 +112,8 @@ namespace MenuGUI
             {
                 //remove "connect_accepted"
                 data = data.Substring(17);
-                spreadsheet_list = data.Split('\n');
+                spreadsheet_list = data.Split('\n').ToList<string>();
+                spreadsheet_list.RemoveAt(spreadsheet_list.Count - 1);
                 create_menu();
                 //ListBox list_box = new ListBox();
                 //list_box.DataSource = data;

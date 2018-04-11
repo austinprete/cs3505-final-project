@@ -13,11 +13,11 @@ namespace MenuGUI
     public partial class MenuForm : Form
     {
         private SocketState ss;
-        string[] spreadsheet_names;
+        List<string> spreadsheet_names;
         private bool LoggedOut = false;
 
 
-        public MenuForm(string[] names, SocketState ss)
+        public MenuForm(List<string> names, SocketState ss)
         {
             spreadsheet_names = names;
             this.ss = ss;
