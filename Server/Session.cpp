@@ -54,7 +54,7 @@ void Session::ReadMessage()
 
           if ((boost::asio::error::eof == ec) ||
               (boost::asio::error::connection_reset == ec)) {
-            Shutdown(ec);
+//            Shutdown(ec);
             return;
           }
 
@@ -95,7 +95,7 @@ void Session::WriteOutboundMessage()
           if ((boost::asio::error::eof == ec) ||
               (boost::asio::error::connection_reset == ec)) {
 
-            Shutdown(ec);
+//            Shutdown(ec);
             return;
           }
         }

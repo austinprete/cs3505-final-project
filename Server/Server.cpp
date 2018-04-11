@@ -43,12 +43,12 @@ void Server::RunServerLoop()
 void Server::AcceptConnection()
 {
   acceptor.async_accept(
-      (*socket.get()),
+      (*socket),
       [this](boost::system::error_code ec) {
         if (!ec) {
           std::cout << "Client connected from " << socket->remote_endpoint().address().to_string() << std::endl;
 
-          shared_ptr<Session> session = std::make_shared<Session>(std::move((*socket.get())), current_session_id,
+          shared_ptr<Session> session = std::make_shared<Session>(std::move((*socket)), current_session_id,
                                                                   (&inbound_queue));
           session->Start();
 
