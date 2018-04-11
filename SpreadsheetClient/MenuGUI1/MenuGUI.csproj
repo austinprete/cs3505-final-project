@@ -83,6 +83,10 @@
       <Project>{6a7f7124-ac26-4cbf-97f8-69035e48d467}</Project>
       <Name>Network</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpreadsheetGUI\SpreadsheetGUI.csproj">
+      <Project>{ddd33a7e-16c5-4063-8db1-b3af6f396110}</Project>
+      <Name>SpreadsheetGUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
