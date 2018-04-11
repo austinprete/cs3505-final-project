@@ -41,13 +41,8 @@ int main(int argc, char *argv[])
 
 
   try {
-    if (argc != 2) {
-      cerr << "Usage: server <port>\n";
-      return 1;
-    }
-
     boost::asio::io_service io_service;
-    int port = atoi(argv[1]);
+    int port = 2112;
 
     Server spreadsheet_server(io_service, port);
 
