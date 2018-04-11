@@ -12,7 +12,7 @@ namespace MenuGUI
 {
     public partial class MenuForm : Form
     {
-        private SocketState ss;
+        private SocketState socket_state;
         List<string> spreadsheet_names;
         private bool LoggedOut = false;
 
@@ -20,7 +20,7 @@ namespace MenuGUI
         public MenuForm(List<string> names, SocketState ss)
         {
             spreadsheet_names = names;
-            this.ss = ss;
+            this.socket_state = ss;
             InitializeComponent();
             foreach (string n in names)
             {
@@ -67,7 +67,7 @@ namespace MenuGUI
         private void LoadButton_Click(object sender, EventArgs e)
         {
             string name = (string)SpreadsheetListBox.SelectedValue;
-            Networking.Send(ss, "load " + name);
+            Networking.Send(socket_state, "load " + name);
         }
 
         private void LogOutButton_Click(object sender, EventArgs e)

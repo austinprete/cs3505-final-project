@@ -36,14 +36,6 @@ namespace MenuGUI
 
         private void LoginButton_Click(object sender, EventArgs e)
         {
-            //if (ServerNameTextBox.Text.Length == 0)
-            //{
-            //    //LoginButton.BackColor = Color.FromArgb(105, 109, 192);
-            //    ServerNameTextBox.Text = "Server Name";
-            //    ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
-            //}
-            //else if (ServerNameTextBox.Text != "Server Name")
-            //{
             LoginButton.Enabled = false;
             ServerNameTextBox.Enabled = false;
             try
@@ -59,12 +51,6 @@ namespace MenuGUI
                 ServerNameTextBox.Enabled = true;
             }
 
-            //firstContact(server_socket);
-            /* this.Hide();
-             MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
-             mf.ShowDialog();
-             this.Show();*/
-            //}
         }
 
         private void LoginButton_MouseEnter(object sender, EventArgs e)
@@ -115,8 +101,6 @@ namespace MenuGUI
                 spreadsheet_list = data.Split('\n').ToList<string>();
                 spreadsheet_list.RemoveAt(spreadsheet_list.Count - 1);
                 create_menu();
-                //ListBox list_box = new ListBox();
-                //list_box.DataSource = data;
             }
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
