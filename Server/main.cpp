@@ -19,44 +19,46 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  const string spreadsheets_dir = "spreadsheets";
-
-  if (boost::filesystem::exists(spreadsheets_dir)) {
-
-  } else {
-    boost::filesystem::create_directory(spreadsheets_dir);
-    Spreadsheet::CreateSpreadsheetsMapXmlFile(spreadsheets_dir);
-  }
-
-  auto spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml(spreadsheets_dir);
-
-  auto search = spreadsheets.find(0);
-
-  if (search != spreadsheets.end()) {
-    (*search).second->ChangeCellContents("A1", "new_val");
-    cout << (*search).second->GetFullStateString() << endl;
-  }
-
-
-//  try {
-//    if (argc != 2) {
-//      cerr << "Usage: server <port>\n";
-//      return 1;
-//    }
+//  const string spreadsheets_dir = "spreadsheets";
 //
-//    boost::asio::io_service io_service;
-//    int port = atoi(argv[1]);
+//  if (boost::filesystem::exists(spreadsheets_dir)) {
 //
-//    Server spreadsheet_server(io_service, port);
-//
-//    cout << "Running server on port " << port << endl;
-//    std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
-//    io_service.run();
-//    server_loop_thread.join();
+//  } else {
+//    boost::filesystem::create_directory(spreadsheets_dir);
+//    Spreadsheet::CreateSpreadsheetsMapXmlFile(spreadsheets_dir);
 //  }
-//  catch (std::exception &e) {
-//    std::cerr << "Exception: " << e.what() << "\n";
+//
+//  auto spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml(spreadsheets_dir);
+//
+//  auto search = spreadsheets.find(0);
+//
+//  if (search != spreadsheets.end()) {
+//    (*search).second->ChangeCellContents("A3", "new_val");
+//    cout << (*search).second->GetFullStateString() << endl;
+//
+//    (*search).second->WriteSpreadsheetToFile("output.sprd");
 //  }
+
+
+  try {
+    if (argc != 2) {
+      cerr << "Usage: server <port>\n";
+      return 1;
+    }
+
+    boost::asio::io_service io_service;
+    int port = atoi(argv[1]);
+
+    Server spreadsheet_server(io_service, port);
+
+    cout << "Running server on port " << port << endl;
+    std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
+    io_service.run();
+    server_loop_thread.join();
+  }
+  catch (std::exception &e) {
+    std::cerr << "Exception: " << e.what() << "\n";
+  }
 
   return 0;
 }

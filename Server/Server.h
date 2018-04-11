@@ -30,7 +30,7 @@ private:
   std::map<long, std::weak_ptr<Session> > clients;
 
   boost::asio::ip::tcp::acceptor acceptor;
-  boost::asio::ip::tcp::socket socket;
+  std::shared_ptr<boost::asio::ip::tcp::socket> socket;
 
   MessageQueue inbound_queue;
 

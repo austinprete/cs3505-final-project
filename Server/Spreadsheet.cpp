@@ -32,9 +32,13 @@ void Spreadsheet::WriteSpreadsheetToFile(std::string path) const
 
     xml_node<> *name_node = doc.allocate_node(node_element, "name", cell.first.c_str());
 
-    string joined_contents = boost::algorithm::join(cell.second, "\n");
+    string terminator_string;
+    terminator_string.push_back((char) 2);
 
-    xml_node<> *contents_node = doc.allocate_node(node_element, "contents", joined_contents.c_str());
+    auto *joined_contents_string = new string();
+    joined_contents_string->append(boost::algorithm::join(cell.second, terminator_string));
+
+    xml_node<> *contents_node = doc.allocate_node(node_element, "contents", joined_contents_string->c_str());
 
     cell_node->append_node(name_node);
     cell_node->append_node(contents_node);
@@ -77,7 +81,7 @@ std::string Spreadsheet::GetFullStateString() const
     string name = cell.first;
     string contents = cell.second.back();
 
-    full_state_stream << name << ":" << contents << "\n";
+    full_state_stream << name << ":" << contents << '\n';
   }
 
   return full_state_stream.str();
@@ -118,7 +122,7 @@ Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(string path)
 
     vector<string> contents_history;
 
-    split(contents_history, contents, is_from_range('\n', '\n'));
+    split(contents_history, contents, is_from_range(2, 2));
 
     sheet->spreadsheet_map.insert(std::make_pair(name, contents_history));
 

@@ -28,7 +28,7 @@ public:
   static Spreadsheet *LoadSpreadsheetFromFile(std::string path);
 
 private:
-  std::map<std::string, std::vector<std::string> > spreadsheet_map;
+  std::map<std::string, std::vector<std::string>> spreadsheet_map;
   int id;
 };
 
