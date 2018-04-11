@@ -16,7 +16,7 @@ namespace MenuGUI
 {
     public partial class PortalForm : Form
     {
-
+        private string[] spreadsheet_list;
         private SocketState server_socket;
         public PortalForm()
         {
@@ -64,7 +64,7 @@ namespace MenuGUI
                 Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
                 LoginButton.Enabled = false;
                 this.Hide();
-                MenuForm mf = new MenuForm(server_socket);
+                MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
                 mf.Show();
             }
         }
@@ -91,7 +91,7 @@ namespace MenuGUI
                 Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
                 LoginButton.Enabled = false;
                 this.Hide();
-                MenuForm mf = new MenuForm(server_socket);
+                MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
                 mf.Show();
             }
         }
@@ -120,9 +120,9 @@ namespace MenuGUI
             {
                 //remove "connect_accepted"
                 data = data.Substring(17);
-                string[] spreadsheet_list = data.Split('\n');
-                ListBox list_box = new ListBox();
-                list_box.DataSource = data;
+                spreadsheet_list = data.Split('\n');
+                //ListBox list_box = new ListBox();
+                //list_box.DataSource = data;
             }
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
