@@ -16,20 +16,19 @@ namespace MenuGUI
         string[] spreadsheet_names;
         public MenuForm(string[] names, SocketState ss)
         {
-            spreadsheet_names = names;
-            this.ss = ss;
+            //spreadsheet_names = names;
+            //this.ss = ss;
             InitializeComponent();
-            foreach(string n in names)
-            {
-                SpreadsheetListBox.Items.Add(n);
-            }
-            SpreadsheetListBox.DataSource = spreadsheet_names;
+            //foreach(string n in names)
+            //{
+            //    SpreadsheetListBox.Items.Add(n);
+            //}
+            //SpreadsheetListBox.DataSource = spreadsheet_names;
         }
 
         private void MenuForm_Load(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(710, 490);
-            //ServerNameLabel.Text
         }
 
         private void LogOutButton_MouseEnter(object sender, EventArgs e)
@@ -66,6 +65,17 @@ namespace MenuGUI
         {
             string name = (string)SpreadsheetListBox.SelectedValue;
             Networking.Send(ss, "load " + name);
+        }
+
+        private void LogOutButton_Click(object sender, EventArgs e)
+        {
+            Close();
+            //Hide();
+        }
+
+        private void MenuForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+           // System.Windows.Forms.Application.Exit();
         }
     }
 }
