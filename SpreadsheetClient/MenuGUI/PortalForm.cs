@@ -61,11 +61,14 @@ namespace MenuGUI
             else if (ServerNameTextBox.Text != "Server Name")
             {
                 //LoginButton.BackColor = Color.FromArgb(105, 105, 105);
-                Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                //Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
                 LoginButton.Enabled = false;
                 this.Hide();
                 MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
-                mf.Show();
+                mf.ShowDialog();
+                this.Show();
+                LoginButton.Enabled = true;
+
             }
         }
 
@@ -88,11 +91,13 @@ namespace MenuGUI
             if (e.KeyCode == Keys.Enter)
             {
                 //LoginButton.BackColor = Color.FromArgb(50, 50, 50);
-                Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                //Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
                 LoginButton.Enabled = false;
                 this.Hide();
                 MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
-                mf.Show();
+                mf.ShowDialog();
+                this.Show();
+                LoginButton.Enabled = true;
             }
         }
         /// <summary>
