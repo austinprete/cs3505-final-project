@@ -61,7 +61,7 @@ namespace MenuGUI
             else if (ServerNameTextBox.Text != "Server Name")
             {
                 //LoginButton.BackColor = Color.FromArgb(105, 105, 105);
-                //Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
                 ServerNameTextBox.Text = "Server Name";
                 ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
                 this.Hide();
@@ -98,7 +98,7 @@ namespace MenuGUI
                 else if (ServerNameTextBox.Text != "Server Name")
                 {
                     //LoginButton.BackColor = Color.FromArgb(105, 105, 105);
-                    //Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                    Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
                     ServerNameTextBox.Text = "Server Name";
                     ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
                     this.Hide();
@@ -136,8 +136,8 @@ namespace MenuGUI
                 //remove "connect_accepted"
                 data = data.Substring(17);
                 spreadsheet_list = data.Split('\n');
-                //ListBox list_box = new ListBox();
-                //list_box.DataSource = data;
+                ListBox list_box = new ListBox();
+                list_box.DataSource = data;
             }
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);

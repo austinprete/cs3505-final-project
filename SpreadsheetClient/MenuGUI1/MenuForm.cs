@@ -19,14 +19,14 @@ namespace MenuGUI
 
         public MenuForm(string[] names, SocketState ss)
         {
-            //spreadsheet_names = names;
-            //this.ss = ss;
+            spreadsheet_names = names;
+            this.ss = ss;
             InitializeComponent();
-            //foreach(string n in names)
-            //{
-            //    SpreadsheetListBox.Items.Add(n);
-            //}
-            //SpreadsheetListBox.DataSource = spreadsheet_names;
+            /*foreach (string n in names)
+            {
+                SpreadsheetListBox.Items.Add(n);
+            }*/
+            SpreadsheetListBox.DataSource = spreadsheet_names;
         }
 
         private void MenuForm_Load(object sender, EventArgs e)
