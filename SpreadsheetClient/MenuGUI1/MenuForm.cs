@@ -14,6 +14,9 @@ namespace MenuGUI
     {
         private SocketState ss;
         string[] spreadsheet_names;
+        private bool LoggedOut = false;
+
+
         public MenuForm(string[] names, SocketState ss)
         {
             //spreadsheet_names = names;
@@ -69,13 +72,14 @@ namespace MenuGUI
 
         private void LogOutButton_Click(object sender, EventArgs e)
         {
-            Close();
-            //Hide();
+            LoggedOut = true;
+            this.Close();
         }
 
         private void MenuForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-           // System.Windows.Forms.Application.Exit();
+            if (!LoggedOut)
+                Application.Exit();
         }
     }
 }
