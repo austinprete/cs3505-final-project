@@ -22,10 +22,10 @@ namespace MenuGUI
             spreadsheet_names = names;
             this.ss = ss;
             InitializeComponent();
-            /*foreach (string n in names)
+            foreach (string n in names)
             {
                 SpreadsheetListBox.Items.Add(n);
-            }*/
+            }
             SpreadsheetListBox.DataSource = spreadsheet_names;
         }
 
