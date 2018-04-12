@@ -111,6 +111,6 @@ bool Session::IsOpen() const
 void Session::Shutdown(boost::system::error_code ec)
 {
   cout << "Client at address " << GetAddress() << " disconnected" << endl;
-  socket.shutdown(boost::asio::ip::tcp::socket::shutdown_receive, ec);
+  socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
   socket.close();
 }
