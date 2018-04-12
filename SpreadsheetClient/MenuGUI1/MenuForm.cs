@@ -80,7 +80,8 @@ namespace MenuGUI
         {
             if (!LoggedOut)
             {
-                socket_state.theSocket.Disconnect(true);
+                if(socket_state.theSocket.Connected)
+                    socket_state.theSocket.Disconnect(true);
                 Application.Exit();
             }
                 
