@@ -28,10 +28,10 @@ void Session::AddMessageToOutboundQueue(std::string message)
   WriteOutboundMessage();
 }
 
-//const string Session::GetAddress() const
-//{
-//  return this->socket.remote_endpoint().address().to_string();
-//}
+const string Session::GetAddress() const
+{
+  return this->socket.remote_endpoint().address().to_string();
+}
 
 void Session::Start()
 {
