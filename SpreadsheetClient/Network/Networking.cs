@@ -7,7 +7,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using static Network.Networking;
 
 namespace Network {
@@ -100,9 +99,7 @@ namespace Network {
 
             } catch (Exception e) {
                 System.Diagnostics.Debug.WriteLine("Unable to create socket. Error occured: " + e);
-                //throw new ArgumentException("Invalid address");
-                MessageBox.Show("Unable to create socket. Error occured: " + e.GetType());
-                socket = null;
+                throw new ArgumentException("Invalid address");
             }
         }
 
@@ -120,9 +117,6 @@ namespace Network {
             IPAddress ipAddress;
 
             MakeSocket(hostName, out socket, out ipAddress);
-            if (socket == null) {
-                return socket;
-            }
 
             SocketState state = new SocketState(socket, -1);
             state.callMe = callMe;
