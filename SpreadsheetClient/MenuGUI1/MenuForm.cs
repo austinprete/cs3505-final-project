@@ -78,10 +78,9 @@ namespace MenuGUI
 
         private void MenuForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (socket_state.theSocket.Connected)
+            if (!LoggedOut)
             {
                 socket_state.theSocket.Disconnect(true);
-                socket_state.theSocket.Close();
                 Application.Exit();
             }
                 
