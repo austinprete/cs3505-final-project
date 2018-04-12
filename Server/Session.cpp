@@ -28,10 +28,10 @@ void Session::AddMessageToOutboundQueue(std::string message)
   WriteOutboundMessage();
 }
 
-const string Session::GetAddress() const
-{
-  return this->socket.remote_endpoint().address().to_string();
-}
+//const string Session::GetAddress() const
+//{
+//  return this->socket.remote_endpoint().address().to_string();
+//}
 
 void Session::Start()
 {
@@ -110,7 +110,8 @@ bool Session::IsOpen() const
 
 void Session::Shutdown(boost::system::error_code ec)
 {
-  cout << "Client at address " << GetAddress() << " disconnected" << endl;
+//  cout << "Client at address " << GetAddress() << " disconnected" << endl;
+  cout << "Client disconnected" << endl;
   socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
   socket.close();
 }
