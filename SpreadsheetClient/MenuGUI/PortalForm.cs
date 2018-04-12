@@ -69,6 +69,7 @@ namespace MenuGUI
             MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
             mf.ShowDialog();
             this.Show();
+
         }
 
         /// <summary>
