@@ -80,8 +80,13 @@ namespace MenuGUI
         {
             if (socket_state.theSocket.Connected)
             {
+<<<<<<< HEAD
                 socket_state.theSocket.Disconnect(true);
                 socket_state.theSocket.Close();
+=======
+                if(socket_state.theSocket.Connected)
+                    socket_state.theSocket.Disconnect(true);
+>>>>>>> bb9234d6ad08f2f413be5a7f183f1a212f7a83e8
                 Application.Exit();
             }
                 
