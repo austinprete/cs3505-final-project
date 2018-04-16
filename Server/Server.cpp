@@ -76,17 +76,17 @@ void Server::ProcessMessage(long client_id, string &message)
   string message_type = tokenized_message.at(0);
 
   if (message_type == "register") {
-    RegisterClient(client_id);
     cout << "Running RegisterClient()" << endl;
+    RegisterClient(client_id);
   } else if (message_type == "disconnect") {
-    DisconnectClient(client_id);
     cout << "Running DisconnectClient()" << endl;
+    DisconnectClient(client_id);
   } else if (message_type == "load") {
-    LoadSpreadsheet(client_id, tokenized_message.at(1));
     cout << "Running LoadSpreadsheet()" << endl;
+    LoadSpreadsheet(client_id, tokenized_message.at(1));
   } else if (message_type == "ping") {
-    RespondToPing(client_id);
     cout << "Running RespondToPing()" << endl;
+    RespondToPing(client_id);
   } else if (message_type == "ping_response") {
     cout << "Running ping_response()" << endl;
   } else if (message_type == "edit") {
