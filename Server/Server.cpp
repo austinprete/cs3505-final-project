@@ -11,6 +11,7 @@
 
 #include "Session.h"
 #include "Server.h"
+#include "Spreadsheet.h"
 
 using boost::asio::ip::tcp;
 using namespace std;
@@ -21,6 +22,9 @@ Server::Server(boost::asio::io_service &io_service, int port)
     : acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
       socket(std::make_shared<boost::asio::ip::tcp::socket>(io_service))
 {
+  spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml("spreadsheets/");
+
+
   AcceptConnection();
 }
 
@@ -147,6 +151,15 @@ void Server::SendMessageToClient(long client_id, string message) const
 void Server::RegisterClient(long client_id)
 {
   // temporarily hardcoding example message
-  string accept_message = "connect_accepted sales\nmarketing ideas\nanother_spreadsheet\n";
+
+  string accept_message = "";
+
+  for (auto spreadsheet : spreadsheets) {
+    accept_message.append(spreadsheet.first);
+    accept_message.append("\n");
+  }
+
   SendMessageToClient(client_id, accept_message);
 }
+
+//void Server::Load

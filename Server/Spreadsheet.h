@@ -23,7 +23,7 @@ public:
 
   static void CreateSpreadsheetsMapXmlFile(const std::string &folder);
 
-  static std::map<int, Spreadsheet *> LoadSpreadsheetsMapFromXml(const std::string &folder);
+  static std::map<std::string, Spreadsheet *> LoadSpreadsheetsMapFromXml(const std::string &folder);
 
   static Spreadsheet *LoadSpreadsheetFromFile(std::string path);
 

@@ -133,9 +133,9 @@ Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(string path)
   return sheet;
 }
 
-std::map<int, Spreadsheet *> Spreadsheet::LoadSpreadsheetsMapFromXml(const std::string &folder)
+map<string, Spreadsheet *> Spreadsheet::LoadSpreadsheetsMapFromXml(const std::string &folder)
 {
-  auto *spreadsheets = new map<int, Spreadsheet *>();
+  auto *spreadsheets = new map<string, Spreadsheet *>();
 
   string path = folder + "/spreadsheets_map.xml";
 
@@ -147,12 +147,12 @@ std::map<int, Spreadsheet *> Spreadsheet::LoadSpreadsheetsMapFromXml(const std::
 
   while (current_sheet) {
 
-    int id = stoi(current_sheet->first_node("id")->value());
+    string name = current_sheet->first_node("name")->value();
     string file = current_sheet->first_node("file")->value();
 
     Spreadsheet *sheet = LoadSpreadsheetFromFile(folder + "/" + file);
 
-    spreadsheets->insert(std::make_pair(id, sheet));
+    spreadsheets->insert(std::make_pair(name, sheet));
 
     current_sheet = current_sheet->next_sibling();
   }

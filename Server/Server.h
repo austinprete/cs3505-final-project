@@ -14,6 +14,7 @@
 
 #include "MessageQueue.h"
 #include "Session.h"
+#include "Spreadsheet.h"
 
 class Server
 {
@@ -28,6 +29,7 @@ private:
   static long current_session_id;
 
   std::map<long, std::weak_ptr<Session> > clients;
+  std::map<std::string, Spreadsheet *> spreadsheets;
 
   boost::asio::ip::tcp::acceptor acceptor;
   std::shared_ptr<boost::asio::ip::tcp::socket> socket;
