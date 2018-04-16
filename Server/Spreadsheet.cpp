@@ -105,6 +105,8 @@ void Spreadsheet::CreateSpreadsheetsMapXmlFile(const string &folder)
   outfile.open(path, ios::out | ios::trunc);
 
   outfile << doc;
+
+  outfile.close();
 }
 
 Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(string path)
