@@ -19,15 +19,15 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-//  const string spreadsheets_dir = "spreadsheets";
-//
-//  if (boost::filesystem::exists(spreadsheets_dir)) {
-//
-//  } else {
-//    boost::filesystem::create_directory(spreadsheets_dir);
-//    Spreadsheet::CreateSpreadsheetsMapXmlFile(spreadsheets_dir);
-//  }
-//
+  const string spreadsheets_dir = "spreadsheets";
+
+  if (boost::filesystem::exists(spreadsheets_dir)) {
+
+  } else {
+    boost::filesystem::create_directory(spreadsheets_dir);
+    Spreadsheet::CreateSpreadsheetsMapXmlFile(spreadsheets_dir);
+  }
+
 //  auto spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml(spreadsheets_dir);
 //
 //  auto search = spreadsheets.find(0);

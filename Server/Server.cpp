@@ -24,15 +24,6 @@ Server::Server(boost::asio::io_service &io_service, int port)
     : acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
       socket(std::make_shared<boost::asio::ip::tcp::socket>(io_service))
 {
-  string spreadsheets_dir = "spreadsheets";
-
-  if (boost::filesystem::exists(spreadsheets_dir)) {
-
-  } else {
-    boost::filesystem::create_directory(spreadsheets_dir);
-    Spreadsheet::CreateSpreadsheetsMapXmlFile(spreadsheets_dir);
-  }
-
   spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml("spreadsheets");
 
 
