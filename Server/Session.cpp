@@ -114,3 +114,8 @@ void Session::Shutdown(boost::system::error_code ec)
   socket.get()->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
   socket.get()->close();
 }
+
+void Session::Close()
+{
+  Shutdown(boost::system::errc::make_error_code(static_cast<boost::system::errc::errc_t>(0)));
+}

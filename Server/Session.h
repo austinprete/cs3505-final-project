@@ -26,6 +26,8 @@ public:
 
   void Start();
 
+  void Close();
+
 private:
   std::shared_ptr<boost::asio::ip::tcp::socket> socket;
   long id;

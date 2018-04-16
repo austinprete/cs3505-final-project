@@ -49,6 +49,8 @@ private:
 
   void RegisterClient(long client_id);
 
+  void DisconnectClient(long client_id);
+
   void LoadSpreadsheet(long client_id, std::string spreadsheet_name);
 };
 

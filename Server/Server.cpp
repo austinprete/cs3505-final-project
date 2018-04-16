@@ -78,7 +78,7 @@ void Server::ProcessMessage(long client_id, string &message)
     RegisterClient(client_id);
     cout << "Running register()" << endl;
   } else if (message_type == "disconnect") {
-    cout << "Running disconnect()" << endl;
+    DisconnectClient(client_id);
   } else if (message_type == "load") {
     LoadSpreadsheet(client_id, tokenized_message.at(1));
   } else if (message_type == "ping") {
@@ -153,7 +153,7 @@ void Server::RegisterClient(long client_id)
 {
   // temporarily hardcoding example message
 
-  string accept_message = "";
+  string accept_message;
 
   for (auto spreadsheet : spreadsheets) {
     accept_message.append(spreadsheet.first);
@@ -165,7 +165,7 @@ void Server::RegisterClient(long client_id)
 
 void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
 {
-  string response = "";
+  string response;
 
   auto search = spreadsheets.find(spreadsheet_name);
 
@@ -179,4 +179,29 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
   }
 
   SendMessageToClient(client_id, response);
+}
+
+void Server::DisconnectClient(long client_id)
+{
+  auto open_sheet_search = open_spreadsheets_map.find(client_id);
+
+  if (open_sheet_search != open_spreadsheets_map.end()) {
+    open_sheet_search->second->RemoveSubscriber(client_id);
+  }
+
+  open_spreadsheets_map.erase(client_id);
+
+  auto session_search = clients.find(client_id);
+
+  if (session_search != clients.end()) {
+    auto session = session_search->second;
+
+    if (auto spt = session.lock()) {
+      if ((*spt).IsOpen()) {
+        (*spt).Close();
+      }
+    }
+  }
+
+  clients.erase(client_id);
 }
