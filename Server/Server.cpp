@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
+#include <map>
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -79,7 +80,7 @@ void Server::ProcessMessage(long client_id, string &message)
   } else if (message_type == "disconnect") {
     cout << "Running disconnect()" << endl;
   } else if (message_type == "load") {
-    cout << "Running load()" << endl;
+    LoadSpreadsheet(client_id, tokenized_message.at(1));
   } else if (message_type == "ping") {
     cout << "Running ping()" << endl;
   } else if (message_type == "ping_response") {
@@ -162,4 +163,20 @@ void Server::RegisterClient(long client_id)
   SendMessageToClient(client_id, accept_message);
 }
 
-//void Server::Load
+void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
+{
+  string response = "";
+
+  auto search = spreadsheets.find(spreadsheet_name);
+
+  if (search != spreadsheets.end()) {
+    Spreadsheet *sheet = search->second;
+
+    open_spreadsheets_map.insert(std::make_pair(client_id, sheet));
+    sheet->AddSubscriber(client_id);
+
+    response = sheet->GetFullStateString();
+  }
+
+  SendMessageToClient(client_id, response);
+}

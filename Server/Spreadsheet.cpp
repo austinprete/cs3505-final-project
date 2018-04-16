@@ -77,6 +77,8 @@ std::string Spreadsheet::GetFullStateString() const
 {
   ostringstream full_state_stream;
 
+  full_state_stream << "full_state ";
+
   for (const auto &cell : spreadsheet_map) {
     string name = cell.first;
     string contents = cell.second.back();
@@ -158,4 +160,19 @@ map<string, Spreadsheet *> Spreadsheet::LoadSpreadsheetsMapFromXml(const std::st
   }
 
   return (*spreadsheets);
+}
+
+void Spreadsheet::AddSubscriber(int client_id)
+{
+  current_subscribers.insert(client_id);
+}
+
+void Spreadsheet::RemoveSubscriber(int client_id)
+{
+  current_subscribers.erase(client_id);
+}
+
+std::set<int> Spreadsheet::GetSubscribers() const
+{
+  return current_subscribers;
 }

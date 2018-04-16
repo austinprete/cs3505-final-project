@@ -30,6 +30,7 @@ private:
 
   std::map<long, std::weak_ptr<Session> > clients;
   std::map<std::string, Spreadsheet *> spreadsheets;
+  std::map<long, Spreadsheet *> open_spreadsheets_map;
 
   boost::asio::ip::tcp::acceptor acceptor;
   std::shared_ptr<boost::asio::ip::tcp::socket> socket;
@@ -47,6 +48,8 @@ private:
   void SendMessageToClient(long client_id, std::string message) const;
 
   void RegisterClient(long client_id);
+
+  void LoadSpreadsheet(long client_id, std::string spreadsheet_name);
 };
 
 #endif //SERVER_H
