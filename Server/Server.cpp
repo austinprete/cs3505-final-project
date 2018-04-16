@@ -49,7 +49,7 @@ void Server::RunServerLoop()
 void Server::AcceptConnection()
 {
   acceptor.async_accept(
-      (*socket.get()),
+      (*socket),
       [this](boost::system::error_code ec) {
         if (!ec) {
           std::cout << "Client connected from " << socket->remote_endpoint().address().to_string() << std::endl;
@@ -58,9 +58,11 @@ void Server::AcceptConnection()
                                                                   (&inbound_queue));
           session->Start();
 
+          std::lock_guard<std::mutex> guard(clients_mutex);
           clients.emplace(std::make_pair(current_session_id, session));
 
           current_session_id++;
+
         }
 
         AcceptConnection();
@@ -90,7 +92,14 @@ void Server::ProcessMessage(long client_id, string &message)
   } else if (message_type == "ping_response") {
     cout << "Running ping_response()" << endl;
   } else if (message_type == "edit") {
-    cout << "Running edit()" << endl;
+    cout << "Running EditSpreadsheet()" << endl;
+    string edit_info = boost::replace_all_copy(message, "edit ", "");
+    vector<string> tokenized_edit_info;
+    split(tokenized_edit_info, edit_info, boost::is_any_of(":"), boost::token_compress_on);
+
+    if (tokenized_edit_info.size() == 2) {
+      EditSpreadsheet(client_id, tokenized_edit_info.at(0), tokenized_edit_info.at(1));
+    }
   } else if (message_type == "undo") {
     cout << "Running undo()" << endl;
   } else if (message_type == "revert") {
@@ -207,10 +216,39 @@ void Server::DisconnectClient(long client_id)
     }
   }
 
+  std::lock_guard<std::mutex> guard(clients_mutex);
   clients.erase(client_id);
 }
 
 void Server::RespondToPing(long client_id) const
 {
   SendMessageToClient(client_id, "ping_response ");
+}
+
+void Server::EditSpreadsheet(long client_id, string cell_id, string cell_contents)
+{
+  auto spreadsheet_search = open_spreadsheets_map.find(client_id);
+
+  if (spreadsheet_search != open_spreadsheets_map.end()) {
+    auto spreadsheet = spreadsheet_search->second;
+
+    spreadsheet->ChangeCellContents(cell_id, cell_contents);
+
+    SendMessageToAllSpreadsheetSubscribers(spreadsheet->GetName(), "change " + cell_id + ":" + cell_contents);
+  }
+}
+
+void Server::SendMessageToAllSpreadsheetSubscribers(std::string sheet_name, std::string message) const
+{
+  auto spreadsheet_search = spreadsheets.find(sheet_name);
+
+  if (spreadsheet_search != spreadsheets.end()) {
+    auto spreadsheet = spreadsheet_search->second;
+
+    set<int> subscribing_clients = spreadsheet->GetSubscribers();
+
+    for (auto client_id : subscribing_clients) {
+      SendMessageToClient(client_id, message);
+    }
+  }
 }

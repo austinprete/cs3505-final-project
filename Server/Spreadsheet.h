@@ -14,7 +14,7 @@ class Spreadsheet
 {
 
 public:
-  Spreadsheet();
+  Spreadsheet(std::string name, std::string file_path);
 
   void AddSubscriber(int client_id);
 
@@ -26,18 +26,22 @@ public:
 
   std::string GetFullStateString() const;
 
-  void WriteSpreadsheetToFile(std::string path) const;
+  std::string GetName() const;
+
+  void WriteSpreadsheetToFile() const;
 
   static void CreateSpreadsheetsMapXmlFile(const std::string &folder);
 
   static std::map<std::string, Spreadsheet *> LoadSpreadsheetsMapFromXml(const std::string &folder);
 
-  static Spreadsheet *LoadSpreadsheetFromFile(std::string path);
+  static Spreadsheet *LoadSpreadsheetFromFile(std::string name, std::string path);
 
 private:
   std::map<std::string, std::vector<std::string>> spreadsheet_map;
-  int id;
   std::set<int> current_subscribers;
+
+  std::string name;
+  std::string file_path;
 };
 
 

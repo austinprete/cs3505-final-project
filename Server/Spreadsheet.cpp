@@ -18,10 +18,10 @@ using namespace std;
 using namespace rapidxml;
 using namespace boost;
 
-Spreadsheet::Spreadsheet() : spreadsheet_map()
+Spreadsheet::Spreadsheet(std::string name, std::string file_path) : spreadsheet_map(), name(name), file_path(file_path)
 {}
 
-void Spreadsheet::WriteSpreadsheetToFile(std::string path) const
+void Spreadsheet::WriteSpreadsheetToFile() const
 {
   xml_document<> doc;
   xml_node<> *root_node = doc.allocate_node(node_element, "spreadsheet");
@@ -47,13 +47,15 @@ void Spreadsheet::WriteSpreadsheetToFile(std::string path) const
   }
 
   ofstream outfile;
-  outfile.open(path, ios::out | ios::trunc);
+  outfile.open(file_path, ios::out | ios::trunc);
 
   outfile << doc;
 }
 
 void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_contents)
 {
+  cout << "Changing cell contents of cell " << cell_name << " to: " << new_contents << endl;
+
   boost::to_upper(cell_name);
 
   regex cell_name_pattern("^[A-Z]{1}[1-9]{1}[0-9]{0,1}$");
@@ -71,6 +73,8 @@ void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_cont
     contents_history.push_back(new_contents);
     spreadsheet_map.insert(std::make_pair(cell_name, contents_history));
   }
+
+  WriteSpreadsheetToFile();
 }
 
 std::string Spreadsheet::GetFullStateString() const
@@ -105,13 +109,13 @@ void Spreadsheet::CreateSpreadsheetsMapXmlFile(const string &folder)
   outfile.close();
 }
 
-Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(string path)
+Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(std::string name, std::string path)
 {
   rapidxml::file<> xmlFile(path.c_str());
   xml_document<> doc;
   doc.parse<0>(xmlFile.data());
 
-  Spreadsheet *sheet = new Spreadsheet();
+  Spreadsheet *sheet = new Spreadsheet(name, path);
 
   xml_node<> *current_cell = doc.first_node("spreadsheet")->first_node("cell");
 
@@ -150,7 +154,9 @@ map<string, Spreadsheet *> Spreadsheet::LoadSpreadsheetsMapFromXml(const std::st
     string name = current_sheet->first_node("name")->value();
     string file = current_sheet->first_node("file")->value();
 
-    Spreadsheet *sheet = LoadSpreadsheetFromFile(folder + "/" + file);
+    string file_path = folder + "/" + file;
+
+    Spreadsheet *sheet = LoadSpreadsheetFromFile(name, file_path);
 
     spreadsheets->insert(std::make_pair(name, sheet));
 
@@ -173,4 +179,9 @@ void Spreadsheet::RemoveSubscriber(int client_id)
 std::set<int> Spreadsheet::GetSubscribers() const
 {
   return current_subscribers;
+}
+
+string Spreadsheet::GetName() const
+{
+  return name;
 }
