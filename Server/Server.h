@@ -52,6 +52,8 @@ private:
   void DisconnectClient(long client_id);
 
   void LoadSpreadsheet(long client_id, std::string spreadsheet_name);
+
+  void RespondToPing(long client_id) const;
 };
 
 #endif //SERVER_H

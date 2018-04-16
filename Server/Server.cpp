@@ -76,13 +76,16 @@ void Server::ProcessMessage(long client_id, string &message)
 
   if (message_type == "register") {
     RegisterClient(client_id);
-    cout << "Running register()" << endl;
+    cout << "Running RegisterClient()" << endl;
   } else if (message_type == "disconnect") {
     DisconnectClient(client_id);
+    cout << "Running DisconnectClient()" << endl;
   } else if (message_type == "load") {
     LoadSpreadsheet(client_id, tokenized_message.at(1));
+    cout << "Running LoadSpreadsheet()" << endl;
   } else if (message_type == "ping") {
-    cout << "Running ping()" << endl;
+    RespondToPing(client_id);
+    cout << "Running RespondToPing()" << endl;
   } else if (message_type == "ping_response") {
     cout << "Running ping_response()" << endl;
   } else if (message_type == "edit") {
@@ -204,4 +207,9 @@ void Server::DisconnectClient(long client_id)
   }
 
   clients.erase(client_id);
+}
+
+void Server::RespondToPing(long client_id) const
+{
+  SendMessageToClient(client_id, "ping_response ");
 }
