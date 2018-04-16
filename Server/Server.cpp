@@ -9,6 +9,7 @@
 #include <map>
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 
 #include "Session.h"
 #include "Server.h"
@@ -23,7 +24,16 @@ Server::Server(boost::asio::io_service &io_service, int port)
     : acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
       socket(std::make_shared<boost::asio::ip::tcp::socket>(io_service))
 {
-  spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml("spreadsheets/");
+  string spreadsheets_dir = "spreadsheets";
+
+  if (boost::filesystem::exists(spreadsheets_dir)) {
+
+  } else {
+    boost::filesystem::create_directory(spreadsheets_dir);
+    Spreadsheet::CreateSpreadsheetsMapXmlFile(spreadsheets_dir);
+  }
+
+  spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml("spreadsheets");
 
 
   AcceptConnection();
