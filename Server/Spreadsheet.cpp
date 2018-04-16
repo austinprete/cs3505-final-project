@@ -97,10 +97,6 @@ void Spreadsheet::CreateSpreadsheetsMapXmlFile(const string &folder)
   xml_node<> *root_node = doc.allocate_node(node_element, "spreadsheets");
   doc.append_node(root_node);
 
-  xml_node<> *id_node = doc.allocate_node(node_element, "current_id", "0");
-
-  root_node->append_node(id_node);
-
   ofstream outfile;
   outfile.open(path, ios::out | ios::trunc);
 
