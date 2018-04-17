@@ -73,7 +73,6 @@ namespace MenuGUI
             //this.Hide();
             MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
             mf.ShowDialog();
-            mf.Show();
 
         }
 
@@ -113,20 +112,17 @@ namespace MenuGUI
             {
                 List<string> cells = data.Substring(11).Split('\n').ToList<string>();
                 cells.RemoveAt(cells.Count - 1);
-                create_spreadsheet(cells);
+                create_spreadsheet();
             }
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
         }
 
-        private void create_spreadsheet(List<string> cells)
+        private void create_spreadsheet()
         {
             SpreadsheetForm spreadsheet_form = new SpreadsheetForm(server_socket);
-            spreadsheet_form.Show();
-            spreadsheet_form.load_spreadsheet(cells);
-            
-            
+            spreadsheet_form.ShowDialog();
         }
 
         private void PortalForm_FormClosing(object sender, FormClosingEventArgs e)

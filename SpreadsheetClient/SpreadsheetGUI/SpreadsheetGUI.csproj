@@ -36,6 +36,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Formula\obj\Debug\Formula.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Spreadsheet">
       <HintPath>..\Spreadsheet\obj\Debug\Spreadsheet.dll</HintPath>
     </Reference>
