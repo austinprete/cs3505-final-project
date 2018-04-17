@@ -19,6 +19,7 @@ namespace MenuGUI
     {
         private List<string> spreadsheet_list;
         private SocketState server_socket;
+        private Boolean menu = true;
         public PortalForm()
         {
             InitializeComponent();
@@ -43,6 +44,7 @@ namespace MenuGUI
         {
             if (ServerNameTextBox.Text != "Server Name")
             {
+                menu = true;
                 LoginButton.Enabled = false;
                 ServerNameTextBox.Enabled = false;
                 try
@@ -77,7 +79,6 @@ namespace MenuGUI
             //this.Hide();
             MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
             mf.ShowDialog();
-
         }
 
         /// <summary>
@@ -109,7 +110,12 @@ namespace MenuGUI
                 data = data.Substring(17);
                 spreadsheet_list = data.Split('\n').ToList<string>();
                 spreadsheet_list.RemoveAt(spreadsheet_list.Count - 1);
-                create_menu();
+                if (menu)
+                {
+                    create_menu();
+                    menu = false;
+                }
+                   
 
             }//check if it's a "Connection_Accepted" message
             else if (data.StartsWith("full_state"))
@@ -145,7 +151,19 @@ namespace MenuGUI
             {
                 if (ServerNameTextBox.Text != "Server Name" && ServerNameTextBox.Text.Length != 0)
                 {
-                    Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                    LoginButton.Enabled = false;
+                    ServerNameTextBox.Enabled = false;
+                    menu = true;
+                    try
+                    {
+                        Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                    }
+                    catch
+                    {
+
+                    }
+                    LoginButton.Enabled = true;
+                    ServerNameTextBox.Enabled = true;
                     //ServerNameTextBox.Text = "Server Name";
                     //ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
                 }
@@ -185,7 +203,19 @@ namespace MenuGUI
             {
                 if (ServerNameTextBox.Text != "Server Name" && ServerNameTextBox.Text.Length != 0)
                 {
-                    Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                    LoginButton.Enabled = false;
+                    ServerNameTextBox.Enabled = false;
+                    menu = true;
+                    try
+                    {
+                        Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                    }
+                    catch
+                    {
+
+                    }
+                    LoginButton.Enabled = true;
+                    ServerNameTextBox.Enabled = true;
                     //ServerNameTextBox.Text = "Server Name";
                     //ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
                 }
