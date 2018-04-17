@@ -10,6 +10,7 @@
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
 
 #include "Session.h"
 #include "Server.h"
@@ -86,7 +87,10 @@ void Server::ProcessMessage(long client_id, string &message)
     DisconnectClient(client_id);
   } else if (message_type == "load") {
     cout << "Running LoadSpreadsheet()" << endl;
-    LoadSpreadsheet(client_id, tokenized_message.at(1));
+    string spreadsheet_name = boost::replace_all_copy(message, "load ", "");
+    if (spreadsheet_name.length() != 0) {
+      LoadSpreadsheet(client_id, spreadsheet_name);
+    }
   } else if (message_type == "ping") {
     cout << "Running RespondToPing()" << endl;
     RespondToPing(client_id);
@@ -183,6 +187,9 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
 
   auto search = spreadsheets.find(spreadsheet_name);
 
+  string spreadsheet_file_name = boost::regex_replace(spreadsheet_name, boost::regex("\\s+"), "_");
+  spreadsheet_file_name.append(".xml");
+
   if (search != spreadsheets.end()) {
     Spreadsheet *sheet = search->second;
 
@@ -191,7 +198,7 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
 
     response = sheet->GetFullStateString();
   } else {
-    Spreadsheet *sheet = new Spreadsheet(spreadsheet_name, spreadsheet_name + ".xml");
+    Spreadsheet *sheet = new Spreadsheet(spreadsheet_name, spreadsheet_file_name);
 
     sheet->WriteSpreadsheetToFile(spreadsheets_directory);
 

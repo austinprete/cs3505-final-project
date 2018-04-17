@@ -50,6 +50,8 @@ void Spreadsheet::WriteSpreadsheetToFile(const string &directory) const
   outfile.open(directory + "/" + file_path, ios::out | ios::trunc);
 
   outfile << doc;
+
+  outfile.close();
 }
 
 void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_contents)
