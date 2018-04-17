@@ -41,9 +41,9 @@
             this.ErrorMsgBox = new System.Windows.Forms.TextBox();
             this.EnterButton = new System.Windows.Forms.Button();
             this.CellContentsTextBox = new System.Windows.Forms.TextBox();
-            this.spreadsheetPanel1 = new SS.SpreadsheetPanel();
             this.CellValueTextBox = new System.Windows.Forms.TextBox();
             this.CellNameTextbox = new System.Windows.Forms.TextBox();
+            this.spreadsheetPanel1 = new SS.SpreadsheetPanel();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -174,16 +174,6 @@
             this.CellContentsTextBox.TabIndex = 3;
             this.CellContentsTextBox.Visible = false;
             // 
-            // spreadsheetPanel1
-            // 
-            this.spreadsheetPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.spreadsheetPanel1.Location = new System.Drawing.Point(8, 90);
-            this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-            this.spreadsheetPanel1.Size = new System.Drawing.Size(1016, 542);
-            this.spreadsheetPanel1.TabIndex = 2;
-            // 
             // CellValueTextBox
             // 
             this.CellValueTextBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
@@ -204,6 +194,17 @@
             this.CellNameTextbox.Size = new System.Drawing.Size(55, 26);
             this.CellNameTextbox.TabIndex = 0;
             // 
+            // spreadsheetPanel1
+            // 
+            this.spreadsheetPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.spreadsheetPanel1.Location = new System.Drawing.Point(8, 90);
+            this.spreadsheetPanel1.Name = "spreadsheetPanel1";
+            this.spreadsheetPanel1.Size = new System.Drawing.Size(1016, 542);
+            this.spreadsheetPanel1.TabIndex = 2;
+            this.spreadsheetPanel1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.spreadsheetPanel1_KeyPress);
+            // 
             // SpreadsheetForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -214,6 +215,7 @@
             this.Name = "SpreadsheetForm";
             this.Text = "Spreadsheet Editor";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SpreadsheetForm_FormClosed);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpreadsheetForm_KeyPress);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
