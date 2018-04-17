@@ -8,6 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <regex>
+#include <boost/regex.hpp>
 
 #include "Spreadsheet.h"
 #include "Dependencies/rapidxml-1.13/rapidxml.hpp"
@@ -60,7 +61,7 @@ void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_cont
 
   boost::to_upper(cell_name);
 
-  regex cell_name_pattern("^[A-Z]{1}[1-9]{1}[0-9]{0,1}$");
+  boost::regex cell_name_pattern("^[A-Z]{1}[1-9]{1}[0-9]{0,1}$");
 
   if (!regex_match(cell_name, cell_name_pattern)) {
     return;
