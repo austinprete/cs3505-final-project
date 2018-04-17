@@ -48,8 +48,8 @@ namespace MenuGUI
                 try
                 {
                     Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                    ServerNameTextBox.Text = "Server Name";
-                    ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
+                    //ServerNameTextBox.Text = "Server Name";
+                    //ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
                 }
                 catch
                 {
@@ -57,6 +57,8 @@ namespace MenuGUI
                     LoginButton.Enabled = true;
                     ServerNameTextBox.Enabled = true;
                 }
+                LoginButton.Enabled = true;
+                ServerNameTextBox.Enabled = true;
             }
         }
 
@@ -144,8 +146,8 @@ namespace MenuGUI
                 if (ServerNameTextBox.Text != "Server Name" && ServerNameTextBox.Text.Length != 0)
                 {
                     Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                    ServerNameTextBox.Text = "Server Name";
-                    ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
+                    //ServerNameTextBox.Text = "Server Name";
+                    //ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
                 }
             }
         }
@@ -184,8 +186,8 @@ namespace MenuGUI
                 if (ServerNameTextBox.Text != "Server Name" && ServerNameTextBox.Text.Length != 0)
                 {
                     Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                    ServerNameTextBox.Text = "Server Name";
-                    ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
+                    //ServerNameTextBox.Text = "Server Name";
+                    //ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
                 }
             }
         }
