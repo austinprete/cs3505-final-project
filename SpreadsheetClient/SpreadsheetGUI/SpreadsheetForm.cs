@@ -537,6 +537,15 @@ namespace SpreadsheetGUI
             {
                 string[] split = cell_n_contents.Split(':');
                 spreadsheet.SetContentsOfCell(split[0], split[1]);
+
+                ISet<string> dependents = spreadsheet.SetContentsOfCell(split[0], split[1]);
+
+                ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
+
+                // Update the displayed cell info for the newly modified cell 
+                DisplayCellInfo(dependentCol, dependentRow);
+                // Updates the displayed values of each of the dependent cells (this includes the modified cell)
+                UpdateDependentCells(dependents);
             }
         }
     }
