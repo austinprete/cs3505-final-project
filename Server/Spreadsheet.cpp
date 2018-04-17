@@ -235,7 +235,6 @@ string Spreadsheet::RevertCellContents(string cell_name)
     if (!(*search).second.empty()) {
       (*search).second.pop_back();
 
-
       if (!(*search).second.empty()) {
         return (*search).second.back();
       }
@@ -244,3 +243,8 @@ string Spreadsheet::RevertCellContents(string cell_name)
 
   return "";
 }
+
+std::pair<string, string> Spreadsheet::UndoLastChange()
+{
+  return std::make_pair(" ", " ");
+};

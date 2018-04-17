@@ -26,6 +26,8 @@ public:
 
   std::string RevertCellContents(std::string cell_name);
 
+  std::pair<std::string, std::string> UndoLastChange();
+
   std::string GetFullStateString() const;
 
   std::string GetName() const;
@@ -45,6 +47,7 @@ public:
 
 private:
   std::map<std::string, std::vector<std::string>> spreadsheet_map;
+  std::vector<std::pair<std::string, std::string>> undo_history;
   std::set<int> current_subscribers;
 
   std::string name;
