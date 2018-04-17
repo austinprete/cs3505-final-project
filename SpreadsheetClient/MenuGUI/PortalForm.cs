@@ -20,6 +20,8 @@ namespace MenuGUI
         private List<string> spreadsheet_list;
         private SocketState server_socket;
         private Boolean menu = true;
+
+        SpreadsheetForm spreadsheet;
         public PortalForm()
         {
             InitializeComponent();
@@ -115,7 +117,7 @@ namespace MenuGUI
                     create_menu();
                     menu = false;
                 }
-                   
+
 
             }//check if it's a "Connection_Accepted" message
             else if (data.StartsWith("full_state"))
@@ -124,6 +126,14 @@ namespace MenuGUI
                 cells.RemoveAt(cells.Count - 1);
                 create_spreadsheet(cells);
             }
+            else if (data.StartsWith("ping_response"))
+            {
+                spreadsheet.server_timeout(false, 0);
+            }
+            else if (data.StartsWith("ping") && data.Length < 12)
+            {
+                Networking.Send(server_socket, "ping_response ");
+            }
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
@@ -131,10 +141,10 @@ namespace MenuGUI
 
         private void create_spreadsheet(List<string> cells)
         {
-            SpreadsheetForm spreadsheet_form = new SpreadsheetForm(server_socket);
-            spreadsheet_form.load_spreadsheet(cells);
+            spreadsheet = new SpreadsheetForm(server_socket);
+            spreadsheet.load_spreadsheet(cells);
 
-            spreadsheet_form.ShowDialog();
+            spreadsheet.ShowDialog();
         }
 
         private void PortalForm_FormClosing(object sender, FormClosingEventArgs e)

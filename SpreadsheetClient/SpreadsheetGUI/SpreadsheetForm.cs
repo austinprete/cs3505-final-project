@@ -125,6 +125,12 @@ namespace SpreadsheetGUI
             }
         }
 
+        public void server_timeout(bool timeout, int pingdelay)
+        {
+            this.timeout = timeout;
+            this.pingDelay = pingdelay;
+        }
+
         private void TerminateConnection()
         {
             Networking.Send(serverSocket, "disconnect ");
