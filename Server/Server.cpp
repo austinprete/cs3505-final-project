@@ -19,13 +19,13 @@ using boost::asio::ip::tcp;
 using namespace std;
 
 long Server::current_session_id = 0;
+const std::string spreadsheets_directory = "spreadsheets";
 
 Server::Server(boost::asio::io_service &io_service, int port)
     : acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
       socket(boost::asio::ip::tcp::socket(io_service))
 {
-  spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml("spreadsheets");
-
+  spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml(spreadsheets_directory);
 
   AcceptConnection();
 }
@@ -167,7 +167,7 @@ void Server::RegisterClient(long client_id)
 {
   // temporarily hardcoding example message
 
-  string accept_message;
+  string accept_message = "connect_accepted ";
 
   for (auto spreadsheet : spreadsheets) {
     accept_message.append(spreadsheet.first);
@@ -190,6 +190,18 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
     sheet->AddSubscriber(client_id);
 
     response = sheet->GetFullStateString();
+  }
+//  } else {
+//    Spreadsheet *sheet = new Spreadsheet(spreadsheet_name, spreadsheet_name + ".xml");
+//
+//    sheet->WriteSpreadsheetToFile();
+//
+//    spreadsheets.insert(std::make_pair(spreadsheet_name, sheet));
+//    open_spreadsheets_map.insert(std::make_pair(client_id, sheet));
+//    sheet->AddSubscriber(client_id);
+//
+//    Spreadsheet::WriteSpreadsheetsMapXmlFile(spreadsheets_directory, (&spreadsheets));
+//    response = sheet->GetFullStateString();
   }
 
   SendMessageToClient(client_id, response);
