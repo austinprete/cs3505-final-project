@@ -226,3 +226,21 @@ std::string Spreadsheet::GetFile() const
 {
   return file_path;
 }
+
+string Spreadsheet::RevertCellContents(string cell_name)
+{
+  auto search = spreadsheet_map.find(cell_name);
+
+  if (search != spreadsheet_map.end()) {
+    if (!(*search).second.empty()) {
+      (*search).second.pop_back();
+
+
+      if (!(*search).second.empty()) {
+        return (*search).second.back();
+      }
+    }
+  }
+
+  return "";
+}

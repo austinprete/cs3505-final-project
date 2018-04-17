@@ -108,7 +108,11 @@ void Server::ProcessMessage(long client_id, string &message)
   } else if (message_type == "undo") {
     cout << "Running undo()" << endl;
   } else if (message_type == "revert") {
-    cout << "Running revert()" << endl;
+    cout << "Running RevertSpreadsheetCell()" << endl;
+
+    if (tokenized_message.size() == 2) {
+      RevertSpreadsheetCell(client_id, tokenized_message.at(1));
+    }
   } else {
     cout << "ERROR: Received unrecognized message type \"" << message_type << "\"" << endl;
   }
@@ -270,5 +274,19 @@ void Server::SendMessageToAllSpreadsheetSubscribers(std::string sheet_name, std:
     for (auto client_id : subscribing_clients) {
       SendMessageToClient(client_id, message);
     }
+  }
+}
+
+void Server::RevertSpreadsheetCell(long client_id, std::string cell_id)
+{
+  auto spreadsheet_search = open_spreadsheets_map.find(client_id);
+
+  if (spreadsheet_search != open_spreadsheets_map.end()) {
+    auto spreadsheet = spreadsheet_search->second;
+
+    string new_value = spreadsheet->RevertCellContents(cell_id);
+    spreadsheet->WriteSpreadsheetToFile(spreadsheets_directory);
+
+    SendMessageToAllSpreadsheetSubscribers(spreadsheet->GetName(), "change " + cell_id + ":" + new_value);
   }
 }

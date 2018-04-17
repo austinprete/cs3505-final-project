@@ -59,6 +59,8 @@ private:
   void RespondToPing(long client_id) const;
 
   void EditSpreadsheet(long client_id, std::string cell_id, std::string cell_contents);
+
+  void RevertSpreadsheetCell(long client_id, std::string cell_id);
 };
 
 #endif //SERVER_H

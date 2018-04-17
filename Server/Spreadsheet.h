@@ -24,6 +24,8 @@ public:
 
   void ChangeCellContents(std::string cell_name, std::string new_contents);
 
+  std::string RevertCellContents(std::string cell_name);
+
   std::string GetFullStateString() const;
 
   std::string GetName() const;
