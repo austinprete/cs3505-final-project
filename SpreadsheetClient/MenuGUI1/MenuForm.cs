@@ -122,7 +122,7 @@ namespace MenuGUI
         /// receive message from server 
         /// </summary>
         /// <param name="ss"></param>
-        private void ProcessMessage(SocketState ss)
+       /* private void ProcessMessage(SocketState ss)
         {
             string data = ss.sb.ToString();
             //check if it's a "Connection_Accepted" message
@@ -133,6 +133,6 @@ namespace MenuGUI
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
-        }
+        }*/
     }
 }

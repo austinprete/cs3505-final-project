@@ -33,6 +33,8 @@ namespace SpreadsheetGUI
 
         int pingDelay;
 
+        private string name;
+
         //these variables are to keep track of what commands were pressed
         //private bool revert, undo, edit;
         /// <summary>
@@ -46,6 +48,8 @@ namespace SpreadsheetGUI
             serverSocket = socket;
             serverSocket.callMe = ProcessMessage;
 
+            //name = spreadsheet_name;
+
             pingDelay = 0;
 
             Size = new Size(1200, 600);
@@ -58,7 +62,7 @@ namespace SpreadsheetGUI
             CellContentsTextBox.KeyDown += KeyDownHandler;
 
             // Instantiate the backing Spreadsheet instance
-            spreadsheet = new Spreadsheet(s => true, s => s.ToUpper(), "ps6");
+            spreadsheet = new Spreadsheet(s => true, s => s.ToUpper(), "CHANGE ME");
 
             // Sets control focus to the cell contents text box at startup
             //ActiveControl = CellContentsTextBox;
@@ -525,6 +529,15 @@ namespace SpreadsheetGUI
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             TerminateConnection();
+        }
+
+        public void load_spreadsheet(List<string> cells)
+        {
+            foreach(string cell_n_contents in cells)
+            {
+                string[] split = cell_n_contents.Split(':');
+                spreadsheet.SetContentsOfCell(split[0], split[1]);
+            }
         }
     }
 }
