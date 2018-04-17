@@ -202,7 +202,6 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
 //
 //    Spreadsheet::WriteSpreadsheetsMapXmlFile(spreadsheets_directory, (&spreadsheets));
 //    response = sheet->GetFullStateString();
-  }
 
   SendMessageToClient(client_id, response);
 }
