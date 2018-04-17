@@ -248,7 +248,11 @@ namespace SpreadsheetGUI
 
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string variableName = ConvertColRowToName(col, row);
+            spreadsheetPanel1.GetValue(col, row, out string contents);
+            Networking.Send(serverSocket, "edit " + variableName + ":" + contents);
+            
 
+            /*
             try
             {
                 // Attempts to set the contents of the cell to the user's input in the cell contents text box
@@ -279,7 +283,7 @@ namespace SpreadsheetGUI
                 {
                     throw;
                 }
-            }
+            }*/
         }
 
         /// <summary>
@@ -459,7 +463,7 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void SpreadsheetFormClosing(object sender, FormClosingEventArgs e)
         {
-            if (spreadsheet.Changed)
+            /*if (spreadsheet.Changed)
             {
                 DialogResult result = MessageBox.Show(
                     "Current spreadsheet has unsaved changes. Do you want to exit without saving?",
@@ -470,7 +474,7 @@ namespace SpreadsheetGUI
                     e.Cancel = true; //cancels the form closing event
                     return;
                 }
-            }
+            }*/
         }
 
         /// <summary>
@@ -552,6 +556,18 @@ namespace SpreadsheetGUI
                 DisplayCellInfo(dependentCol, dependentRow);
                 // Updates the displayed values of each of the dependent cells (this includes the modified cell)
                 UpdateDependentCells(dependents);
+            }
+        }
+
+        private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e) {
+            /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+                EnterButton_Click(this, EventArgs.Empty);
+            }*/
+        }
+
+        private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+                EnterButton_Click(this, EventArgs.Empty);
             }
         }
     }
