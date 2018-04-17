@@ -1,5 +1,5 @@
 a.out: Server.o Session.o MessageQueue.o Spreadsheet.o
-	g++ -std=c++11 -g main.cpp *.o -lpthread -l:libboost_system.so.1.53.0 -l:libboost_filesystem.so.1.53.0
+	g++ -std=c++11 -g main.cpp *.o -lpthread -l:libboost_system.so.1.53.0 -l:libboost_filesystem.so.1.53.0 -l:libboost_regex.so.1.53.0
 
 Server.o: Server.h Server.cpp Server.cpp MessageQueue.h Spreadsheet.h
 	g++ -std=c++11 -g -c Server.cpp
