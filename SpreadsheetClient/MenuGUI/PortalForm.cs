@@ -78,6 +78,7 @@ namespace MenuGUI
         {
             //this.Hide();
             MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
+            mf.Text = "Spreadsheet Application -- " + ServerNameTextBox.Text;
             mf.ShowDialog();
         }
 

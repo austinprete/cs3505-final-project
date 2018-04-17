@@ -42,10 +42,10 @@
             this.LoginButton.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.LoginButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LoginButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.LoginButton.Location = new System.Drawing.Point(149, 172);
+            this.LoginButton.Location = new System.Drawing.Point(149, 158);
             this.LoginButton.Margin = new System.Windows.Forms.Padding(0);
             this.LoginButton.Name = "LoginButton";
-            this.LoginButton.Size = new System.Drawing.Size(69, 38);
+            this.LoginButton.Size = new System.Drawing.Size(75, 35);
             this.LoginButton.TabIndex = 0;
             this.LoginButton.Text = "Login";
             this.LoginButton.UseVisualStyleBackColor = false;
@@ -60,7 +60,7 @@
             this.ServerNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ServerNameTextBox.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ServerNameTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(117)))), ((int)(((byte)(117)))), ((int)(((byte)(117)))));
-            this.ServerNameTextBox.Location = new System.Drawing.Point(43, 137);
+            this.ServerNameTextBox.Location = new System.Drawing.Point(45, 120);
             this.ServerNameTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.ServerNameTextBox.Name = "ServerNameTextBox";
             this.ServerNameTextBox.Size = new System.Drawing.Size(281, 44);
@@ -118,7 +118,10 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "PortalForm";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Spreadsheet Application";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PortalForm_FormClosing);

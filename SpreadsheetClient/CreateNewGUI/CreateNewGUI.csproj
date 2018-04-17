@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D3ABD88A-C0C6-42A1-800E-866B2BB3FC9D}</ProjectGuid>
+    <ProjectGuid>{4093144B-6CE5-46E9-80B4-48333E8402A4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>MenuGUI1</RootNamespace>
-    <AssemblyName>MenuGUI1</AssemblyName>
+    <RootNamespace>CreateNewGUI</RootNamespace>
+    <AssemblyName>CreateNewGUI</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,16 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MenuForm.cs">
+    <Compile Include="CreateNewForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MenuForm.Designer.cs">
-      <DependentUpon>MenuForm.cs</DependentUpon>
+    <Compile Include="CreateNewForm.Designer.cs">
+      <DependentUpon>CreateNewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="MenuForm.resx">
-      <DependentUpon>MenuForm.cs</DependentUpon>
+    <EmbeddedResource Include="CreateNewForm.resx">
+      <DependentUpon>CreateNewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -77,20 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CreateNewGUI\CreateNewGUI.csproj">
-      <Project>{4093144b-6ce5-46e9-80b4-48333e8402a4}</Project>
-      <Name>CreateNewGUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Network\Network.csproj">
-      <Project>{6a7f7124-ac26-4cbf-97f8-69035e48d467}</Project>
-      <Name>Network</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SpreadsheetGUI\SpreadsheetGUI.csproj">
-      <Project>{ddd33a7e-16c5-4063-8db1-b3af6f396110}</Project>
-      <Name>SpreadsheetGUI</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
