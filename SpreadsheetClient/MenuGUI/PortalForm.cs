@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Network;
 using System.Diagnostics;
+using SpreadsheetGUI;
 
 
 
@@ -33,7 +34,11 @@ namespace MenuGUI
             }
         }
 
-
+        /// <summary>
+        /// connect with server after login
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LoginButton_Click(object sender, EventArgs e)
         {
             LoginButton.Enabled = false;
@@ -68,7 +73,7 @@ namespace MenuGUI
             //this.Hide();
             MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
             mf.ShowDialog();
-            this.Show();
+            mf.Show();
 
         }
 
@@ -92,19 +97,33 @@ namespace MenuGUI
         /// <param name="ss"></param>
         private void ProcessMessage(SocketState ss)
         {
+            //ss.sb.Clear();
             string data = ss.sb.ToString();
             //check if it's a "Connection_Accepted" message
-            if (data.Substring(0, 7) == "connect")
+            if (data.StartsWith("connect"))
             {
                 //remove "connect_accepted"
                 data = data.Substring(17);
                 spreadsheet_list = data.Split('\n').ToList<string>();
                 spreadsheet_list.RemoveAt(spreadsheet_list.Count - 1);
                 create_menu();
+
+            }//check if it's a "Connection_Accepted" message
+            else if (data.StartsWith("full_state"))
+            {
+                List<string> cells = data.Substring(11).Split('\n').ToList<string>();
+                cells.RemoveAt(cells.Count - 1);
+                create_spreadsheet();
             }
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
+        }
+
+        private void create_spreadsheet()
+        {
+            SpreadsheetForm spreadsheet_form = new SpreadsheetForm(server_socket);
+            spreadsheet_form.Show();
         }
 
         private void PortalForm_FormClosing(object sender, FormClosingEventArgs e)
