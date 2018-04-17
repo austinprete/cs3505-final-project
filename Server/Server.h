@@ -34,7 +34,7 @@ private:
   std::map<long, Spreadsheet *> open_spreadsheets_map;
 
   boost::asio::ip::tcp::acceptor acceptor;
-  std::shared_ptr<boost::asio::ip::tcp::socket> socket;
+  boost::asio::ip::tcp::socket socket;
 
   MessageQueue inbound_queue;
 

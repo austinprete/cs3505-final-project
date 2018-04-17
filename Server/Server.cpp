@@ -22,7 +22,7 @@ long Server::current_session_id = 0;
 
 Server::Server(boost::asio::io_service &io_service, int port)
     : acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
-      socket(std::make_shared<boost::asio::ip::tcp::socket>(io_service))
+      socket(boost::asio::ip::tcp::socket(io_service))
 {
   spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml("spreadsheets");
 
@@ -49,12 +49,13 @@ void Server::RunServerLoop()
 void Server::AcceptConnection()
 {
   acceptor.async_accept(
-      (*socket),
+      (socket),
       [this](boost::system::error_code ec) {
         if (!ec) {
-          std::cout << "Client connected from " << socket->remote_endpoint().address().to_string() << std::endl;
+          std::cout << "Client connected from " << socket.remote_endpoint().address().to_string() << std::endl;
 
-          shared_ptr<Session> session = std::make_shared<Session>(socket, current_session_id,
+          shared_ptr<Session> session = std::make_shared<Session>(
+              std::make_shared<boost::asio::ip::tcp::socket>(std::move(socket)), current_session_id,
                                                                   (&inbound_queue));
           session->Start();
 
