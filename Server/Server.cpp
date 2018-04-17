@@ -190,18 +190,18 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
     sheet->AddSubscriber(client_id);
 
     response = sheet->GetFullStateString();
+  } else {
+    Spreadsheet *sheet = new Spreadsheet(spreadsheet_name, spreadsheet_name + ".xml");
+
+    sheet->WriteSpreadsheetToFile(spreadsheets_directory);
+
+    spreadsheets.insert(std::make_pair(spreadsheet_name, sheet));
+    open_spreadsheets_map.insert(std::make_pair(client_id, sheet));
+    sheet->AddSubscriber(client_id);
+
+    Spreadsheet::WriteSpreadsheetsMapXmlFile(spreadsheets_directory, (&spreadsheets));
+    response = sheet->GetFullStateString();
   }
-//  } else {
-//    Spreadsheet *sheet = new Spreadsheet(spreadsheet_name, spreadsheet_name + ".xml");
-//
-//    sheet->WriteSpreadsheetToFile();
-//
-//    spreadsheets.insert(std::make_pair(spreadsheet_name, sheet));
-//    open_spreadsheets_map.insert(std::make_pair(client_id, sheet));
-//    sheet->AddSubscriber(client_id);
-//
-//    Spreadsheet::WriteSpreadsheetsMapXmlFile(spreadsheets_directory, (&spreadsheets));
-//    response = sheet->GetFullStateString();
 
   SendMessageToClient(client_id, response);
 }
@@ -245,6 +245,7 @@ void Server::EditSpreadsheet(long client_id, string cell_id, string cell_content
     auto spreadsheet = spreadsheet_search->second;
 
     spreadsheet->ChangeCellContents(cell_id, cell_contents);
+    spreadsheet->WriteSpreadsheetToFile(spreadsheets_directory);
 
     SendMessageToAllSpreadsheetSubscribers(spreadsheet->GetName(), "change " + cell_id + ":" + cell_contents);
   }

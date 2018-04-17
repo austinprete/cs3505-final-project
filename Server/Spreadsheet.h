@@ -28,13 +28,18 @@ public:
 
   std::string GetName() const;
 
-  void WriteSpreadsheetToFile() const;
+  std::string GetFile() const;
+
+  void WriteSpreadsheetToFile(const std::string &directory) const;
 
   static void CreateSpreadsheetsMapXmlFile(const std::string &folder);
 
   static std::map<std::string, Spreadsheet *> LoadSpreadsheetsMapFromXml(const std::string &folder);
 
-  static Spreadsheet *LoadSpreadsheetFromFile(std::string name, std::string path);
+  static Spreadsheet *LoadSpreadsheetFromFile(std::string name, std::string path, std::string directory);
+
+  static void
+  WriteSpreadsheetsMapXmlFile(const std::string &folder, std::map<std::string, Spreadsheet *> *spreadsheets_map);
 
 private:
   std::map<std::string, std::vector<std::string>> spreadsheet_map;

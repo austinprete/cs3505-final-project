@@ -21,7 +21,7 @@ using namespace boost;
 Spreadsheet::Spreadsheet(std::string name, std::string file_path) : spreadsheet_map(), name(name), file_path(file_path)
 {}
 
-void Spreadsheet::WriteSpreadsheetToFile() const
+void Spreadsheet::WriteSpreadsheetToFile(const string &directory) const
 {
   xml_document<> doc;
   xml_node<> *root_node = doc.allocate_node(node_element, "spreadsheet");
@@ -47,7 +47,7 @@ void Spreadsheet::WriteSpreadsheetToFile() const
   }
 
   ofstream outfile;
-  outfile.open(file_path, ios::out | ios::trunc);
+  outfile.open(directory + "/" + file_path, ios::out | ios::trunc);
 
   outfile << doc;
 }
@@ -73,8 +73,6 @@ void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_cont
     contents_history.push_back(new_contents);
     spreadsheet_map.insert(std::make_pair(cell_name, contents_history));
   }
-
-  WriteSpreadsheetToFile();
 }
 
 std::string Spreadsheet::GetFullStateString() const
@@ -109,9 +107,44 @@ void Spreadsheet::CreateSpreadsheetsMapXmlFile(const string &folder)
   outfile.close();
 }
 
-Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(std::string name, std::string path)
+void Spreadsheet::WriteSpreadsheetsMapXmlFile(const std::string &folder,
+                                              std::map<std::string, Spreadsheet *> *spreadsheets_map)
 {
-  rapidxml::file<> xmlFile(path.c_str());
+  xml_document<> doc;
+  xml_node<> *root_node = doc.allocate_node(node_element, "spreadsheets");
+  doc.append_node(root_node);
+
+  string map_file_path = folder + "/spreadsheets_map.xml";
+
+  for (auto &spreadsheet_info : (*spreadsheets_map)) {
+    xml_node<> *spreadsheet_node = doc.allocate_node(node_element, "spreadsheet");
+
+    xml_node<> *name_node = doc.allocate_node(node_element, "name", spreadsheet_info.first.c_str());
+
+    string *file = new string();
+    Spreadsheet *sheet = spreadsheet_info.second;
+
+    file->append(sheet->GetFile());
+
+    xml_node<> *file_path_node = doc.allocate_node(node_element, "file", file->c_str());
+
+    spreadsheet_node->append_node(name_node);
+    spreadsheet_node->append_node(file_path_node);
+
+    root_node->append_node(spreadsheet_node);
+  }
+
+  ofstream outfile;
+  outfile.open(map_file_path, ios::out | ios::trunc);
+
+  outfile << doc;
+}
+
+Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(std::string name, std::string path, std::string directory)
+{
+  string spreadsheet_path = directory + "/" + path;
+
+  rapidxml::file<> xmlFile(spreadsheet_path.c_str());
   xml_document<> doc;
   doc.parse<0>(xmlFile.data());
 
@@ -154,9 +187,9 @@ map<string, Spreadsheet *> Spreadsheet::LoadSpreadsheetsMapFromXml(const std::st
     string name = current_sheet->first_node("name")->value();
     string file = current_sheet->first_node("file")->value();
 
-    string file_path = folder + "/" + file;
+    string file_path = file;
 
-    Spreadsheet *sheet = LoadSpreadsheetFromFile(name, file_path);
+    Spreadsheet *sheet = LoadSpreadsheetFromFile(name, file_path, folder);
 
     spreadsheets->insert(std::make_pair(name, sheet));
 
@@ -184,4 +217,9 @@ std::set<int> Spreadsheet::GetSubscribers() const
 string Spreadsheet::GetName() const
 {
   return name;
+}
+
+std::string Spreadsheet::GetFile() const
+{
+  return file_path;
 }
