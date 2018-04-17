@@ -29,26 +29,51 @@ namespace MenuGUI
             SpreadsheetListBox.DataSource = spreadsheet_names;
         }
 
+        /// <summary>
+        /// load the menu form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuForm_Load(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(710, 490);
         }
 
+        /// <summary>
+        /// actions when mouse enters log out button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LogOutButton_MouseEnter(object sender, EventArgs e)
         {
             LogOutButton.BackColor = Color.FromArgb(239, 239, 239);
         }
 
+        /// <summary>
+        /// action when mouse leave logout button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LogOutButton_MouseLeave(object sender, EventArgs e)
         {
             LogOutButton.BackColor = Color.FromArgb(187, 187, 187);
         }
 
+        /// <summary>
+        /// action when mouse enters load button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LoadButton_MouseEnter(object sender, EventArgs e)
         {
             LoadButton.BackColor = Color.FromArgb(239, 239, 239);
         }
 
+        /// <summary>
+        /// action when mouse leaves loadbutton
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LoadButton_MouseLeave(object sender, EventArgs e)
         {
             LoadButton.BackColor = Color.FromArgb(187, 187, 187);
@@ -68,6 +93,8 @@ namespace MenuGUI
         {
             string name = (string)SpreadsheetListBox.SelectedValue;
             Networking.Send(socket_state, "load " + name);
+            socket_state.sb.Clear();
+            Networking.GetData(socket_state);
         }
 
         private void LogOutButton_Click(object sender, EventArgs e)
@@ -75,6 +102,12 @@ namespace MenuGUI
             LoggedOut = true;
             this.Close();
         }
+
+        /// <summary>
+        /// should disconnect the socket with the server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 
         private void MenuForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -84,6 +117,22 @@ namespace MenuGUI
                 socket_state.theSocket.Close();
             }
                 
+        }
+        /// <summary>
+        /// receive message from server 
+        /// </summary>
+        /// <param name="ss"></param>
+        private void ProcessMessage(SocketState ss)
+        {
+            string data = ss.sb.ToString();
+            //check if it's a "Connection_Accepted" message
+            if (data.StartsWith("full_state"))
+            {
+                string[] cells = data.Substring(11).Split((char)3);
+            }
+            Console.WriteLine(data);
+            ss.sb.Remove(0, data.Length);
+            Networking.GetData(ss);
         }
     }
 }
