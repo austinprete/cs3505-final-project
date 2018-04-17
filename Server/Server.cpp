@@ -148,9 +148,9 @@ void Server::SendMessageToAllClients(string message) const
     weak_ptr<Session> session = client.second;
 
     if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
-      if ((*spt).IsOpen()) {
+//      if ((*spt).IsOpen()) {
         (*spt).AddMessageToOutboundQueue(message);
-      }
+//      }
     }
   }
 }
@@ -166,9 +166,9 @@ void Server::SendMessageToClient(long client_id, string message) const
     weak_ptr<Session> session = search->second;
 
     if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
-      if ((*spt).IsOpen()) {
+//      if ((*spt).IsOpen()) {
         (*spt).AddMessageToOutboundQueue(message);
-      }
+//      }
     }
   }
 }
@@ -229,17 +229,17 @@ void Server::DisconnectClient(long client_id)
 
   open_spreadsheets_map.erase(client_id);
 
-  auto session_search = clients.find(client_id);
+//  auto session_search = clients.find(client_id);
 
-  if (session_search != clients.end()) {
-    auto session = session_search->second;
-
-    if (auto spt = session.lock()) {
-      if ((*spt).IsOpen()) {
-        (*spt).Close();
-      }
-    }
-  }
+//  if (session_search != clients.end()) {
+//    auto session = session_search->second;
+//
+//    if (auto spt = session.lock()) {
+//      if ((*spt).IsOpen()) {
+//        (*spt).Close();
+//      }
+//    }
+//  }
 
   std::lock_guard<std::mutex> guard(clients_mutex);
   clients.erase(client_id);

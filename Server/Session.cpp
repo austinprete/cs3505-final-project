@@ -40,9 +40,9 @@ void Session::Start()
 
 void Session::ReadMessage()
 {
-  if (!IsOpen()) {
-    return;
-  }
+//  if (!IsOpen()) {
+//    return;
+//  }
 
   auto self(shared_from_this());
   try {
@@ -69,7 +69,7 @@ void Session::ReadMessage()
             ReadMessage();
           } else {
 
-            Shutdown(ec);
+//            Shutdown(ec);
           }
         }
     );
@@ -80,9 +80,9 @@ void Session::ReadMessage()
 
 void Session::WriteOutboundMessage()
 {
-  if (!IsOpen()) {
-    return;
-  }
+//  if (!IsOpen()) {
+//    return;
+//  }
   if (!outbound_queue.IsEmpty()) {
     auto self(shared_from_this());
     boost::asio::async_write(
@@ -91,27 +91,27 @@ void Session::WriteOutboundMessage()
         [this, self](boost::system::error_code ec, std::size_t /*length*/) {
           if (ec) {
 
-            Shutdown(ec);
+//            Shutdown(ec);
             return;
           }
         }
     );
   }
 }
-
-bool Session::IsOpen() const
-{
-  return socket->is_open();
-}
-
-void Session::Shutdown(boost::system::error_code ec)
-{
+//
+//bool Session::IsOpen() const
+//{
+//  return socket->is_open();
+//}
+//
+//void Session::Shutdown(boost::system::error_code ec)
+//{
 //  cout << "Client at address " << GetAddress() << " disconnected" << endl;
 //  socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
 //  socket->close();
-}
-
-void Session::Close()
-{
-  Shutdown(boost::system::errc::make_error_code(static_cast<boost::system::errc::errc_t>(0)));
-}
+//}
+//
+//void Session::Close()
+//{
+//  Shutdown(boost::system::errc::make_error_code(static_cast<boost::system::errc::errc_t>(0)));
+//}
