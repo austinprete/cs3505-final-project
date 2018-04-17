@@ -112,16 +112,18 @@ namespace MenuGUI
             {
                 List<string> cells = data.Substring(11).Split('\n').ToList<string>();
                 cells.RemoveAt(cells.Count - 1);
-                create_spreadsheet();
+                create_spreadsheet(cells);
             }
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
         }
 
-        private void create_spreadsheet()
+        private void create_spreadsheet(List<string> cells)
         {
             SpreadsheetForm spreadsheet_form = new SpreadsheetForm(server_socket);
+            spreadsheet_form.load_spreadsheet(cells);
+
             spreadsheet_form.ShowDialog();
         }
 

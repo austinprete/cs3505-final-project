@@ -161,6 +161,5 @@ namespace MenuGUI
         private void CloseCreateNew(object sender, EventArgs e) {
             createNewForm.Close();
         }
-
     }
 }
