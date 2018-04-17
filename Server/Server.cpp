@@ -50,7 +50,7 @@ void Server::RunServerLoop()
 void Server::AcceptConnection()
 {
   acceptor.async_accept(
-      (socket),
+      socket,
       [this](boost::system::error_code ec) {
         if (!ec) {
           std::cout << "Client connected from " << socket.remote_endpoint().address().to_string() << std::endl;
@@ -58,6 +58,8 @@ void Server::AcceptConnection()
           shared_ptr<Session> session = std::make_shared<Session>(
               std::make_shared<boost::asio::ip::tcp::socket>(std::move(socket)), current_session_id,
                                                                   (&inbound_queue));
+
+
           session->Start();
 
           std::lock_guard<std::mutex> guard(clients_mutex);

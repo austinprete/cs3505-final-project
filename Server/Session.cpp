@@ -18,7 +18,7 @@ using boost::asio::ip::tcp;
 using namespace std;
 
 Session::Session(shared_ptr<tcp::socket> socket, long session_id, MessageQueue *queue)
-    : socket(socket), inbound_queue(queue), id(session_id)
+    : socket(std::move(socket)), inbound_queue(queue), id(session_id)
 {
 }
 
@@ -30,7 +30,7 @@ void Session::AddMessageToOutboundQueue(std::string message)
 
 const string Session::GetAddress() const
 {
-  return this->socket.get()->remote_endpoint().address().to_string();
+  return this->socket->remote_endpoint().address().to_string();
 }
 
 void Session::Start()
@@ -52,12 +52,6 @@ void Session::ReadMessage()
         '\3',
         [this, self](boost::system::error_code ec, std::size_t length) {
 
-          if ((boost::asio::error::eof == ec) ||
-              (boost::asio::error::connection_reset == ec)) {
-            Shutdown(ec);
-            return;
-          }
-
           if (!ec) {
 
             std::string message_string;
@@ -73,6 +67,9 @@ void Session::ReadMessage()
             inbound_queue->AddMessage(this->id, message_string);
 
             ReadMessage();
+          } else {
+
+            Shutdown(ec);
           }
         }
     );
@@ -92,8 +89,7 @@ void Session::WriteOutboundMessage()
         (*socket),
         boost::asio::buffer(outbound_queue.PopMessage().second),
         [this, self](boost::system::error_code ec, std::size_t /*length*/) {
-          if ((boost::asio::error::eof == ec) ||
-              (boost::asio::error::connection_reset == ec)) {
+          if (ec) {
 
             Shutdown(ec);
             return;
@@ -105,14 +101,14 @@ void Session::WriteOutboundMessage()
 
 bool Session::IsOpen() const
 {
-  return socket.get()->is_open();
+  return socket->is_open();
 }
 
 void Session::Shutdown(boost::system::error_code ec)
 {
-  cout << "Client at address " << GetAddress() << " disconnected" << endl;
-  socket.get()->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
-  socket.get()->close();
+//  cout << "Client at address " << GetAddress() << " disconnected" << endl;
+//  socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+//  socket->close();
 }
 
 void Session::Close()
