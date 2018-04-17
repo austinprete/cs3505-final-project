@@ -122,7 +122,7 @@ namespace MenuGUI
         private void create_spreadsheet()
         {
             SpreadsheetForm spreadsheet_form = new SpreadsheetForm(server_socket);
-            spreadsheet_form.Show();
+            spreadsheet_form.ShowDialog();
         }
 
         private void PortalForm_FormClosing(object sender, FormClosingEventArgs e)
