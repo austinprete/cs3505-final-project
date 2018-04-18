@@ -103,28 +103,32 @@ namespace SpreadsheetGUI
         /// A command was received from the server, we need to process it
         /// </summary>
         /// <param name="ss"></param>
-        public void Spreadsheet_ProcessMessage(SocketState ss)
-        {
-            string data = ss.sb.ToString();
-            string[] parts = data.Split((Char)3);
+        public void Spreadsheet_ProcessMessage(SocketState ss) {
+            string allData = ss.sb.ToString();
+            string[] parts = allData.Split((Char)3);
 
-            //It's an incomplete message, wait for later
-            if (parts.Length == 1)
-            {
+            if (parts.Length == 1) {
                 return;
             }
-            else if (data.StartsWith("ping_response"))
-            {
-                timeout = false;
-                pingDelay = 0;
-            }
-            else if (data.StartsWith("ping") && data.Length < 12)
-            {
-                Networking.Send(serverSocket, "ping_response ");
+
+            foreach (string data in parts) {
+                if (data == ((Char)3).ToString()) {
+                    continue;
+                }
+
+                //It's an incomplete message, wait for later
+                if (data.StartsWith("ping_response")) {
+                    timeout = false;
+                    pingDelay = 0;
+                } else if (data.StartsWith("ping") && data.Length < 12) {
+                    Networking.Send(serverSocket, "ping_response ");
+                } else if (data.StartsWith("change ")) {
+
+                }
+                Console.WriteLine(data);
+                ss.sb.Remove(0, data.Length);
             }
 
-            Console.WriteLine(data);
-            ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
         }
 

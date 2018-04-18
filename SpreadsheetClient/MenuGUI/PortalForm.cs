@@ -110,30 +110,41 @@ namespace MenuGUI
         /// <param name="ss"></param>
         private void ProcessMessage(SocketState ss)
         {
-            //ss.sb.Clear();
-            string data = ss.sb.ToString();
-            //check if it's a "Connection_Accepted" message
-            if (data.StartsWith("connect"))
-            {
-                //remove "connect_accepted"
-                data = data.Substring(17);
-                spreadsheet_list = data.Split('\n').ToList<string>();
-                spreadsheet_list.RemoveAt(spreadsheet_list.Count - 1);
-                if (menu)
-                {
-                    menu = false;
-                    create_menu();
+            string allData = ss.sb.ToString();
+            string[] parts = allData.Split((Char)3);
+
+            if (parts.Length == 1) {
+                return;
+            }
+
+            foreach (string currentData in parts) {
+                
+                if (currentData == ((Char)3).ToString()) {
+                    continue;
                 }
+                string data = currentData;
+                //check if it's a "Connection_Accepted" message
+                if (data.StartsWith("connect")) {
+                    //remove "connect_accepted"
+                    data = data.Substring(17);
+                    spreadsheet_list = data.Split('\n').ToList<string>();
+                    spreadsheet_list.RemoveAt(spreadsheet_list.Count - 1);
+                    if (menu) {
+                        menu = false;
+                        create_menu();
+                    }
 
 
-            }//check if it's a "Connection_Accepted" message
-          
-            Console.WriteLine(data);
-            ss.sb.Remove(0, data.Length);
+                }//check if it's a "Connection_Accepted" message
+
+                Console.WriteLine(data);
+                ss.sb.Remove(0, data.Length);
+
+                if (data.StartsWith("disconnect"))
+                    Show();
+            }
             Networking.GetData(ss);
 
-            if (data.StartsWith("disconnect"))
-                Show();
         }
 
 
