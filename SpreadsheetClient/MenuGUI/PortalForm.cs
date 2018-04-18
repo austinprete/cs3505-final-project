@@ -20,8 +20,12 @@ namespace MenuGUI
         private List<string> spreadsheet_list;
         private SocketState server_socket;
         private Boolean menu = true;
+<<<<<<< HEAD
         SpreadsheetForm spreadsheet_form;
 
+=======
+
+>>>>>>> d10870e327b8d3bf03b5f8a3b4884a6af6734208
         public PortalForm()
         {
             InitializeComponent();
@@ -80,6 +84,7 @@ namespace MenuGUI
         {
             //this.Hide();
             MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
+            mf.Text = "Spreadsheet Application -- " + ServerNameTextBox.Text;
             mf.ShowDialog();
         }
 
@@ -121,7 +126,7 @@ namespace MenuGUI
                     create_menu();
                     menu = false;
                 }
-                   
+
 
             }//check if it's a "Connection_Accepted" message
             else if (data.StartsWith("full_state"))
@@ -137,10 +142,12 @@ namespace MenuGUI
 
         private void create_spreadsheet(List<string> cells)
         {
+<<<<<<< HEAD
             spreadsheet_form = new SpreadsheetForm(server_socket);
             spreadsheet_form.load_spreadsheet(cells);
+=======
+>>>>>>> d10870e327b8d3bf03b5f8a3b4884a6af6734208
 
-            spreadsheet_form.ShowDialog();
         }
 
         private void PortalForm_FormClosing(object sender, FormClosingEventArgs e)
