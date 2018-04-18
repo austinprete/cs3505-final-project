@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Network;
 using Microsoft.VisualBasic;
+using SpreadsheetGUI;
 
 namespace MenuGUI
 {
     public partial class MenuForm : Form
     {
+        SpreadsheetForm spreadsheet;
         private SocketState socket_state;
         List<string> spreadsheet_names;
         private bool LoggedOut = false;
@@ -24,6 +26,7 @@ namespace MenuGUI
         {
             spreadsheet_names = names;
             this.socket_state = ss;
+            socket_state.callMe = MenuForm_ProcessMessage;
             InitializeComponent();
             foreach (string n in names)
             {
@@ -125,17 +128,31 @@ namespace MenuGUI
         /// receive message from server 
         /// </summary>
         /// <param name="ss"></param>
-        private void ProcessMessage(SocketState ss)
+        private void MenuForm_ProcessMessage(SocketState ss)
         {
             string data = ss.sb.ToString();
             //check if it's a "Connection_Accepted" message
             if (data.StartsWith("full_state"))
             {
-                string[] cells = data.Substring(11).Split((char)3);
+                List<string> cells = data.Substring(11).Split('\n').ToList<string>();
+                cells.RemoveAt(cells.Count - 1);
+                create_spreadsheet(cells);
             }
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
+        }
+
+        /// <summary>
+        /// creates a spreadsheet
+        /// </summary>
+        /// <param name="cells"></param>
+        private void create_spreadsheet(List<string> cells)
+        {
+            spreadsheet = new SpreadsheetForm(socket_state);
+            spreadsheet.load_spreadsheet(cells);
+
+            spreadsheet.ShowDialog();
         }
 
         private void CreateNewButton_Click(object sender, EventArgs e) {
