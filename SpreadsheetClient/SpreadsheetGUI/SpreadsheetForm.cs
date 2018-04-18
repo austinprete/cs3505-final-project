@@ -97,19 +97,20 @@ namespace SpreadsheetGUI
                 TerminateConnection();
             }
             Networking.Send(serverSocket, "ping ");
-            
+
         }
         /// <summary>
         /// A command was received from the server, we need to process it
         /// </summary>
         /// <param name="ss"></param>
-        public void Spreadsheet_ProcessMessage(SocketState ss) 
+        public void Spreadsheet_ProcessMessage(SocketState ss)
         {
             string data = ss.sb.ToString();
             string[] parts = data.Split((Char)3);
 
             //It's an incomplete message, wait for later
-            if (parts.Length == 1) {
+            if (parts.Length == 1)
+            {
                 return;
             }
             else if (data.StartsWith("ping_response"))
@@ -147,6 +148,9 @@ namespace SpreadsheetGUI
             spreadsheetPanel1.GetSelection(out int col, out int row);
             Networking.Send(serverSocket, "unfocus ");
             Networking.Send(serverSocket, "edit " + ConvertColRowToName(col, row) + ":" + spreadsheet.GetCellContents(ConvertColRowToName(col, row)).ToString());
+
+            spreadsheetPanel1.SetSelection(col, row + 1);
+            Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row + 1));
             Networking.GetData(serverSocket);
             //EnterButton_Click(this, EventArgs.Empty);
         }
@@ -246,7 +250,7 @@ namespace SpreadsheetGUI
             string variableName = ConvertColRowToName(col, row);
             spreadsheetPanel1.GetValue(col, row, out string contents);
             Networking.Send(serverSocket, "edit " + variableName + ":" + contents);
-            
+
 
         }
 
@@ -500,7 +504,7 @@ namespace SpreadsheetGUI
         {
             //sent revert to server 
         }
-         
+
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             TerminateConnection();
@@ -510,7 +514,7 @@ namespace SpreadsheetGUI
 
         public void load_spreadsheet(List<string> cells)
         {
-            foreach(string cell_n_contents in cells)
+            foreach (string cell_n_contents in cells)
             {
                 string[] split = cell_n_contents.Split(':');
                 spreadsheet.SetContentsOfCell(split[0], split[1]);
@@ -526,14 +530,17 @@ namespace SpreadsheetGUI
             }
         }
 
-        private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e) {
+        private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
             /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
                 EnterButton_Click(this, EventArgs.Empty);
             }*/
         }
 
-        private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e) {
-            if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+        private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
                 EnterButton_Click(this, EventArgs.Empty);
             }
         }
