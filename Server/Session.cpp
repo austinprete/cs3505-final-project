@@ -17,7 +17,7 @@ using boost::asio::ip::tcp;
 
 using namespace std;
 
-Session::Session(shared_ptr<tcp::socket> socket, long session_id, MessageQueue *queue)
+Session::Session(tcp::socket socket, long session_id, MessageQueue *queue)
     : socket(std::move(socket)), inbound_queue(queue), id(session_id)
 {
 }
@@ -30,7 +30,7 @@ void Session::AddMessageToOutboundQueue(std::string message)
 
 const string Session::GetAddress() const
 {
-  return this->socket->remote_endpoint().address().to_string();
+  return this->socket.remote_endpoint().address().to_string();
 }
 
 void Session::Start()
@@ -46,7 +46,7 @@ void Session::ReadMessage()
 
   auto self(shared_from_this());
   boost::asio::async_read_until(
-      (*socket),
+      (socket),
       buffer,
       '\3',
       [this, self](boost::system::error_code ec, std::size_t length) {
@@ -74,13 +74,13 @@ void Session::ReadMessage()
 
 void Session::WriteOutboundMessage()
 {
-//  if (!IsOpen()) {
-//    return;
-//  }
+  if (!IsOpen()) {
+    return;
+  }
   if (!outbound_queue.IsEmpty()) {
     auto self(shared_from_this());
     boost::asio::async_write(
-        (*socket),
+        (socket),
         boost::asio::buffer(outbound_queue.PopMessage().second),
         [this, self](boost::system::error_code ec, std::size_t /*length*/) {
           if (ec) {
@@ -95,13 +95,13 @@ void Session::WriteOutboundMessage()
 
 bool Session::IsOpen() const
 {
-  return socket->is_open();
+  return socket.is_open();
 }
 
 void Session::Shutdown(boost::system::error_code ec)
 {
-  socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
-  socket->close();
+  socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+  socket.close();
 }
 
 void Session::Close()

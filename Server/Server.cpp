@@ -57,9 +57,8 @@ void Server::AcceptConnection()
           std::cout << "Client " << current_session_id << " connected from "
                     << socket.remote_endpoint().address().to_string() << std::endl;
 
-          shared_ptr<Session> session = std::make_shared<Session>(
-              std::make_shared<boost::asio::ip::tcp::socket>(std::move(socket)), current_session_id,
-              (&inbound_queue));
+          shared_ptr<Session> session = std::make_shared<Session>(std::move(socket), current_session_id,
+                                                                  (&inbound_queue));
 
 
           session->Start();
