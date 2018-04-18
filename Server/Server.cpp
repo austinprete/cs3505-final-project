@@ -65,9 +65,6 @@ void Server::AcceptConnection()
 
           std::lock_guard<std::mutex> guard(clients_mutex);
           clients.emplace(std::make_pair(current_session_id, session));
-
-          auto *client_loop_thread = new thread(&Server::PingClient, this, current_session_id);
-
           current_session_id++;
         }
 
@@ -225,6 +222,8 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
   }
 
   SendMessageToClient(client_id, response);
+
+  auto *client_loop_thread = new thread(&Server::PingClient, this, client_id);
 }
 
 void Server::DisconnectClient(long client_id)

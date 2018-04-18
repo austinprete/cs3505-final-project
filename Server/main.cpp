@@ -28,18 +28,6 @@ int main(int argc, char *argv[])
     Spreadsheet::CreateSpreadsheetsMapXmlFile(spreadsheets_dir);
   }
 
-//  auto spreadsheets = Spreadsheet::LoadSpreadsheetsMapFromXml(spreadsheets_dir);
-//
-//  auto search = spreadsheets.find(0);
-//
-//  if (search != spreadsheets.end()) {
-//    (*search).second->ChangeCellContents("A3", "new_val");
-//    cout << (*search).second->GetFullStateString() << endl;
-//
-//    (*search).second->WriteSpreadsheetToFile("output.sprd");
-//  }
-
-
   try {
     boost::asio::io_service io_service;
     int port = 2112;
