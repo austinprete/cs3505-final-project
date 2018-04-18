@@ -65,6 +65,9 @@ void Server::AcceptConnection()
           std::lock_guard<std::mutex> guard(clients_mutex);
           clients.emplace(std::make_pair(current_session_id, session));
 
+          auto *client_loop_thread = new thread(&Server::PingClient, this, current_session_id);
+
+
           current_session_id++;
 
         }
@@ -290,5 +293,15 @@ void Server::RevertSpreadsheetCell(long client_id, std::string cell_id)
     spreadsheet->WriteSpreadsheetToFile(spreadsheets_directory);
 
     SendMessageToAllSpreadsheetSubscribers(spreadsheet->GetName(), "change " + cell_id + ":" + new_value);
+  }
+}
+
+void Server::PingClient(int session_id)
+{
+  string message = "ping";
+
+  while (true) {
+    SendMessageToClient(session_id, message);
+    sleep(10);
   }
 }
