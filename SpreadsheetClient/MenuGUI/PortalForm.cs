@@ -84,6 +84,11 @@ namespace MenuGUI
             mf.Text = "Spreadsheet Application -- " + ServerNameTextBox.Text;
             mf.ShowDialog();
         }
+
+        private void close_menu() {
+            //Show this form again
+            //Show();
+        }
         
 
         /// <summary>

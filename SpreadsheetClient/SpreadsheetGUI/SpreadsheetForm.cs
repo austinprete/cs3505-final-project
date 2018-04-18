@@ -131,7 +131,7 @@ namespace SpreadsheetGUI
         private void TerminateConnection()
         {
             Networking.Send(serverSocket, "disconnect ");
-            serverSocket.theSocket.Close();
+            serverSocket.theSocket.Disconnect(true);
         }
 
         private void StartEditingCell()

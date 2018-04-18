@@ -104,6 +104,7 @@ namespace MenuGUI
         private void LoadButton_Click(object sender, EventArgs e)
         {
             string name = (string)SpreadsheetListBox.SelectedValue;
+
             Networking.Send(socket_state, "load " + name);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
@@ -166,7 +167,7 @@ namespace MenuGUI
         private void spreadsheet_closed(SocketState socket) {
             //socket_state = socket;
             //socket_state.callMe = MenuForm_ProcessMessage;
-            
+            Application.Exit();
         }
 
         private void CreateNewButton_Click(object sender, EventArgs e) {
@@ -178,6 +179,7 @@ namespace MenuGUI
             Networking.Send(socket_state, "load " + name);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
+
         }
 
         //private void CloseCreateNew(object sender, EventArgs e) {
