@@ -35,15 +35,19 @@ namespace SpreadsheetGUI
 
         private string name;
 
+        public delegate void SpreadsheetCloseDelegate(SocketState ss);
+        private SpreadsheetCloseDelegate closeDel;
+
         //these variables are to keep track of what commands were pressed
         //private bool revert, undo, edit;
         /// <summary>
         /// The constructor for the spreadsheet form, performs the intial
         /// set up such as setting event handlers.
         /// </summary>
-        public SpreadsheetForm(SocketState socket)
+        public SpreadsheetForm(SocketState socket, SpreadsheetCloseDelegate ss)
         {
             InitializeComponent();
+            closeDel = ss;
 
             serverSocket = socket;
             serverSocket.callMe = Spreadsheet_ProcessMessage;
@@ -455,6 +459,7 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void SpreadsheetFormClosing(object sender, FormClosingEventArgs e)
         {
+
             /*if (spreadsheet.Changed)
             {
                 DialogResult result = MessageBox.Show(
@@ -530,6 +535,7 @@ namespace SpreadsheetGUI
          
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            closeDel(serverSocket);
             //TerminateConnection();
         }
 
