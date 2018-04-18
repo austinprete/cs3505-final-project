@@ -104,6 +104,7 @@ namespace MenuGUI
         private void LoadButton_Click(object sender, EventArgs e)
         {
             string name = (string)SpreadsheetListBox.SelectedValue;
+
             Networking.Send(socket_state, "load " + name);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
@@ -138,16 +139,27 @@ namespace MenuGUI
         /// <param name="ss"></param>
         private void MenuForm_ProcessMessage(SocketState ss)
         {
-            string data = ss.sb.ToString();
-            //check if it's a "Connection_Accepted" message
-            if (data.StartsWith("full_state"))
-            {
-                List<string> cells = data.Substring(11).Split('\n').ToList<string>();
-                cells.RemoveAt(cells.Count - 1);
-                create_spreadsheet(cells);
+            string allData = ss.sb.ToString();
+            string[] parts = allData.Split((Char)3);
+
+            if (parts.Length == 1) {
+                return;
             }
-            Console.WriteLine(data);
-            ss.sb.Remove(0, data.Length);
+
+            foreach (string data in parts) {
+                if (data == ((Char)3).ToString()) {
+                    continue;
+                }
+
+                //check if it's a "Connection_Accepted" message
+                if (data.StartsWith("full_state")) {
+                    List<string> cells = data.Substring(11).Split('\n').ToList<string>();
+                    cells.RemoveAt(cells.Count - 1);
+                    create_spreadsheet(cells);
+                }
+                Console.WriteLine(data);
+                ss.sb.Remove(0, data.Length);
+            }
             Networking.GetData(ss);
         }
 
@@ -166,7 +178,7 @@ namespace MenuGUI
         private void spreadsheet_closed(SocketState socket) {
             //socket_state = socket;
             //socket_state.callMe = MenuForm_ProcessMessage;
-            
+            Application.Exit();
         }
 
         private void CreateNewButton_Click(object sender, EventArgs e) {
@@ -178,6 +190,7 @@ namespace MenuGUI
             Networking.Send(socket_state, "load " + name);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
+
         }
 
         //private void CloseCreateNew(object sender, EventArgs e) {

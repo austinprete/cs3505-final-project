@@ -35,6 +35,8 @@ namespace SpreadsheetGUI
 
         private string name;
 
+        private bool isEditing = false;
+
         public delegate void SpreadsheetCloseDelegate(SocketState ss);
         private SpreadsheetCloseDelegate closeDel;
 
@@ -103,41 +105,50 @@ namespace SpreadsheetGUI
         /// A command was received from the server, we need to process it
         /// </summary>
         /// <param name="ss"></param>
-        public void Spreadsheet_ProcessMessage(SocketState ss)
-        {
-            string data = ss.sb.ToString();
-            string[] parts = data.Split((Char)3);
+        public void Spreadsheet_ProcessMessage(SocketState ss) {
+            string allData = ss.sb.ToString();
+            string[] parts = allData.Split((Char)3);
 
-            //It's an incomplete message, wait for later
-            if (parts.Length == 1)
-            {
+            if (parts.Length == 1) {
                 return;
             }
-            else if (data.StartsWith("ping_response"))
-            {
-                timeout = false;
-                pingDelay = 0;
-            }
-            else if (data.StartsWith("ping") && data.Length < 12)
-            {
-                Networking.Send(serverSocket, "ping_response ");
+
+            foreach (string data in parts) {
+                if (data == ((Char)3).ToString()) {
+                    continue;
+                }
+
+                //It's an incomplete message, wait for later
+                if (data.StartsWith("ping_response")) {
+                    timeout = false;
+                    pingDelay = 0;
+                } else if (data.StartsWith("ping") && data.Length < 12) {
+                    Networking.Send(serverSocket, "ping_response ");
+                } else if (data.StartsWith("change ")) {
+                    string cellName = data.Substring("change ".Length, data.IndexOf(":"));
+                    string cellContents = data.Substring(data.IndexOf(":") + 1);
+                    spreadsheet.SetContentsOfCell(cellName, cellContents);
+                }
+                Console.WriteLine(data);
+                ss.sb.Remove(0, data.Length);
             }
 
-            Console.WriteLine(data);
-            ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
         }
 
         private void TerminateConnection()
         {
             Networking.Send(serverSocket, "disconnect ");
-            serverSocket.theSocket.Close();
+            serverSocket.theSocket.Disconnect(true);
         }
 
         private void StartEditingCell()
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
-            Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row));
+            if (!isEditing) {
+                Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row));
+                isEditing = true;
+            }
         }
 
         /// <summary>
@@ -147,11 +158,10 @@ namespace SpreadsheetGUI
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
             Networking.Send(serverSocket, "unfocus ");
-            spreadsheetPanel1.SetSelection(col, row + 1);
+            isEditing = false;
             Networking.Send(serverSocket, "edit " + ConvertColRowToName(col, row) + ":" + spreadsheet.GetCellContents(ConvertColRowToName(col, row)).ToString());
 
-        
-            Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row + 1));
+            spreadsheetPanel1.SetSelection(col, row + 1);
             Networking.GetData(serverSocket);
             //EnterButton_Click(this, EventArgs.Empty);
         }
@@ -397,6 +407,7 @@ namespace SpreadsheetGUI
 
                 // Set the selected cell to "A1"
                 spreadsheetPanel1.SetSelection(0, 0);
+                Networking.Send(serverSocket, "unfocus ");
                 DisplayCellInfo(0, 0);
             }
             catch (SpreadsheetReadWriteException)
