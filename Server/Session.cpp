@@ -40,9 +40,9 @@ void Session::Start()
 
 void Session::ReadMessage()
 {
-  if (!IsOpen()) {
-    return;
-  }
+//  if (!IsOpen()) {
+//    return;
+//  }
 
   auto self(shared_from_this());
   boost::asio::async_read_until(
@@ -62,13 +62,13 @@ void Session::ReadMessage()
             message_string = message_string.substr(0, pos);
           }
 
-          if (IsOpen()) {
+//          if (IsOpen()) {
 
-            std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
+//            std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
             inbound_queue->AddMessage(this->id, message_string);
 
             ReadMessage();
-          }
+//          }
         } else {
           Shutdown(ec);
         }
@@ -79,9 +79,9 @@ void Session::ReadMessage()
 
 void Session::WriteOutboundMessage()
 {
-  if (!IsOpen()) {
-    return;
-  }
+//  if (!IsOpen()) {
+//    return;
+//  }
   if (!outbound_queue.IsEmpty()) {
     auto self(shared_from_this());
     boost::asio::async_write(
