@@ -503,8 +503,9 @@ namespace SpreadsheetGUI
          
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            TerminateConnection();
             closeDel(serverSocket);
-            //TerminateConnection();
+            
         }
 
         public void load_spreadsheet(List<string> cells)

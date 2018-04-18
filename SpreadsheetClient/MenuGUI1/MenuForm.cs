@@ -156,9 +156,9 @@ namespace MenuGUI
         }
 
         private void spreadsheet_closed(SocketState socket) {
-            socket_state = socket;
-            socket_state.callMe = MenuForm_ProcessMessage;
-            Networking.GetData(socket_state);
+            //socket_state = socket;
+            //socket_state.callMe = MenuForm_ProcessMessage;
+
         }
 
         private void CreateNewButton_Click(object sender, EventArgs e) {
