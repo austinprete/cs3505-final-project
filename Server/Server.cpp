@@ -128,10 +128,13 @@ void Server::ProcessMessage(long client_id, string &message)
     if (message == "unfocus ") {
       HandleUnfocusMessage(client_id);
     }
-
-  } else {
-    cout << "ERROR: Received unrecognized message type \"" << message_type << "\"" << endl;
   }
+
+//  } else {
+//    cout << "ERROR: Received unrecognized message type \"" << message_type << "\"" << endl;
+//  }
+
+  cout << "Received message from client " << client_id << ": " << message;
 
 }
 
