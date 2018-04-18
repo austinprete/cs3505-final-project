@@ -106,7 +106,7 @@ bool Session::IsOpen() const
 void Session::Shutdown(boost::system::error_code ec)
 {
   socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
-  socket.close();
+//  socket.close();
 }
 
 void Session::Close()
