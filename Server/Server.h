@@ -66,6 +66,10 @@ private:
   void PingClient(int client_id);
 
   void HandlePingResponse(int client_id);
+
+  void HandleFocusMessage(int client_id, std::string cell_id);
+
+  void HandleUnfocusMessage(int client_id);
 };
 
 #endif //SERVER_H

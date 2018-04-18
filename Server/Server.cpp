@@ -117,8 +117,17 @@ void Server::ProcessMessage(long client_id, string &message)
       RevertSpreadsheetCell(client_id, tokenized_message.at(1));
     }
   } else if (message_type == "focus") {
+    cout << "Running HandleFocusMessage()" << endl;
 
+    if (tokenized_message.size() == 2) {
+      HandleFocusMessage(client_id, tokenized_message.at(1));
+    }
   } else if (message_type == "unfocus") {
+    cout << "Running HandleUnfocusMessage()" << endl;
+
+    if (message == "unfocus ") {
+      HandleUnfocusMessage(client_id);
+    }
 
   } else {
     cout << "ERROR: Received unrecognized message type \"" << message_type << "\"" << endl;
@@ -170,10 +179,8 @@ void Server::SendMessageToClient(long client_id, string message) const
   if (search != clients.end()) {
     weak_ptr<Session> session = search->second;
 
-    if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
-//      if ((*spt).IsOpen()) {
+    if (auto spt = session.lock()) {
       (*spt).AddMessageToOutboundQueue(message);
-//      }
     }
   }
 }
@@ -340,4 +347,64 @@ void Server::HandlePingResponse(int client_id)
   cout << "resetting ping time for client " << client_id << endl;
 
   search->second = 0;
+}
+
+void Server::HandleFocusMessage(int client_id, std::string cell_id)
+{
+  auto search = clients.find(client_id);
+
+  if (search == clients.end()) {
+    return;
+  }
+
+  weak_ptr<Session> session = search->second;
+
+  if (auto spt = session.lock()) {
+    if ((*spt).IsFocused()) {
+      return;
+    }
+  }
+
+  string message = "focus " + cell_id + ":" + "client_" + to_string(client_id);
+
+  auto spreadsheet_search = open_spreadsheets_map.find(client_id);
+
+  if (spreadsheet_search != open_spreadsheets_map.end()) {
+    auto spreadsheet = spreadsheet_search->second;
+    SendMessageToAllSpreadsheetSubscribers(spreadsheet->GetName(), message);
+  }
+
+  if (auto spt = session.lock()) {
+    (*spt).Focus();
+  }
+}
+
+void Server::HandleUnfocusMessage(int client_id)
+{
+  auto search = clients.find(client_id);
+
+  if (search == clients.end()) {
+    return;
+  }
+
+  weak_ptr<Session> session = search->second;
+
+  if (auto spt = session.lock()) {
+    if (!(*spt).IsFocused()) {
+      return;
+    }
+  }
+
+  string message = "unfocus client_" + to_string(client_id);
+
+  auto spreadsheet_search = open_spreadsheets_map.find(client_id);
+
+  if (spreadsheet_search != open_spreadsheets_map.end()) {
+    auto spreadsheet = spreadsheet_search->second;
+    SendMessageToAllSpreadsheetSubscribers(spreadsheet->GetName(), message);
+  }
+
+  if (auto spt = session.lock()) {
+    (*spt).Unfocus();
+  }
 }

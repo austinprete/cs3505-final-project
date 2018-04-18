@@ -113,3 +113,18 @@ void Session::Close()
 {
   Shutdown(boost::system::errc::make_error_code(static_cast<boost::system::errc::errc_t>(0)));
 }
+
+bool Session::IsFocused() const
+{
+  return focused;
+}
+
+void Session::Focus()
+{
+  focused = true;
+}
+
+void Session::Unfocus()
+{
+  focused = false;
+}
