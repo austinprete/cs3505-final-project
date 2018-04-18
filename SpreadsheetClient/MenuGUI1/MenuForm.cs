@@ -157,10 +157,16 @@ namespace MenuGUI
         /// <param name="cells"></param>
         private void create_spreadsheet(List<string> cells)
         {
-            spreadsheet = new SpreadsheetForm(socket_state);
+            spreadsheet = new SpreadsheetForm(socket_state, spreadsheet_closed);
             spreadsheet.load_spreadsheet(cells);
 
             spreadsheet.ShowDialog();
+        }
+
+        private void spreadsheet_closed(SocketState socket) {
+            //socket_state = socket;
+            //socket_state.callMe = MenuForm_ProcessMessage;
+
         }
 
         private void CreateNewButton_Click(object sender, EventArgs e) {

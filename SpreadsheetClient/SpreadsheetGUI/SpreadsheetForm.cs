@@ -35,18 +35,23 @@ namespace SpreadsheetGUI
 
         private string name;
 
+        public delegate void SpreadsheetCloseDelegate(SocketState ss);
+        private SpreadsheetCloseDelegate closeDel;
+
         //these variables are to keep track of what commands were pressed
         //private bool revert, undo, edit;
         /// <summary>
         /// The constructor for the spreadsheet form, performs the intial
         /// set up such as setting event handlers.
         /// </summary>
-        public SpreadsheetForm(SocketState socket)
+        public SpreadsheetForm(SocketState socket, SpreadsheetCloseDelegate ss)
         {
             InitializeComponent();
+            closeDel = ss;
 
             serverSocket = socket;
             serverSocket.callMe = Spreadsheet_ProcessMessage;
+            Networking.GetData(serverSocket);
 
             //name = spreadsheet_name;
 
@@ -92,19 +97,20 @@ namespace SpreadsheetGUI
                 TerminateConnection();
             }
             Networking.Send(serverSocket, "ping ");
-            
+
         }
         /// <summary>
         /// A command was received from the server, we need to process it
         /// </summary>
         /// <param name="ss"></param>
-        public void Spreadsheet_ProcessMessage(SocketState ss) 
+        public void Spreadsheet_ProcessMessage(SocketState ss)
         {
             string data = ss.sb.ToString();
             string[] parts = data.Split((Char)3);
 
             //It's an incomplete message, wait for later
-            if (parts.Length == 1) {
+            if (parts.Length == 1)
+            {
                 return;
             }
             else if (data.StartsWith("ping_response"))
@@ -142,6 +148,9 @@ namespace SpreadsheetGUI
             spreadsheetPanel1.GetSelection(out int col, out int row);
             Networking.Send(serverSocket, "unfocus ");
             Networking.Send(serverSocket, "edit " + ConvertColRowToName(col, row) + ":" + spreadsheet.GetCellContents(ConvertColRowToName(col, row)).ToString());
+
+            spreadsheetPanel1.SetSelection(col, row + 1);
+            Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row + 1));
             Networking.GetData(serverSocket);
             //EnterButton_Click(this, EventArgs.Empty);
         }
@@ -241,40 +250,8 @@ namespace SpreadsheetGUI
             string variableName = ConvertColRowToName(col, row);
             spreadsheetPanel1.GetValue(col, row, out string contents);
             Networking.Send(serverSocket, "edit " + variableName + ":" + contents);
-            
 
-            /*
-            try
-            {
-                // Attempts to set the contents of the cell to the user's input in the cell contents text box
-                spreadsheetPanel1.GetValue(col, row, out string value);
-                ISet<string> dependents = spreadsheet.SetContentsOfCell(variableName, value);
 
-                ConvertNameToColRow(variableName, out int dependentCol, out int dependentRow);
-
-                // Update the displayed cell info for the newly modified cell 
-                DisplayCellInfo(dependentCol, dependentRow);
-                // Updates the displayed values of each of the dependent cells (this includes the modified cell)
-                UpdateDependentCells(dependents);
-            }
-            catch (Exception exception)
-            {
-                if (exception is FormulaFormatException || exception is InvalidNameException ||
-                    exception is CircularException)
-                {
-                    // Since no value can be computed, the cell shouldn't ever be set on the GUI
-                    spreadsheet.SetContentsOfCell(variableName, "");
-
-                    // Show the error message box and change the text to indicate the current cell
-                    // contains an invalid formula.
-                    ErrorMsgBox.Visible = true;
-                    ErrorMsgBox.Text = String.Format("{0} contains an invalid formula", variableName);
-                }
-                else // Any other exception should be thrown
-                {
-                    throw;
-                }
-            }*/
         }
 
         /// <summary>
@@ -454,6 +431,7 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void SpreadsheetFormClosing(object sender, FormClosingEventArgs e)
         {
+
             /*if (spreadsheet.Changed)
             {
                 DialogResult result = MessageBox.Show(
@@ -526,15 +504,17 @@ namespace SpreadsheetGUI
         {
             //sent revert to server 
         }
-         
+
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             TerminateConnection();
+            closeDel(serverSocket);
+            
         }
 
         public void load_spreadsheet(List<string> cells)
         {
-            foreach(string cell_n_contents in cells)
+            foreach (string cell_n_contents in cells)
             {
                 string[] split = cell_n_contents.Split(':');
                 spreadsheet.SetContentsOfCell(split[0], split[1]);
@@ -550,14 +530,17 @@ namespace SpreadsheetGUI
             }
         }
 
-        private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e) {
+        private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
             /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
                 EnterButton_Click(this, EventArgs.Empty);
             }*/
         }
 
-        private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e) {
-            if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+        private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
                 EnterButton_Click(this, EventArgs.Empty);
             }
         }
