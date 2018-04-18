@@ -28,10 +28,10 @@ void Session::AddMessageToOutboundQueue(std::string message)
   WriteOutboundMessage();
 }
 //
-//const string Session::GetAddress() const
-//{
-//  return this->socket.remote_endpoint().address().to_string();
-//}
+const string Session::GetAddress() const
+{
+  return this->socket.remote_endpoint().address().to_string();
+}
 
 void Session::Start()
 {
@@ -40,9 +40,9 @@ void Session::Start()
 
 void Session::ReadMessage()
 {
-//  if (!IsOpen()) {
-//    return;
-//  }
+  if (!IsOpen()) {
+    return;
+  }
 
   auto self(shared_from_this());
   boost::asio::async_read_until(
@@ -62,10 +62,13 @@ void Session::ReadMessage()
             message_string = message_string.substr(0, pos);
           }
 
-//          std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
-          inbound_queue->AddMessage(this->id, message_string);
+          if (IsOpen()) {
 
-          ReadMessage();
+            std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
+            inbound_queue->AddMessage(this->id, message_string);
+
+            ReadMessage();
+          }
         } else {
           Shutdown(ec);
         }
