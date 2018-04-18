@@ -66,6 +66,8 @@ void Session::ReadMessage()
           inbound_queue->AddMessage(this->id, message_string);
 
           ReadMessage();
+        } else {
+          Shutdown(ec);
         }
       }
   );
@@ -85,7 +87,7 @@ void Session::WriteOutboundMessage()
         [this, self](boost::system::error_code ec, std::size_t /*length*/) {
           if (ec) {
 
-//            Shutdown(ec);
+            Shutdown(ec);
             return;
           }
         }

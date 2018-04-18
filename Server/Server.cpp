@@ -119,6 +119,10 @@ void Server::ProcessMessage(long client_id, string &message)
     if (tokenized_message.size() == 2) {
       RevertSpreadsheetCell(client_id, tokenized_message.at(1));
     }
+  } else if (message_type == "focus") {
+
+  } else if (message_type == "unfocus") {
+
   } else {
     cout << "ERROR: Received unrecognized message type \"" << message_type << "\"" << endl;
   }
