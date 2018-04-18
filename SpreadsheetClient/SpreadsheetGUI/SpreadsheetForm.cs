@@ -35,6 +35,8 @@ namespace SpreadsheetGUI
 
         private string name;
 
+        private bool isEditing = false;
+
         public delegate void SpreadsheetCloseDelegate(SocketState ss);
         private SpreadsheetCloseDelegate closeDel;
 
@@ -123,7 +125,9 @@ namespace SpreadsheetGUI
                 } else if (data.StartsWith("ping") && data.Length < 12) {
                     Networking.Send(serverSocket, "ping_response ");
                 } else if (data.StartsWith("change ")) {
-
+                    string cellName = data.Substring("change ".Length, data.IndexOf(":"));
+                    string cellContents = data.Substring(data.IndexOf(":") + 1);
+                    spreadsheet.SetContentsOfCell(cellName, cellContents);
                 }
                 Console.WriteLine(data);
                 ss.sb.Remove(0, data.Length);
@@ -141,7 +145,10 @@ namespace SpreadsheetGUI
         private void StartEditingCell()
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
-            Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row));
+            if (!isEditing) {
+                Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row));
+                isEditing = true;
+            }
         }
 
         /// <summary>
@@ -151,10 +158,10 @@ namespace SpreadsheetGUI
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
             Networking.Send(serverSocket, "unfocus ");
+            isEditing = false;
             Networking.Send(serverSocket, "edit " + ConvertColRowToName(col, row) + ":" + spreadsheet.GetCellContents(ConvertColRowToName(col, row)).ToString());
 
             spreadsheetPanel1.SetSelection(col, row + 1);
-            Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row + 1));
             Networking.GetData(serverSocket);
             //EnterButton_Click(this, EventArgs.Empty);
         }
@@ -400,6 +407,7 @@ namespace SpreadsheetGUI
 
                 // Set the selected cell to "A1"
                 spreadsheetPanel1.SetSelection(0, 0);
+                Networking.Send(serverSocket, "unfocus ");
                 DisplayCellInfo(0, 0);
             }
             catch (SpreadsheetReadWriteException)
