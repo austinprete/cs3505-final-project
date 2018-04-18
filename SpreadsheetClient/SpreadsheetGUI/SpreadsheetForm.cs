@@ -244,38 +244,6 @@ namespace SpreadsheetGUI
             Networking.Send(serverSocket, "edit " + variableName + ":" + contents);
             
 
-            /*
-            try
-            {
-                // Attempts to set the contents of the cell to the user's input in the cell contents text box
-                spreadsheetPanel1.GetValue(col, row, out string value);
-                ISet<string> dependents = spreadsheet.SetContentsOfCell(variableName, value);
-
-                ConvertNameToColRow(variableName, out int dependentCol, out int dependentRow);
-
-                // Update the displayed cell info for the newly modified cell 
-                DisplayCellInfo(dependentCol, dependentRow);
-                // Updates the displayed values of each of the dependent cells (this includes the modified cell)
-                UpdateDependentCells(dependents);
-            }
-            catch (Exception exception)
-            {
-                if (exception is FormulaFormatException || exception is InvalidNameException ||
-                    exception is CircularException)
-                {
-                    // Since no value can be computed, the cell shouldn't ever be set on the GUI
-                    spreadsheet.SetContentsOfCell(variableName, "");
-
-                    // Show the error message box and change the text to indicate the current cell
-                    // contains an invalid formula.
-                    ErrorMsgBox.Visible = true;
-                    ErrorMsgBox.Text = String.Format("{0} contains an invalid formula", variableName);
-                }
-                else // Any other exception should be thrown
-                {
-                    throw;
-                }
-            }*/
         }
 
         /// <summary>

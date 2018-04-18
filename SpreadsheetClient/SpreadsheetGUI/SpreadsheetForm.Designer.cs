@@ -39,11 +39,10 @@
             this.revertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.ErrorMsgBox = new System.Windows.Forms.TextBox();
-            this.EnterButton = new System.Windows.Forms.Button();
             this.CellContentsTextBox = new System.Windows.Forms.TextBox();
+            this.spreadsheetPanel1 = new SS.SpreadsheetPanel();
             this.CellValueTextBox = new System.Windows.Forms.TextBox();
             this.CellNameTextbox = new System.Windows.Forms.TextBox();
-            this.spreadsheetPanel1 = new SS.SpreadsheetPanel();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -126,7 +125,6 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.ErrorMsgBox);
-            this.panel1.Controls.Add(this.EnterButton);
             this.panel1.Controls.Add(this.CellContentsTextBox);
             this.panel1.Controls.Add(this.spreadsheetPanel1);
             this.panel1.Controls.Add(this.CellValueTextBox);
@@ -151,17 +149,6 @@
             this.ErrorMsgBox.TabIndex = 5;
             this.ErrorMsgBox.Visible = false;
             // 
-            // EnterButton
-            // 
-            this.EnterButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.EnterButton.Location = new System.Drawing.Point(884, 10);
-            this.EnterButton.Name = "EnterButton";
-            this.EnterButton.Size = new System.Drawing.Size(132, 34);
-            this.EnterButton.TabIndex = 4;
-            this.EnterButton.Text = "Enter";
-            this.EnterButton.UseVisualStyleBackColor = true;
-            this.EnterButton.Click += new System.EventHandler(this.EnterButton_Click);
-            // 
             // CellContentsTextBox
             // 
             this.CellContentsTextBox.AcceptsReturn = true;
@@ -173,6 +160,17 @@
             this.CellContentsTextBox.Size = new System.Drawing.Size(325, 26);
             this.CellContentsTextBox.TabIndex = 3;
             this.CellContentsTextBox.Visible = false;
+            // 
+            // spreadsheetPanel1
+            // 
+            this.spreadsheetPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.spreadsheetPanel1.Location = new System.Drawing.Point(8, 90);
+            this.spreadsheetPanel1.Name = "spreadsheetPanel1";
+            this.spreadsheetPanel1.Size = new System.Drawing.Size(1016, 542);
+            this.spreadsheetPanel1.TabIndex = 2;
+            this.spreadsheetPanel1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.spreadsheetPanel1_KeyPress);
             // 
             // CellValueTextBox
             // 
@@ -193,17 +191,6 @@
             this.CellNameTextbox.ReadOnly = true;
             this.CellNameTextbox.Size = new System.Drawing.Size(55, 26);
             this.CellNameTextbox.TabIndex = 0;
-            // 
-            // spreadsheetPanel1
-            // 
-            this.spreadsheetPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.spreadsheetPanel1.Location = new System.Drawing.Point(8, 90);
-            this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-            this.spreadsheetPanel1.Size = new System.Drawing.Size(1016, 542);
-            this.spreadsheetPanel1.TabIndex = 2;
-            this.spreadsheetPanel1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.spreadsheetPanel1_KeyPress);
             // 
             // SpreadsheetForm
             // 
@@ -237,7 +224,6 @@
         private System.Windows.Forms.TextBox CellNameTextbox;
         private SS.SpreadsheetPanel spreadsheetPanel1;
         private System.Windows.Forms.TextBox CellContentsTextBox;
-        private System.Windows.Forms.Button EnterButton;
         private System.Windows.Forms.TextBox ErrorMsgBox;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
