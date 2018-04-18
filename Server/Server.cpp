@@ -318,6 +318,7 @@ void Server::PingClient(int client_id)
     search->second += 10;
 
     if (search->second > 60) {
+      SendMessageToClient(client_id, "disconnect ");
       DisconnectClient(client_id);
       return;
     }
