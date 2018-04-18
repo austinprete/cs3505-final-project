@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Network;
 using System.Diagnostics;
 using SpreadsheetGUI;
+using System.Threading;
 
 
 
@@ -20,6 +21,9 @@ namespace MenuGUI
         private List<string> spreadsheet_list;
         private SocketState server_socket;
         private Boolean menu = true;
+        private MenuForm mf;
+        private Boolean menuClosed = false;
+        
 
         public PortalForm()
         {
@@ -51,7 +55,7 @@ namespace MenuGUI
                 try
                 {
                     Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                    Hide();
+                    //Hide();
                 }
                 catch
                 {
@@ -76,12 +80,11 @@ namespace MenuGUI
 
         private void create_menu()
         {
-            //this.Hide();
-
-            MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
+            mf = new MenuForm(spreadsheet_list, server_socket);
             mf.Text = "Spreadsheet Application -- " + ServerNameTextBox.Text;
             mf.ShowDialog();
         }
+        
 
         /// <summary>
         /// begin connection with server
@@ -123,6 +126,9 @@ namespace MenuGUI
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
+
+            if (data.StartsWith("disconnect"))
+                Show();
         }
 
 
@@ -147,7 +153,7 @@ namespace MenuGUI
                     try
                     {
                         Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                        Hide();
+                       // Hide();
                     }
                     catch
                     {
@@ -200,7 +206,7 @@ namespace MenuGUI
                     try
                     {
                         Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                        Hide();
+                        //Hide();
                     }
                     catch
                     {

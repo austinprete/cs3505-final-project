@@ -21,6 +21,12 @@ namespace MenuGUI
         private bool LoggedOut = false;
         CreateNewGUI.CreateNewForm CNF;
 
+        public bool GetLoggedOut()
+        {
+            return LoggedOut;
+        }
+
+
 
         public MenuForm(List<string> names, SocketState ss)
         {
@@ -106,6 +112,8 @@ namespace MenuGUI
         private void LogOutButton_Click(object sender, EventArgs e)
         {
             LoggedOut = true;
+            Networking.Send(socket_state, "disconnect ");
+           Close();
         }
 
         /// <summary>
