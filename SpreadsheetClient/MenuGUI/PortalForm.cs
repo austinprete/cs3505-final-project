@@ -20,6 +20,8 @@ namespace MenuGUI
         private List<string> spreadsheet_list;
         private SocketState server_socket;
         private Boolean menu = true;
+        SpreadsheetForm spreadsheet_form;
+
         public PortalForm()
         {
             InitializeComponent();
@@ -101,6 +103,10 @@ namespace MenuGUI
         /// <param name="ss"></param>
         private void ProcessMessage(SocketState ss)
         {
+            if(spreadsheet_form != null && !spreadsheet_form.IsDisposed) {
+                spreadsheet_form.ProcessMessage(ss);
+                return;
+            }
             //ss.sb.Clear();
             string data = ss.sb.ToString();
             //check if it's a "Connection_Accepted" message
@@ -131,7 +137,7 @@ namespace MenuGUI
 
         private void create_spreadsheet(List<string> cells)
         {
-            SpreadsheetForm spreadsheet_form = new SpreadsheetForm(server_socket);
+            spreadsheet_form = new SpreadsheetForm(server_socket);
             spreadsheet_form.load_spreadsheet(cells);
 
             spreadsheet_form.ShowDialog();
