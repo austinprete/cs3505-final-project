@@ -46,7 +46,7 @@ namespace SpreadsheetGUI
             InitializeComponent();
 
             serverSocket = socket;
-            serverSocket.callMe = ProcessMessage;
+            serverSocket.callMe = Spreadsheet_ProcessMessage;
 
             //name = spreadsheet_name;
 
@@ -98,7 +98,7 @@ namespace SpreadsheetGUI
         /// A command was received from the server, we need to process it
         /// </summary>
         /// <param name="ss"></param>
-        public void ProcessMessage(SocketState ss) 
+        public void Spreadsheet_ProcessMessage(SocketState ss) 
         {
             string data = ss.sb.ToString();
             string[] parts = data.Split((Char)3);
@@ -107,28 +107,19 @@ namespace SpreadsheetGUI
             if (parts.Length == 1) {
                 return;
             }
-            
-            foreach (string p in parts) {
-                if (p == "" || p == ((Char)3).ToString()) {
-                    ss.sb.Remove(0, 1);
-                    continue;
-                }
-
-                if (p.StartsWith("ping_response")) {
-                    timeout = false;
-                    pingDelay = 0;
-                    ss.sb.Remove(0,p.Length);
-                } else if (p.StartsWith("ping")) {
-                    Networking.Send(serverSocket, "ping_response ");
-                    ss.sb.Remove(0, p.Length);
-                }
+            else if (data.StartsWith("ping_response"))
+            {
+                timeout = false;
+                pingDelay = 0;
             }
-        }
+            else if (data.StartsWith("ping") && data.Length < 12)
+            {
+                Networking.Send(serverSocket, "ping_response ");
+            }
 
-        public void server_timeout(bool timeout, int pingdelay)
-        {
-            this.timeout = timeout;
-            this.pingDelay = pingdelay;
+            Console.WriteLine(data);
+            ss.sb.Remove(0, data.Length);
+            Networking.GetData(ss);
         }
 
         private void TerminateConnection()
