@@ -104,6 +104,10 @@ namespace MenuGUI
         /// <param name="ss"></param>
         private void ProcessMessage(SocketState ss)
         {
+            if(spreadsheet != null && !spreadsheet.IsDisposed) {
+                spreadsheet.ProcessMessage(ss);
+                return;
+            }
             //ss.sb.Clear();
             string data = ss.sb.ToString();
             //check if it's a "Connection_Accepted" message

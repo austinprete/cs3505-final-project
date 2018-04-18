@@ -98,7 +98,7 @@ namespace SpreadsheetGUI
         /// A command was received from the server, we need to process it
         /// </summary>
         /// <param name="ss"></param>
-        private void ProcessMessage(SocketState ss) 
+        public void ProcessMessage(SocketState ss) 
         {
             string data = ss.sb.ToString();
             string[] parts = data.Split((Char)3);
