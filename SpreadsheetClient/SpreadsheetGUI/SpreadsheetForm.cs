@@ -47,6 +47,7 @@ namespace SpreadsheetGUI
 
             serverSocket = socket;
             serverSocket.callMe = Spreadsheet_ProcessMessage;
+            Networking.GetData(serverSocket);
 
             //name = spreadsheet_name;
 
@@ -529,7 +530,7 @@ namespace SpreadsheetGUI
          
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            TerminateConnection();
+            //TerminateConnection();
         }
 
         public void load_spreadsheet(List<string> cells)
