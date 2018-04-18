@@ -147,9 +147,10 @@ namespace SpreadsheetGUI
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
             Networking.Send(serverSocket, "unfocus ");
+            spreadsheetPanel1.SetSelection(col, row + 1);
             Networking.Send(serverSocket, "edit " + ConvertColRowToName(col, row) + ":" + spreadsheet.GetCellContents(ConvertColRowToName(col, row)).ToString());
 
-            spreadsheetPanel1.SetSelection(col, row + 1);
+        
             Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row + 1));
             Networking.GetData(serverSocket);
             //EnterButton_Click(this, EventArgs.Empty);
