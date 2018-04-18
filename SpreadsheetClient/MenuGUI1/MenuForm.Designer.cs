@@ -40,13 +40,16 @@
             // SpreadsheetListBox
             // 
             this.SpreadsheetListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-            this.SpreadsheetListBox.ForeColor = System.Drawing.SystemColors.InactiveCaption;
+            this.SpreadsheetListBox.Font = new System.Drawing.Font("Arial", 10.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SpreadsheetListBox.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.SpreadsheetListBox.FormattingEnabled = true;
-            this.SpreadsheetListBox.ItemHeight = 25;
+            this.SpreadsheetListBox.ItemHeight = 33;
             this.SpreadsheetListBox.Location = new System.Drawing.Point(525, 49);
             this.SpreadsheetListBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.SpreadsheetListBox.Name = "SpreadsheetListBox";
-            this.SpreadsheetListBox.Size = new System.Drawing.Size(827, 629);
+            this.SpreadsheetListBox.ScrollAlwaysVisible = true;
+            this.SpreadsheetListBox.Size = new System.Drawing.Size(827, 598);
+            this.SpreadsheetListBox.Sorted = true;
             this.SpreadsheetListBox.TabIndex = 0;
             // 
             // ServerNameLabel
@@ -149,7 +152,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "MenuForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Spreadsheet Application";
+            this.Text = "Server Status - [Active]";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MenuForm_FormClosing);
             this.Load += new System.EventHandler(this.MenuForm_Load);
             this.ResumeLayout(false);
