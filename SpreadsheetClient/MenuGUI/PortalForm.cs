@@ -20,12 +20,8 @@ namespace MenuGUI
         private List<string> spreadsheet_list;
         private SocketState server_socket;
         private Boolean menu = true;
-<<<<<<< HEAD
-        SpreadsheetForm spreadsheet_form;
 
-=======
-
->>>>>>> d10870e327b8d3bf03b5f8a3b4884a6af6734208
+        SpreadsheetForm spreadsheet;
         public PortalForm()
         {
             InitializeComponent();
@@ -108,8 +104,8 @@ namespace MenuGUI
         /// <param name="ss"></param>
         private void ProcessMessage(SocketState ss)
         {
-            if(spreadsheet_form != null && !spreadsheet_form.IsDisposed) {
-                spreadsheet_form.ProcessMessage(ss);
+            if(spreadsheet != null && !spreadsheet.IsDisposed) {
+                spreadsheet.ProcessMessage(ss);
                 return;
             }
             //ss.sb.Clear();
@@ -135,6 +131,14 @@ namespace MenuGUI
                 cells.RemoveAt(cells.Count - 1);
                 create_spreadsheet(cells);
             }
+            else if (data.StartsWith("ping_response"))
+            {
+                spreadsheet.server_timeout(false, 0);
+            }
+            else if (data.StartsWith("ping") && data.Length < 12)
+            {
+                Networking.Send(server_socket, "ping_response ");
+            }
             Console.WriteLine(data);
             ss.sb.Remove(0, data.Length);
             Networking.GetData(ss);
@@ -142,12 +146,10 @@ namespace MenuGUI
 
         private void create_spreadsheet(List<string> cells)
         {
-<<<<<<< HEAD
-            spreadsheet_form = new SpreadsheetForm(server_socket);
-            spreadsheet_form.load_spreadsheet(cells);
-=======
->>>>>>> d10870e327b8d3bf03b5f8a3b4884a6af6734208
+            spreadsheet = new SpreadsheetForm(server_socket);
+            spreadsheet.load_spreadsheet(cells);
 
+            spreadsheet.ShowDialog();
         }
 
         private void PortalForm_FormClosing(object sender, FormClosingEventArgs e)
