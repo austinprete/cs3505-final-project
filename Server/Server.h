@@ -32,6 +32,7 @@ private:
   std::mutex clients_mutex;
   std::map<std::string, Spreadsheet *> spreadsheets;
   std::map<long, Spreadsheet *> open_spreadsheets_map;
+  std::map<long, long> time_since_last_ping;
 
   boost::asio::ip::tcp::acceptor acceptor;
   boost::asio::ip::tcp::socket socket;

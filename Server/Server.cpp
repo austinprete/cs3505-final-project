@@ -54,7 +54,8 @@ void Server::AcceptConnection()
       socket,
       [this](boost::system::error_code ec) {
         if (!ec) {
-          std::cout << "Client connected from " << socket.remote_endpoint().address().to_string() << std::endl;
+          std::cout << "Client " << current_session_id << " connected from "
+                    << socket.remote_endpoint().address().to_string() << std::endl;
 
           shared_ptr<Session> session = std::make_shared<Session>(
               std::make_shared<boost::asio::ip::tcp::socket>(std::move(socket)), current_session_id,
@@ -225,6 +226,8 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
 
 void Server::DisconnectClient(long client_id)
 {
+  cout << "Disconnected client " << client_id << endl;
+
   auto open_sheet_search = open_spreadsheets_map.find(client_id);
 
   if (open_sheet_search != open_spreadsheets_map.end()) {
@@ -303,6 +306,21 @@ void Server::PingClient(int session_id)
 
   while (true) {
     SendMessageToClient(session_id, message);
+
+    auto search = time_since_last_ping.find(session_id);
+
+    if (search == time_since_last_ping.end()) {
+      time_since_last_ping.insert(make_pair(session_id, 0));
+      search = time_since_last_ping.find(session_id);
+    }
+
     sleep(10);
+
+    search->second += 10;
+
+    if (search->second > 60) {
+      DisconnectClient(session_id);
+      return;
+    }
   }
 }
