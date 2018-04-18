@@ -92,20 +92,19 @@ void Session::WriteOutboundMessage()
     );
   }
 }
-//
-//bool Session::IsOpen() const
-//{
-//  return socket->is_open();
-//}
-//
-//void Session::Shutdown(boost::system::error_code ec)
-//{
-//  cout << "Client at address " << GetAddress() << " disconnected" << endl;
-//  socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
-//  socket->close();
-//}
-//
-//void Session::Close()
-//{
-//  Shutdown(boost::system::errc::make_error_code(static_cast<boost::system::errc::errc_t>(0)));
-//}
+
+bool Session::IsOpen() const
+{
+  return socket->is_open();
+}
+
+void Session::Shutdown(boost::system::error_code ec)
+{
+  socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+  socket->close();
+}
+
+void Session::Close()
+{
+  Shutdown(boost::system::errc::make_error_code(static_cast<boost::system::errc::errc_t>(0)));
+}

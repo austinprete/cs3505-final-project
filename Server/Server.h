@@ -63,7 +63,9 @@ private:
 
   void RevertSpreadsheetCell(long client_id, std::string cell_id);
 
-  void PingClient(int session_id);
+  void PingClient(int client_id);
+
+  void HandlePingResponse(int client_id);
 };
 
 #endif //SERVER_H

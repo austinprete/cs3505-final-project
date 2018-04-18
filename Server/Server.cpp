@@ -59,7 +59,7 @@ void Server::AcceptConnection()
 
           shared_ptr<Session> session = std::make_shared<Session>(
               std::make_shared<boost::asio::ip::tcp::socket>(std::move(socket)), current_session_id,
-                                                                  (&inbound_queue));
+              (&inbound_queue));
 
 
           session->Start();
@@ -69,9 +69,7 @@ void Server::AcceptConnection()
 
           auto *client_loop_thread = new thread(&Server::PingClient, this, current_session_id);
 
-
           current_session_id++;
-
         }
 
         AcceptConnection();
@@ -102,7 +100,9 @@ void Server::ProcessMessage(long client_id, string &message)
     cout << "Running RespondToPing()" << endl;
     RespondToPing(client_id);
   } else if (message_type == "ping_response") {
-    cout << "Running ping_response()" << endl;
+    cout << "Running HandlePingResponse()" << endl;
+
+    HandlePingResponse(client_id);
   } else if (message_type == "edit") {
     cout << "Running EditSpreadsheet()" << endl;
     string edit_info = boost::replace_all_copy(message, "edit ", "");
@@ -154,7 +154,7 @@ void Server::SendMessageToAllClients(string message) const
 
     if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
 //      if ((*spt).IsOpen()) {
-        (*spt).AddMessageToOutboundQueue(message);
+      (*spt).AddMessageToOutboundQueue(message);
 //      }
     }
   }
@@ -172,7 +172,7 @@ void Server::SendMessageToClient(long client_id, string message) const
 
     if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
 //      if ((*spt).IsOpen()) {
-        (*spt).AddMessageToOutboundQueue(message);
+      (*spt).AddMessageToOutboundQueue(message);
 //      }
     }
   }
@@ -236,17 +236,17 @@ void Server::DisconnectClient(long client_id)
 
   open_spreadsheets_map.erase(client_id);
 
-//  auto session_search = clients.find(client_id);
+  auto session_search = clients.find(client_id);
 
-//  if (session_search != clients.end()) {
-//    auto session = session_search->second;
-//
-//    if (auto spt = session.lock()) {
-//      if ((*spt).IsOpen()) {
-//        (*spt).Close();
-//      }
-//    }
-//  }
+  if (session_search != clients.end()) {
+    auto session = session_search->second;
+
+    if (auto spt = session.lock()) {
+      if ((*spt).IsOpen()) {
+        (*spt).Close();
+      }
+    }
+  }
 
   std::lock_guard<std::mutex> guard(clients_mutex);
   clients.erase(client_id);
@@ -300,18 +300,18 @@ void Server::RevertSpreadsheetCell(long client_id, std::string cell_id)
   }
 }
 
-void Server::PingClient(int session_id)
+void Server::PingClient(int client_id)
 {
   string message = "ping";
 
   while (true) {
-    SendMessageToClient(session_id, message);
+    SendMessageToClient(client_id, message);
 
-    auto search = time_since_last_ping.find(session_id);
+    auto search = time_since_last_ping.find(client_id);
 
     if (search == time_since_last_ping.end()) {
-      time_since_last_ping.insert(make_pair(session_id, 0));
-      search = time_since_last_ping.find(session_id);
+      time_since_last_ping.insert(make_pair(client_id, 0));
+      search = time_since_last_ping.find(client_id);
     }
 
     sleep(10);
@@ -319,8 +319,22 @@ void Server::PingClient(int session_id)
     search->second += 10;
 
     if (search->second > 60) {
-      DisconnectClient(session_id);
+      DisconnectClient(client_id);
       return;
     }
   }
+}
+
+void Server::HandlePingResponse(int client_id)
+{
+  auto search = time_since_last_ping.find(client_id);
+
+  if (search == time_since_last_ping.end()) {
+    time_since_last_ping.insert(make_pair(client_id, 0));
+    search = time_since_last_ping.find(client_id);
+  }
+
+  cout << "resetting ping time for client " << client_id << endl;
+
+  search->second = 0;
 }

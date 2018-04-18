@@ -22,11 +22,11 @@ public:
 
   const std::string GetAddress() const;
 
-//  bool IsOpen() const;
+  bool IsOpen() const;
 
   void Start();
 
-//  void Close();
+  void Close();
 
 private:
   std::shared_ptr<boost::asio::ip::tcp::socket> socket;
