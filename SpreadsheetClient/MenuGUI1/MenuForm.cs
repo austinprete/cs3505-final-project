@@ -17,7 +17,6 @@ namespace MenuGUI
         private SocketState socket_state;
         List<string> spreadsheet_names;
         private bool LoggedOut = false;
-        //Form createNewForm;
         CreateNewGUI.CreateNewForm CNF;
 
 
@@ -104,7 +103,6 @@ namespace MenuGUI
         private void LogOutButton_Click(object sender, EventArgs e)
         {
             LoggedOut = true;
-            this.Close();
         }
 
         /// <summary>
@@ -120,7 +118,8 @@ namespace MenuGUI
                 socket_state.theSocket.Disconnect(true);
                 socket_state.theSocket.Close();
             }
-                
+            if (!LoggedOut)
+                Application.Exit();
         }
         /// <summary>
         /// receive message from server 
@@ -143,20 +142,7 @@ namespace MenuGUI
             CNF = new CreateNewGUI.CreateNewForm();
             CNF.ShowDialog();
             string name = CNF.Get_SpreadsheetNameTextBox_Text();
-            
-//            createNewForm = new Form();
-//            createNewForm.Width = 400;
-//            createNewForm.Height = 250;
-//            createNewForm.Text = "Enter the new name for the spreadsheet";
-//;
-//            TextBox textBox = new TextBox() {  Left = (400-150)/2, Top = 50, Width = 150  };
-//            Button confirmation = new Button() { Text = "Confirm", Left = 150, Width = 100, Top = 90 };
 
-//            confirmation.Click += new EventHandler(CloseCreateNew);
-//            createNewForm.Controls.Add(confirmation);
-//            createNewForm.Controls.Add(textBox);
-//            createNewForm.ShowDialog();
-//            string name = textBox.Text;
 
             Networking.Send(socket_state, "load " + name);
             socket_state.sb.Clear();

@@ -52,8 +52,7 @@ namespace MenuGUI
                 try
                 {
                     Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                    //ServerNameTextBox.Text = "Server Name";
-                    //ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
+                    Hide();
                 }
                 catch
                 {
@@ -79,6 +78,7 @@ namespace MenuGUI
         private void create_menu()
         {
             //this.Hide();
+
             MenuForm mf = new MenuForm(spreadsheet_list, server_socket);
             mf.Text = "Spreadsheet Application -- " + ServerNameTextBox.Text;
             mf.ShowDialog();
@@ -94,7 +94,6 @@ namespace MenuGUI
             server_socket.callMe = ProcessMessage;
             Networking.Send(server_socket, "register");
             Networking.GetData(server_socket);
-            // create_menu();
         }
 
 
@@ -119,8 +118,8 @@ namespace MenuGUI
                 spreadsheet_list.RemoveAt(spreadsheet_list.Count - 1);
                 if (menu)
                 {
-                    create_menu();
                     menu = false;
+                    create_menu();
                 }
 
 
@@ -172,6 +171,7 @@ namespace MenuGUI
                     try
                     {
                         Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                        Hide();
                     }
                     catch
                     {
@@ -224,6 +224,7 @@ namespace MenuGUI
                     try
                     {
                         Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
+                        Hide();
                     }
                     catch
                     {
