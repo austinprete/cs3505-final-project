@@ -134,7 +134,7 @@ void Server::ProcessMessage(long client_id, string &message)
 //    cout << "ERROR: Received unrecognized message type \"" << message_type << "\"" << endl;
 //  }
 
-  cout << "Received message from client " << client_id << ": " << message;
+  cout << "Received message from client " << client_id << ": " << message << endl;
 
 }
 
