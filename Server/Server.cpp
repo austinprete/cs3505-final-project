@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <thread>
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
