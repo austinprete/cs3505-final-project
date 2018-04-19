@@ -18,7 +18,7 @@ namespace SS
     /// The type of delegate used to register for SelectionChanged events
     /// </summary>
     /// <param name="sender"></param>
-    
+
     public delegate void SelectionChangedHandler(SpreadsheetPanel sender);
 
 
@@ -31,7 +31,7 @@ namespace SS
     /// 
     /// None of the cells are editable.  They are for display purposes only.
     /// </summary>
-    
+
     public partial class SpreadsheetPanel : UserControl
     {
 
@@ -59,7 +59,7 @@ namespace SS
         /// <summary>
         /// Creates an empty SpreadsheetPanel
         /// </summary>
-        
+
         public SpreadsheetPanel()
         {
 
@@ -89,7 +89,7 @@ namespace SS
             hScroll.Scroll += drawingPanel.HandleHScroll;
             vScroll.Scroll += drawingPanel.HandleVScroll;
 
-            
+
             InitializeComponent();
         }
 
@@ -97,7 +97,7 @@ namespace SS
         /// <summary>
         /// Clears the display.
         /// </summary>
-        
+
         public void Clear()
         {
             drawingPanel.Clear();
@@ -128,7 +128,7 @@ namespace SS
         /// <param name="row"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        
+
         public bool GetValue(int col, int row, out string value)
         {
             return drawingPanel.GetValue(col, row, out value);
@@ -142,7 +142,7 @@ namespace SS
         /// <param name="col"></param>
         /// <param name="row"></param>
         /// <returns></returns>
-        
+
         public bool SetSelection(int col, int row)
         {
             return drawingPanel.SetSelection(col, row);
@@ -155,7 +155,7 @@ namespace SS
         /// </summary>
         /// <param name="col"></param>
         /// <param name="row"></param>
-        
+
         public void GetSelection(out int col, out int row)
         {
             drawingPanel.GetSelection(out col, out row);
@@ -166,7 +166,8 @@ namespace SS
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SpreadsheetPanel_KeyPress(object sender, KeyPressEventArgs e) {
+        private void SpreadsheetPanel_KeyPress(object sender, KeyPressEventArgs e)
+        {
             startEditingCell();
 
             int row, col;
@@ -175,17 +176,21 @@ namespace SS
             GetValue(col, row, out currentValue);
 
             //If backspace is pressed
-            if (e.KeyChar == Convert.ToChar(Keys.Back)) {
-                if (currentValue == "") {
+            if (e.KeyChar == Convert.ToChar(Keys.Back))
+            {
+                if (currentValue == "")
+                {
                     return;
                 }
-                currentValue = currentValue.Remove(currentValue.Length-1);
-                SetValue(col,row,currentValue);
+                currentValue = currentValue.Remove(currentValue.Length - 1);
+                SetValue(col, row, currentValue);
                 return;
             }
 
             //If enter is pressed
-            if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
+
                 enterDel();
                 return;
             }
@@ -193,6 +198,7 @@ namespace SS
             //Otherwise add the new key to the cell
             currentValue += e.KeyChar;
             SetValue(col, row, currentValue);
+
         }
 
 
@@ -216,8 +222,8 @@ namespace SS
                 hScroll.LargeChange = (Width - SCROLLBAR_WIDTH) / DATA_COL_WIDTH;
             }
         }
-        
-        
+
+
         /// <summary>
         /// The event used to send notifications of a selection change
         /// </summary>
@@ -228,7 +234,7 @@ namespace SS
         /// <summary>
         /// Used internally to keep track of cell addresses
         /// </summary>
-        
+
         private class Address
         {
 
@@ -248,7 +254,8 @@ namespace SS
 
             public override bool Equals(object obj)
             {
- 	            if ((obj == null) || !(obj is Address)) {
+                if ((obj == null) || !(obj is Address))
+                {
                     return false;
                 }
                 Address a = (Address)obj;
@@ -257,7 +264,7 @@ namespace SS
 
         }
 
-        
+
 
 
         /// <summary>
@@ -275,9 +282,9 @@ namespace SS
             // Coordinate of cell in upper-left corner of display
             private int _firstColumn = 0;
             private int _firstRow = 0;
-            
+
             // The strings contained by the spreadsheet
-            private Dictionary<Address,String> _values;
+            private Dictionary<Address, String> _values;
 
             // The containing panel
             private SpreadsheetPanel _ssp;
@@ -440,7 +447,7 @@ namespace SS
                                       DATA_COL_WIDTH - 2,
                                       DATA_ROW_HEIGHT - 2));
                 }
-                
+
                 // Draw the text
                 foreach (KeyValuePair<Address, String> address in _values)
                 {
@@ -453,7 +460,7 @@ namespace SS
                     {
                         Region cellClip = new Region(new Rectangle(LABEL_COL_WIDTH + x * DATA_COL_WIDTH + PADDING,
                                                                    LABEL_ROW_HEIGHT + y * DATA_ROW_HEIGHT,
-                                                                   DATA_COL_WIDTH - 2*PADDING,
+                                                                   DATA_COL_WIDTH - 2 * PADDING,
                                                                    DATA_ROW_HEIGHT));
                         cellClip.Intersect(clip);
                         e.Graphics.Clip = cellClip;
@@ -485,8 +492,8 @@ namespace SS
                       label,
                       f,
                       new SolidBrush(Color.Black),
-                      LABEL_COL_WIDTH + x*DATA_COL_WIDTH + (DATA_COL_WIDTH - width)/2,
-                      (LABEL_ROW_HEIGHT - height)/2);
+                      LABEL_COL_WIDTH + x * DATA_COL_WIDTH + (DATA_COL_WIDTH - width) / 2,
+                      (LABEL_ROW_HEIGHT - height) / 2);
             }
 
 
@@ -505,8 +512,8 @@ namespace SS
                     label,
                     f,
                     new SolidBrush(Color.Black),
-                    LABEL_COL_WIDTH - width- PADDING,
-                    LABEL_ROW_HEIGHT + y * DATA_ROW_HEIGHT + (DATA_ROW_HEIGHT-height)/2);
+                    LABEL_COL_WIDTH - width - PADDING,
+                    LABEL_ROW_HEIGHT + y * DATA_ROW_HEIGHT + (DATA_ROW_HEIGHT - height) / 2);
             }
 
 
@@ -519,8 +526,8 @@ namespace SS
             protected override void OnMouseClick(MouseEventArgs e)
             {
                 base.OnClick(e);
-                int x = (e.X-LABEL_COL_WIDTH) / DATA_COL_WIDTH;
-                int y = (e.Y-LABEL_ROW_HEIGHT) / DATA_ROW_HEIGHT;
+                int x = (e.X - LABEL_COL_WIDTH) / DATA_COL_WIDTH;
+                int y = (e.Y - LABEL_ROW_HEIGHT) / DATA_ROW_HEIGHT;
                 if (e.X > LABEL_COL_WIDTH && e.Y > LABEL_ROW_HEIGHT && (x + _firstColumn < COL_COUNT) && (y + _firstRow < ROW_COUNT))
                 {
                     _selectedCol = x + _firstColumn;
@@ -535,6 +542,6 @@ namespace SS
 
         }
 
-        
+
     }
 }
