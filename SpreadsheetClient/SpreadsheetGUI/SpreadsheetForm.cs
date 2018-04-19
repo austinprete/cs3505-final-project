@@ -119,6 +119,7 @@ namespace SpreadsheetGUI
             {
                 if (data == ((Char)3).ToString())
                 {
+                    ss.sb.Remove(0, data.Length);
                     continue;
                 }
 
@@ -136,8 +137,15 @@ namespace SpreadsheetGUI
                 else if (data.StartsWith("change "))
                 {
                     string cellName = data.Substring("change ".Length, data.IndexOf(":"));
-                    string cellContents = data.Substring(data.IndexOf(":") + 1);
-                    spreadsheet.SetContentsOfCell(cellName, cellContents);
+                    string cellContents = data.Substring(cellName.IndexOf(":") + 1);
+                    ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
+
+                    ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
+
+                    // Update the displayed cell info for the newly modified cell 
+                    DisplayCellInfo(dependentCol, dependentRow);
+                    // Updates the displayed values of each of the dependent cells (this includes the modified cell)
+                    UpdateDependentCells(dependents);
                 }
                 Console.WriteLine(data);
                 ss.sb.Remove(0, data.Length);

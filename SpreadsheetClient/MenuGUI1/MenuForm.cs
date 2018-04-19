@@ -148,6 +148,7 @@ namespace MenuGUI
 
             foreach (string data in parts) {
                 if (data == ((Char)3).ToString()) {
+                    ss.sb.Remove(0, data.Length);
                     continue;
                 }
 
