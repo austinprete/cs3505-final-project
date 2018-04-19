@@ -137,7 +137,7 @@ namespace SpreadsheetGUI
                 else if (data.StartsWith("change "))
                 {
                     string cellName = data.Substring("change ".Length, data.IndexOf(":"));
-                    string cellContents = data.Substring(data.IndexOf(":") + 1);
+                    string cellContents = data.Substring(cellName.IndexOf(":") + 1);
                     ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
 
                     ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
