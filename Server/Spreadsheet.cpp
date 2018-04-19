@@ -35,13 +35,20 @@ void Spreadsheet::WriteSpreadsheetToFile(const string &directory) const
     string was_edit = undo_entry.first ? "true" : "false";
 
     undo_history_string.append(was_edit);
-    undo_history_string.push_back((char) 3);
+    undo_history_string.push_back((char) 1);
 
     undo_history_string.append(undo_entry.second.first);
-    undo_history_string.push_back((char) 3);
+    undo_history_string.push_back((char) 1);
 
     undo_history_string.append(undo_entry.second.second);
-    undo_history_string.push_back((char) 3);
+    undo_history_string.push_back((char) 1);
+
+    undo_history_string.push_back((char) 2);
+  }
+
+  // Pop final separator off
+  if (!undo_history.empty()) {
+    undo_history_string.pop_back();
   }
 
   xml_node<> *undo_history_node = doc.allocate_node(node_element, "undo_history", undo_history_string.c_str());
@@ -180,6 +187,30 @@ Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(std::string name, std::string 
   doc.parse<0>(xmlFile.data());
 
   Spreadsheet *sheet = new Spreadsheet(name, path);
+
+
+  string undo_history_string = doc.first_node("spreadsheet")->first_node("undo_history")->value();
+
+  vector<string> undo_entries;
+  split(undo_entries, undo_history_string, is_from_range(2, 2));
+
+  for (auto &undo_entry : undo_entries) {
+    vector<string> undo_values;
+    split(undo_values, undo_entry, is_from_range(1, 1));
+
+    bool is_edit = (undo_values.at(0) == "true");
+
+    string cell_name = undo_values.at(1);
+
+    string cell_contents;
+
+    if (undo_values.size() == 3) {
+      cell_contents = undo_values.at(2);
+    }
+
+    sheet->undo_history.emplace_back(is_edit, std::make_pair(cell_name, cell_contents));
+  }
+
 
   xml_node<> *current_cell = doc.first_node("spreadsheet")->first_node("cell");
 
