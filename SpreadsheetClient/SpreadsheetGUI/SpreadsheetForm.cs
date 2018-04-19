@@ -145,7 +145,7 @@ namespace SpreadsheetGUI
 
             Networking.GetData(ss);
         }
-        
+
         private void send_ping_response()
         {
             Networking.Send(serverSocket, "ping_response ");
@@ -181,16 +181,17 @@ namespace SpreadsheetGUI
 
 
             spreadsheetPanel1.GetValue(col, row, out string contents);
-            System.Diagnostics.Debug.WriteLine(contents);
-            Networking.Send(serverSocket, "edit " + variableName + ":" + contents);
-
-            //Networking.Send(serverSocket, "edit " + ConvertColRowToName(col, row) + ":" + spreadsheet.GetCellContents(ConvertColRowToName(col, row)).ToString());
+            System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
+            send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
 
             spreadsheetPanel1.SetSelection(col, row + 1);
             Networking.GetData(serverSocket);
-            //EnterButton_Click(this, EventArgs.Empty);
         }
 
+        private void send_edit_to_server(SocketState ss, string s)
+        {
+            Networking.Send(ss, s);
+        }
         /// <summary>
         /// When a cell is selected
         /// </summary>
@@ -531,15 +532,26 @@ namespace SpreadsheetGUI
             }
 
         }
-
+        /// <summary>
+        /// send undo to server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //send undo to server
+             Networking.Send(serverSocket, "undo ");
         }
 
+        /// <summary>
+        /// send revert to server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void revertToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //sent revert to server 
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            string cell_name = ConvertColRowToName(col, row);
+            Networking.Send(serverSocket, "revert " + cell_name + " ");
         }
 
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
