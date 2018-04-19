@@ -67,15 +67,22 @@ void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_cont
     return;
   }
 
+  std::string previous_contents;
+
   auto search = spreadsheet_map.find(cell_name);
 
   if (search != spreadsheet_map.end()) {
+    if (!search->second.empty()) {
+      previous_contents = (*search).second.back();
+    }
     (*search).second.push_back(new_contents);
   } else {
     vector<string> contents_history;
     contents_history.push_back(new_contents);
     spreadsheet_map.insert(std::make_pair(cell_name, contents_history));
   }
+
+  undo_history.push_back(std::make_pair(true, std::make_pair(cell_name, previous_contents)));
 }
 
 std::string Spreadsheet::GetFullStateString() const
@@ -235,6 +242,9 @@ string Spreadsheet::RevertCellContents(string cell_name)
 
   if (search != spreadsheet_map.end()) {
     if (!(*search).second.empty()) {
+      string previous_contents = (*search).second.back();
+      undo_history.emplace_back(false, std::make_pair(cell_name, previous_contents));
+
       (*search).second.pop_back();
 
       if (!(*search).second.empty()) {
@@ -248,5 +258,13 @@ string Spreadsheet::RevertCellContents(string cell_name)
 
 std::pair<string, string> Spreadsheet::UndoLastChange()
 {
-  return std::make_pair(" ", " ");
-};
+  if (undo_history.empty()) {
+    return make_pair(nullptr, nullptr);
+  }
+
+  auto undo = undo_history.back();
+  undo_history.pop_back();
+
+  return make_pair(undo.second.first, undo.second.second);
+}
+

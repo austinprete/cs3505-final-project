@@ -45,9 +45,11 @@ public:
   static void
   WriteSpreadsheetsMapXmlFile(const std::string &folder, std::map<std::string, Spreadsheet *> *spreadsheets_map);
 
+//  void UndoChange(bool is_edit, std::string cell_name, std::string cell_contents);
+
 private:
   std::map<std::string, std::vector<std::string>> spreadsheet_map;
-  std::vector<std::pair<std::string, std::string>> undo_history;
+  std::vector<std::pair<bool, std::pair<std::string, std::string>>> undo_history;
   std::set<int> current_subscribers;
 
   std::string name;

@@ -278,6 +278,7 @@ void Server::EditSpreadsheet(long client_id, string cell_id, string cell_content
 
     spreadsheet->ChangeCellContents(cell_id, cell_contents);
     spreadsheet->WriteSpreadsheetToFile(spreadsheets_directory);
+//    spreadsheet->
 
     SendMessageToAllSpreadsheetSubscribers(spreadsheet->GetName(), "change " + cell_id + ":" + cell_contents);
   }
