@@ -119,6 +119,7 @@ namespace SpreadsheetGUI
             {
                 if (data == ((Char)3).ToString())
                 {
+                    ss.sb.Remove(0, data.Length);
                     continue;
                 }
 

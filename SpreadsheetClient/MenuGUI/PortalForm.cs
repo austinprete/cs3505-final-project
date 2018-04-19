@@ -120,6 +120,7 @@ namespace MenuGUI
             foreach (string currentData in parts) {
                 
                 if (currentData == ((Char)3).ToString()) {
+                    ss.sb.Remove(0, currentData.Length);
                     continue;
                 }
                 string data = currentData;
