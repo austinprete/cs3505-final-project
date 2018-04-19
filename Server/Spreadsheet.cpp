@@ -141,6 +141,8 @@ void Spreadsheet::WriteSpreadsheetsMapXmlFile(const std::string &folder,
   outfile.open(map_file_path, ios::out | ios::trunc);
 
   outfile << doc;
+
+  outfile.close();
 }
 
 Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(std::string name, std::string path, std::string directory)
