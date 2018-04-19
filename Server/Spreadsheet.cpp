@@ -28,6 +28,25 @@ void Spreadsheet::WriteSpreadsheetToFile(const string &directory) const
   xml_node<> *root_node = doc.allocate_node(node_element, "spreadsheet");
   doc.append_node(root_node);
 
+  string undo_history_string = "";
+
+  for (auto &undo_entry : undo_history) {
+
+    string was_edit = undo_entry.first ? "true" : "false";
+
+    undo_history_string.append(was_edit);
+    undo_history_string.push_back((char) 3);
+
+    undo_history_string.append(undo_entry.second.first);
+    undo_history_string.push_back((char) 3);
+
+    undo_history_string.append(undo_entry.second.second);
+    undo_history_string.push_back((char) 3);
+  }
+
+  xml_node<> *undo_history_node = doc.allocate_node(node_element, "undo_history", undo_history_string.c_str());
+  root_node->append_node(undo_history_node);
+
   for (auto &cell : spreadsheet_map) {
     xml_node<> *cell_node = doc.allocate_node(node_element, "cell");
 

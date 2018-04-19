@@ -422,6 +422,8 @@ void Server::UndoLastChange(long client_id)
     auto spreadsheet = spreadsheet_search->second;
     auto last_contents = spreadsheet->UndoLastChange();
 
+    spreadsheet->WriteSpreadsheetToFile(spreadsheets_directory);
+
     if (!last_contents.first.empty()) {
       string message = "change " + last_contents.first + ":" + last_contents.second;
       SendMessageToAllSpreadsheetSubscribers(spreadsheet->GetName(), message);
