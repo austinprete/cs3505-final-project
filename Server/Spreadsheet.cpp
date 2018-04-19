@@ -82,7 +82,7 @@ void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_cont
     spreadsheet_map.insert(std::make_pair(cell_name, contents_history));
   }
 
-  undo_history.push_back(std::make_pair(true, std::make_pair(cell_name, previous_contents)));
+  undo_history.emplace_back(true, std::make_pair(cell_name, previous_contents));
 }
 
 std::string Spreadsheet::GetFullStateString() const
@@ -259,11 +259,20 @@ string Spreadsheet::RevertCellContents(string cell_name)
 std::pair<string, string> Spreadsheet::UndoLastChange()
 {
   if (undo_history.empty()) {
-    return make_pair(nullptr, nullptr);
+    return make_pair("", "");
   }
 
   auto undo = undo_history.back();
   undo_history.pop_back();
+
+  if (undo.first) {
+    string cell_name = undo.second.first;
+    auto cell_search = spreadsheet_map.find(cell_name);
+
+    if (cell_search != spreadsheet_map.end()) {
+      cell_search->second.pop_back();
+    }
+  }
 
   return make_pair(undo.second.first, undo.second.second);
 }

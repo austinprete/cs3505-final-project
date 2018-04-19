@@ -70,6 +70,8 @@ private:
   void HandleFocusMessage(int client_id, std::string cell_id);
 
   void HandleUnfocusMessage(int client_id);
+
+  void UndoLastChange(long client_id);
 };
 
 #endif //SERVER_H

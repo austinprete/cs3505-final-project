@@ -109,7 +109,8 @@ void Server::ProcessMessage(long client_id, string &message)
       EditSpreadsheet(client_id, tokenized_edit_info.at(0), tokenized_edit_info.at(1));
     }
   } else if (message_type == "undo") {
-    cout << "Running undo()" << endl;
+    cout << "Running UndoLastChange()" << endl;
+    UndoLastChange(client_id);
   } else if (message_type == "revert") {
     cout << "Running RevertSpreadsheetCell()" << endl;
 
@@ -411,4 +412,21 @@ void Server::HandleUnfocusMessage(int client_id)
   if (auto spt = session.lock()) {
     (*spt).Unfocus();
   }
+}
+
+void Server::UndoLastChange(long client_id)
+{
+  auto spreadsheet_search = open_spreadsheets_map.find(client_id);
+
+  if (spreadsheet_search != open_spreadsheets_map.end()) {
+    auto spreadsheet = spreadsheet_search->second;
+    auto last_contents = spreadsheet->UndoLastChange();
+
+    if (!last_contents.first.empty()) {
+      string message = "change " + last_contents.first + ":" + last_contents.second;
+      SendMessageToAllSpreadsheetSubscribers(spreadsheet->GetName(), message);
+    }
+
+  }
+
 }
