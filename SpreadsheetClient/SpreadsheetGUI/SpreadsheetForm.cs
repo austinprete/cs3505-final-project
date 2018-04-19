@@ -107,51 +107,45 @@ namespace SpreadsheetGUI
         /// <param name="ss"></param>
         public void Spreadsheet_ProcessMessage(SocketState ss)
         {
-            string allData = ss.sb.ToString();
-            string[] parts = allData.Split((Char)3);
+            lock (spreadsheet) {
+                string allData = ss.sb.ToString();
+                string[] parts = allData.Split((Char)3);
 
-            if (parts.Length == 1)
-            {
-                return;
-            }
+                if (parts.Length == 1) {
+                    return;
+                }
 
-            foreach (string data in parts)
-            {
-                if (data == ((Char)3).ToString())
-                {
+                foreach (string data in parts) {
+                    if (data == ((Char)3).ToString()) {
+                        ss.sb.Remove(0, data.Length);
+                        continue;
+                    }
+
+                    //It's an incomplete message, wait for later
+                    if (data.StartsWith("ping_response")) {
+                        timeout = false;
+                        pingDelay = 0;
+                    } else if (data.StartsWith("ping") && data.Length < 12) {
+                        // Networking.Send(serverSocket, "ping_response ");
+                        send_ping_response();
+                    } else if (data.StartsWith("change ")) {
+                        string cellName = data.Substring("change ".Length, data.IndexOf(":") - "change ".Length);
+                        string cellContents = data.Substring(data.IndexOf(":") + 1);
+                        ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
+
+                        ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
+
+                        // Update the displayed cell info for the newly modified cell
+                        DisplayCellInfo(dependentCol, dependentRow);
+                        // Updates the displayed values of each of the dependent cells (this includes the modified cell)
+                        UpdateDependentCells(dependents);
+                    }
+                    Console.WriteLine(data);
                     ss.sb.Remove(0, data.Length);
-                    continue;
                 }
 
-                //It's an incomplete message, wait for later
-                if (data.StartsWith("ping_response"))
-                {
-                    timeout = false;
-                    pingDelay = 0;
-                }
-                else if (data.StartsWith("ping") && data.Length < 12)
-                {
-                    // Networking.Send(serverSocket, "ping_response ");
-                    send_ping_response();
-                }
-                else if (data.StartsWith("change "))
-                {
-                    string cellName = data.Substring("change ".Length, data.IndexOf(":"));
-                    string cellContents = data.Substring(cellName.IndexOf(":") + 1);
-                    ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
-
-                    ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
-
-                    // Update the displayed cell info for the newly modified cell 
-                    DisplayCellInfo(dependentCol, dependentRow);
-                    // Updates the displayed values of each of the dependent cells (this includes the modified cell)
-                    UpdateDependentCells(dependents);
-                }
-                Console.WriteLine(data);
-                ss.sb.Remove(0, data.Length);
+                Networking.GetData(ss);
             }
-
-            Networking.GetData(ss);
         }
 
         private void send_ping_response()
@@ -581,7 +575,8 @@ namespace SpreadsheetGUI
                 ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
 
                 // Update the displayed cell info for the newly modified cell 
-                DisplayCellInfo(dependentCol, dependentRow);
+                MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
+                //DisplayCellInfo(dependentCol, dependentRow);
                 // Updates the displayed values of each of the dependent cells (this includes the modified cell)
                 UpdateDependentCells(dependents);
             }
