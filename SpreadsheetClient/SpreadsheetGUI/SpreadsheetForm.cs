@@ -136,7 +136,8 @@ namespace SpreadsheetGUI
                         ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
 
                         // Update the displayed cell info for the newly modified cell
-                        DisplayCellInfo(dependentCol, dependentRow);
+                        MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
+                        //DisplayCellInfo(dependentCol, dependentRow);
                         // Updates the displayed values of each of the dependent cells (this includes the modified cell)
                         UpdateDependentCells(dependents);
                     }
