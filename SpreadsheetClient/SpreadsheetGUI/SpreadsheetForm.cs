@@ -107,28 +107,37 @@ namespace SpreadsheetGUI
         /// <param name="ss"></param>
         public void Spreadsheet_ProcessMessage(SocketState ss)
         {
-            lock (spreadsheet) {
+            lock (spreadsheet)
+            {
                 string allData = ss.sb.ToString();
                 string[] parts = allData.Split((Char)3);
 
-                if (parts.Length == 1) {
+                if (parts.Length == 1)
+                {
                     return;
                 }
 
-                foreach (string data in parts) {
-                    if (data == ((Char)3).ToString()) {
+                foreach (string data in parts)
+                {
+                    if (data == ((Char)3).ToString())
+                    {
                         ss.sb.Remove(0, data.Length);
                         continue;
                     }
 
                     //It's an incomplete message, wait for later
-                    if (data.StartsWith("ping_response")) {
+                    if (data.StartsWith("ping_response"))
+                    {
                         timeout = false;
                         pingDelay = 0;
-                    } else if (data.StartsWith("ping") && data.Length < 12) {
+                    }
+                    else if (data.StartsWith("ping") && data.Length < 12)
+                    {
                         // Networking.Send(serverSocket, "ping_response ");
                         send_ping_response();
-                    } else if (data.StartsWith("change ")) {
+                    }
+                    else if (data.StartsWith("change "))
+                    {
                         string cellName = data.Substring("change ".Length, data.IndexOf(":") - "change ".Length);
                         string cellContents = data.Substring(data.IndexOf(":") + 1);
                         ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
@@ -173,13 +182,13 @@ namespace SpreadsheetGUI
         /// Is called from spreadsheet panel and indicates that the enter button was pressed
         /// </summary>
         private void EnterPressedOnPanel()
-
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string variableName = ConvertColRowToName(col, row);
 
             // spreadsheet.SetContentsOfCell(variableName, t);
-            Networking.Send(serverSocket, "unfocus ");
+            //Networking.Send(serverSocket, "unfocus ");
+            send_edit_to_server(serverSocket, "unfocus ");
             isEditing = false;
 
 
@@ -281,15 +290,17 @@ namespace SpreadsheetGUI
         /// </summary>
         /// <param name="sender">the sender of the event</param>
         /// <param name="e">the arguments of the event</param>
+
         //private void EnterButton_Click(object sender, EventArgs e)
         //{
         //    // If the ErrorMsgBox was being displayed, it should now be hidden.
         //    ErrorMsgBox.Visible = false;
 
-        //    spreadsheetPanel1.GetSelection(out int col, out int row);
-        //    string variableName = ConvertColRowToName(col, row);
-        //    spreadsheetPanel1.GetValue(col, row, out string contents);
-        //    Networking.Send(serverSocket, "edit " + variableName + ":" + contents);
+        //    //spreadsheetPanel1.GetSelection(out int col, out int row);
+        //    //string variableName = ConvertColRowToName(col, row);
+        //    //spreadsheetPanel1.GetValue(col, row, out string contents);
+        //    //Networking.Send(serverSocket, "edit " + variableName + ":" + contents);
+        //    EnterPressedOnPanel();
 
 
         //}
@@ -344,6 +355,174 @@ namespace SpreadsheetGUI
             //new SpreadsheetForm().Show();
         }
 
+        /// <summary>
+        /// This method keeps track of the extra feature. During spreadsheet use
+        /// This method keeps track of the last 10 key presses the user entered
+        /// into the contents text box on the spreadsheet. When the user presses
+        /// enter, this method checks if the user's last 10 key presses match the 
+        /// konami code (list that contains a specific sequence of key presses). 
+        /// If the last key presses match the code, our extra feature form is activated.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void KeyDownHandler(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) //checks if enter is pressed
+            {
+                if (lastKeyPresses.Count == 10 && lastKeyPresses.SequenceEqual(konamiCode)) //checks if there were 10 key presses and if they match the konami code
+                {
+                    lastKeyPresses.Clear();
+                    ExtraFeatureForm rick = new ExtraFeatureForm();
+                    rick.Roll(); //shows the ExtraFeatureForm 
+                    return;
+                }
+                else
+                {
+                    // EnterButton_Click(sender, null); //If the code is not entered, this line makes sure the enter key follows its enter key logic
+                }
+            }
+
+            lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
+
+            if (lastKeyPresses.Count > 10)
+            {
+                lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
+            }
+
+        }
+        /// <summary>
+        /// send undo to server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Networking.Send(serverSocket, "undo ");
+        }
+
+        /// <summary>
+        /// send revert to server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void revertToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            string cell_name = ConvertColRowToName(col, row);
+            Networking.Send(serverSocket, "revert " + cell_name + " ");
+        }
+
+        private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            TerminateConnection();
+            closeDel(serverSocket);
+
+        }
+
+        public void load_spreadsheet(List<string> cells)
+        {
+            foreach (string cell_n_contents in cells)
+            {
+                string[] split = cell_n_contents.Split(':');
+                spreadsheet.SetContentsOfCell(split[0], split[1]);
+
+                ISet<string> dependents = spreadsheet.SetContentsOfCell(split[0], split[1]);
+
+                ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
+
+                // Update the displayed cell info for the newly modified cell 
+                MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
+                //DisplayCellInfo(dependentCol, dependentRow);
+                // Updates the displayed values of each of the dependent cells (this includes the modified cell)
+                UpdateDependentCells(dependents);
+            }
+        }
+
+        private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+                EnterButton_Click(this, EventArgs.Empty);
+            }*/
+
+        }
+        private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            //{
+            //   // EnterButton_Click(this, EventArgs.Empty);
+            //}
+
+        }
+
+       /* private void ArrowPressedOnPanel()
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Left))
+            {
+                spreadsheetPanel1.GetSelection(out int col, out int row);
+                string variableName = ConvertColRowToName(col, row);
+
+                // spreadsheet.SetContentsOfCell(variableName, t);
+                // Networking.Send(serverSocket, "unfocus ");
+                send_edit_to_server(serverSocket, "unfocus ");
+
+                isEditing = false;
+
+                spreadsheetPanel1.GetValue(col, row, out string contents);
+                System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
+                send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
+
+                spreadsheetPanel1.SetSelection(col + 1, row);
+                Networking.GetData(serverSocket);
+
+            }
+            else if (e.KeyChar == Convert.ToChar(Keys.Right))
+            {
+
+                spreadsheetPanel1.GetSelection(out int col, out int row);
+                if (col != 0)
+                {
+                    string variableName = ConvertColRowToName(col, row);
+
+                    // spreadsheet.SetContentsOfCell(variableName, t);
+                    // Networking.Send(serverSocket, "unfocus ");
+                    send_edit_to_server(serverSocket, "unfocus ");
+
+                    isEditing = false;
+
+                    spreadsheetPanel1.GetValue(col, row, out string contents);
+                    System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
+                    send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
+
+                    spreadsheetPanel1.SetSelection(col - 1, row);
+                    Networking.GetData(serverSocket);
+                }
+            }
+            else if (e.KeyChar == Convert.ToChar(Keys.Down))
+            {
+                EnterPressedOnPanel();
+            }
+            else if (e.KeyChar == Convert.ToChar(Keys.Up))
+            {
+                spreadsheetPanel1.GetSelection(out int col, out int row);
+                if (row != 0)
+                {
+                    string variableName = ConvertColRowToName(col, row);
+
+                    // spreadsheet.SetContentsOfCell(variableName, t);
+                    // Networking.Send(serverSocket, "unfocus ");
+                    send_edit_to_server(serverSocket, "unfocus ");
+
+                    isEditing = false;
+
+                    spreadsheetPanel1.GetValue(col, row, out string contents);
+                    System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
+                    send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
+
+                    spreadsheetPanel1.SetSelection(col, row - 1);
+                    Networking.GetData(serverSocket);
+                }
+            }
+        }*/
         /// <summary>
         /// Click event handler for the "Save" button of the menu, opens a save file dialog
         /// for the user to choose a location to save the spreadsheet to.
@@ -500,102 +679,5 @@ namespace SpreadsheetGUI
             form.ShowDialog();
         }
 
-        /// <summary>
-        /// This method keeps track of the extra feature. During spreadsheet use
-        /// This method keeps track of the last 10 key presses the user entered
-        /// into the contents text box on the spreadsheet. When the user presses
-        /// enter, this method checks if the user's last 10 key presses match the 
-        /// konami code (list that contains a specific sequence of key presses). 
-        /// If the last key presses match the code, our extra feature form is activated.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void KeyDownHandler(object sender, System.Windows.Forms.KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter) //checks if enter is pressed
-            {
-                if (lastKeyPresses.Count == 10 && lastKeyPresses.SequenceEqual(konamiCode)) //checks if there were 10 key presses and if they match the konami code
-                {
-                    lastKeyPresses.Clear();
-                    ExtraFeatureForm rick = new ExtraFeatureForm();
-                    rick.Roll(); //shows the ExtraFeatureForm 
-                    return;
-                }
-                else
-                {
-                    // EnterButton_Click(sender, null); //If the code is not entered, this line makes sure the enter key follows its enter key logic
-                }
-            }
-
-            lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
-
-            if (lastKeyPresses.Count > 10)
-            {
-                lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
-            }
-
-        }
-        /// <summary>
-        /// send undo to server
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-             Networking.Send(serverSocket, "undo ");
-        }
-
-        /// <summary>
-        /// send revert to server
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void revertToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-            string cell_name = ConvertColRowToName(col, row);
-            Networking.Send(serverSocket, "revert " + cell_name + " ");
-        }
-
-        private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            TerminateConnection();
-            closeDel(serverSocket);
-
-        }
-
-        public void load_spreadsheet(List<string> cells)
-        {
-            foreach (string cell_n_contents in cells)
-            {
-                string[] split = cell_n_contents.Split(':');
-                spreadsheet.SetContentsOfCell(split[0], split[1]);
-
-                ISet<string> dependents = spreadsheet.SetContentsOfCell(split[0], split[1]);
-
-                ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
-
-                // Update the displayed cell info for the newly modified cell 
-                MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
-                //DisplayCellInfo(dependentCol, dependentRow);
-                // Updates the displayed values of each of the dependent cells (this includes the modified cell)
-                UpdateDependentCells(dependents);
-            }
-        }
-
-        private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
-                EnterButton_Click(this, EventArgs.Empty);
-            }*/
-        }
-
-        private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            //if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            //{
-            //   // EnterButton_Click(this, EventArgs.Empty);
-            //}
-        }
     }
 }

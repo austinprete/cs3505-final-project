@@ -114,7 +114,7 @@ namespace MenuGUI
         {
             LoggedOut = true;
             Networking.Send(socket_state, "disconnect ");
-           Close();
+            Close();
         }
 
         /// <summary>
@@ -142,18 +142,22 @@ namespace MenuGUI
             string allData = ss.sb.ToString();
             string[] parts = allData.Split((Char)3);
 
-            if (parts.Length == 1) {
+            if (parts.Length == 1)
+            {
                 return;
             }
 
-            foreach (string data in parts) {
-                if (data == ((Char)3).ToString()) {
+            foreach (string data in parts)
+            {
+                if (data == ((Char)3).ToString())
+                {
                     ss.sb.Remove(0, data.Length);
                     continue;
                 }
 
                 //check if it's a "Connection_Accepted" message
-                if (data.StartsWith("full_state")) {
+                if (data.StartsWith("full_state"))
+                {
                     List<string> cells = data.Substring(11).Split('\n').ToList<string>();
                     cells.RemoveAt(cells.Count - 1);
                     create_spreadsheet(cells);
@@ -176,13 +180,15 @@ namespace MenuGUI
             spreadsheet.ShowDialog();
         }
 
-        private void spreadsheet_closed(SocketState socket) {
+        private void spreadsheet_closed(SocketState socket)
+        {
             //socket_state = socket;
             //socket_state.callMe = MenuForm_ProcessMessage;
             Application.Exit();
         }
 
-        private void CreateNewButton_Click(object sender, EventArgs e) {
+        private void CreateNewButton_Click(object sender, EventArgs e)
+        {
             CNF = new CreateNewGUI.CreateNewForm();
             CNF.ShowDialog();
             string name = CNF.Get_SpreadsheetNameTextBox_Text();
@@ -211,6 +217,19 @@ namespace MenuGUI
         private void LogOutButton_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             //Same as click, fill when finished
+        }
+
+        private void SpreadsheetListBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
+                string name = (string)SpreadsheetListBox.SelectedValue;
+
+                Networking.Send(socket_state, "load " + name);
+                socket_state.sb.Clear();
+                Networking.GetData(socket_state);
+                LoadButton.Enabled = false;
+            }
         }
     }
 }
