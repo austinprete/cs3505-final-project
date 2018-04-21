@@ -191,26 +191,29 @@ Spreadsheet *Spreadsheet::LoadSpreadsheetFromFile(std::string name, std::string 
 
   string undo_history_string = doc.first_node("spreadsheet")->first_node("undo_history")->value();
 
-  vector<string> undo_entries;
-  split(undo_entries, undo_history_string, is_from_range(2, 2));
+  if (!undo_history_string.empty()) {
 
-  for (auto &undo_entry : undo_entries) {
-    vector<string> undo_values;
-    split(undo_values, undo_entry, is_from_range(1, 1));
+    vector<string> undo_entries;
+    split(undo_entries, undo_history_string, is_from_range(2, 2));
 
-    bool is_edit = (undo_values.at(0) == "true");
+    for (auto &undo_entry : undo_entries) {
+      vector<string> undo_values;
+      split(undo_values, undo_entry, is_from_range(1, 1));
 
-    string cell_name = undo_values.at(1);
+      bool is_edit = (undo_values.at(0) == "true");
 
-    string cell_contents;
+      string cell_name = undo_values.at(1);
 
-    if (undo_values.size() == 3) {
-      cell_contents = undo_values.at(2);
+      string cell_contents;
+
+      if (undo_values.size() == 3) {
+        cell_contents = undo_values.at(2);
+      }
+
+      sheet->undo_history.emplace_back(is_edit, std::make_pair(cell_name, cell_contents));
     }
 
-    sheet->undo_history.emplace_back(is_edit, std::make_pair(cell_name, cell_contents));
   }
-
 
   xml_node<> *current_cell = doc.first_node("spreadsheet")->first_node("cell");
 
