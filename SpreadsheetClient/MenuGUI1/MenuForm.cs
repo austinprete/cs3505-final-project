@@ -20,6 +20,7 @@ namespace MenuGUI
         List<string> spreadsheet_names;
         private bool LoggedOut = false;
         CreateNewGUI.CreateNewForm CNF;
+        
 
         public bool GetLoggedOut()
         {
@@ -114,7 +115,7 @@ namespace MenuGUI
         {
             LoggedOut = true;
             Networking.Send(socket_state, "disconnect ");
-           Close();
+            Close();
         }
 
         /// <summary>
@@ -175,10 +176,11 @@ namespace MenuGUI
             spreadsheet.ShowDialog();
         }
 
+        // GET RID OF THIS!!!
         private void spreadsheet_closed(SocketState socket) {
             //socket_state = socket;
             //socket_state.callMe = MenuForm_ProcessMessage;
-            Application.Exit();
+            //Close();
         }
 
         private void CreateNewButton_Click(object sender, EventArgs e) {
@@ -192,10 +194,7 @@ namespace MenuGUI
             Networking.GetData(socket_state);
 
         }
-
-        //private void CloseCreateNew(object sender, EventArgs e) {
-        //    createNewForm.Close();
-        //}
+        
 
         private void LoadButton_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {

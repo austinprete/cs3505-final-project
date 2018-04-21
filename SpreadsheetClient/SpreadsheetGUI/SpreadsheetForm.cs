@@ -462,7 +462,7 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Close();
         }
 
         /// <summary>
@@ -553,7 +553,6 @@ namespace SpreadsheetGUI
         {
             TerminateConnection();
             closeDel(serverSocket);
-
         }
 
         public void load_spreadsheet(List<string> cells)
@@ -587,6 +586,11 @@ namespace SpreadsheetGUI
             //{
             //   // EnterButton_Click(this, EventArgs.Empty);
             //}
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

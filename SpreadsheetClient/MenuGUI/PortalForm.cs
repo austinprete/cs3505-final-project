@@ -55,13 +55,14 @@ namespace MenuGUI
                 try
                 {
                     Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                    //Hide();
+                    WindowState = FormWindowState.Minimized;
                 }
                 catch
                 {
                     MessageBox.Show("Unable to connect to server.");
                     LoginButton.Enabled = true;
                     ServerNameTextBox.Enabled = true;
+                    WindowState = FormWindowState.Normal;
                 }
                 LoginButton.Enabled = true;
                 ServerNameTextBox.Enabled = true;
@@ -83,11 +84,7 @@ namespace MenuGUI
             mf = new MenuForm(spreadsheet_list, server_socket);
             mf.Text = "Spreadsheet Application -- " + ServerNameTextBox.Text;
             mf.ShowDialog();
-        }
-
-        private void close_menu() {
-            //Show this form again
-            //Show();
+            menuClosed = true;
         }
         
 
@@ -102,8 +99,7 @@ namespace MenuGUI
             Networking.Send(server_socket, "register");
             Networking.GetData(server_socket);
         }
-
-
+        
         /// <summary>
         /// Processes incoming data and adds it to the message buffer in the socket state
         /// </summary>
@@ -143,8 +139,12 @@ namespace MenuGUI
                 if (data.StartsWith("disconnect"))
                     Show();
             }
-            Networking.GetData(ss);
+            if (!menuClosed)
+                Networking.GetData(ss);
 
+            lock (ss) {
+                WindowState = FormWindowState.Normal;
+            }
         }
 
 
@@ -169,16 +169,14 @@ namespace MenuGUI
                     try
                     {
                         Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                       // Hide();
+                        WindowState = FormWindowState.Minimized;
                     }
                     catch
                     {
-
+                        WindowState = FormWindowState.Normal;
                     }
                     LoginButton.Enabled = true;
                     ServerNameTextBox.Enabled = true;
-                    //ServerNameTextBox.Text = "Server Name";
-                    //ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
                 }
             }
         }
@@ -222,7 +220,7 @@ namespace MenuGUI
                     try
                     {
                         Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                        //Hide();
+                        WindowState = FormWindowState.Minimized;
                     }
                     catch
                     {
