@@ -190,7 +190,6 @@ namespace SS
             //If enter is pressed
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
-
                 enterDel();
                 return;
             }
