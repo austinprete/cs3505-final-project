@@ -64,6 +64,9 @@ namespace SpreadsheetGUI
             // Assign event handlers
             spreadsheetPanel1.SelectionChanged += CellSelected;
             spreadsheetPanel1.enterDel = EnterPressedOnPanel;
+            spreadsheetPanel1.upDel = up_pressed_on_panel;
+            spreadsheetPanel1.leftDel = left_pressed_on_panel;
+            spreadsheetPanel1.rightDel = right_pressed_on_panel;
             spreadsheetPanel1.startEditingCell = StartEditingCell;
             FormClosing += SpreadsheetFormClosing;
             CellContentsTextBox.KeyDown += KeyDownHandler;
@@ -100,6 +103,7 @@ namespace SpreadsheetGUI
             }
             Networking.Send(serverSocket, "ping ");
 
+            System.Diagnostics.Debug.WriteLine("CLIENT: ping");
         }
         /// <summary>
         /// A command was received from the server, we need to process it
@@ -161,6 +165,7 @@ namespace SpreadsheetGUI
         private void send_ping_response()
         {
             Networking.Send(serverSocket, "ping_response ");
+            System.Diagnostics.Debug.WriteLine("CLIENT: ping_response");
         }
         private void TerminateConnection()
         {
@@ -184,6 +189,7 @@ namespace SpreadsheetGUI
         private void EnterPressedOnPanel()
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
+
             string variableName = ConvertColRowToName(col, row);
 
             // spreadsheet.SetContentsOfCell(variableName, t);
@@ -193,7 +199,7 @@ namespace SpreadsheetGUI
 
 
             spreadsheetPanel1.GetValue(col, row, out string contents);
-            System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
+            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
             send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
 
             spreadsheetPanel1.SetSelection(col, row + 1);
@@ -291,19 +297,19 @@ namespace SpreadsheetGUI
         /// <param name="sender">the sender of the event</param>
         /// <param name="e">the arguments of the event</param>
 
-        //private void EnterButton_Click(object sender, EventArgs e)
-        //{
-        //    // If the ErrorMsgBox was being displayed, it should now be hidden.
-        //    ErrorMsgBox.Visible = false;
+        private void EnterButton_Click(object sender, EventArgs e)
+        {
+            // If the ErrorMsgBox was being displayed, it should now be hidden.
+            ErrorMsgBox.Visible = false;
 
-        //    //spreadsheetPanel1.GetSelection(out int col, out int row);
-        //    //string variableName = ConvertColRowToName(col, row);
-        //    //spreadsheetPanel1.GetValue(col, row, out string contents);
-        //    //Networking.Send(serverSocket, "edit " + variableName + ":" + contents);
-        //    EnterPressedOnPanel();
+            //spreadsheetPanel1.GetSelection(out int col, out int row);
+            //string variableName = ConvertColRowToName(col, row);
+            //spreadsheetPanel1.GetValue(col, row, out string contents);
+            //Networking.Send(serverSocket, "edit " + variableName + ":" + contents);
+            EnterPressedOnPanel();
 
 
-        //}
+        }
 
         /// <summary>
         /// Provided a set of cell names, updates their corresponding cells on the
@@ -440,25 +446,46 @@ namespace SpreadsheetGUI
 
         private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
                 EnterButton_Click(this, EventArgs.Empty);
-            }*/
+            }
 
         }
         private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            //{
-            //   // EnterButton_Click(this, EventArgs.Empty);
-            //}
+            //    if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            //    {
+            //        EnterButton_Click(this, EventArgs.Empty);
+            //    }
 
         }
 
-       /* private void ArrowPressedOnPanel()
+    private void left_pressed_on_panel()
         {
-            if (e.KeyChar == Convert.ToChar(Keys.Left))
+
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            string variableName = ConvertColRowToName(col, row);
+
+            // spreadsheet.SetContentsOfCell(variableName, t);
+            // Networking.Send(serverSocket, "unfocus ");
+            send_edit_to_server(serverSocket, "unfocus ");
+
+            isEditing = false;
+
+            spreadsheetPanel1.GetValue(col, row, out string contents);
+            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+            send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
+
+            spreadsheetPanel1.SetSelection(col + 1, row);
+            Networking.GetData(serverSocket);
+        }
+
+
+        private void right_pressed_on_panel()
+        {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            if (col != 0)
             {
-                spreadsheetPanel1.GetSelection(out int col, out int row);
                 string variableName = ConvertColRowToName(col, row);
 
                 // spreadsheet.SetContentsOfCell(variableName, t);
@@ -471,58 +498,34 @@ namespace SpreadsheetGUI
                 System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
                 send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
 
-                spreadsheetPanel1.SetSelection(col + 1, row);
+                spreadsheetPanel1.SetSelection(col - 1, row);
                 Networking.GetData(serverSocket);
-
             }
-            else if (e.KeyChar == Convert.ToChar(Keys.Right))
+
+        }
+
+        private void up_pressed_on_panel()
+        {
+
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            if (row != 0)
             {
+                string variableName = ConvertColRowToName(col, row);
 
-                spreadsheetPanel1.GetSelection(out int col, out int row);
-                if (col != 0)
-                {
-                    string variableName = ConvertColRowToName(col, row);
+                // spreadsheet.SetContentsOfCell(variableName, t);
+                // Networking.Send(serverSocket, "unfocus ");
+                send_edit_to_server(serverSocket, "unfocus ");
 
-                    // spreadsheet.SetContentsOfCell(variableName, t);
-                    // Networking.Send(serverSocket, "unfocus ");
-                    send_edit_to_server(serverSocket, "unfocus ");
+                isEditing = false;
 
-                    isEditing = false;
+                spreadsheetPanel1.GetValue(col, row, out string contents);
+                System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
+                send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
 
-                    spreadsheetPanel1.GetValue(col, row, out string contents);
-                    System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
-                    send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
-
-                    spreadsheetPanel1.SetSelection(col - 1, row);
-                    Networking.GetData(serverSocket);
-                }
+                spreadsheetPanel1.SetSelection(col, row - 1);
+                Networking.GetData(serverSocket);
             }
-            else if (e.KeyChar == Convert.ToChar(Keys.Down))
-            {
-                EnterPressedOnPanel();
-            }
-            else if (e.KeyChar == Convert.ToChar(Keys.Up))
-            {
-                spreadsheetPanel1.GetSelection(out int col, out int row);
-                if (row != 0)
-                {
-                    string variableName = ConvertColRowToName(col, row);
-
-                    // spreadsheet.SetContentsOfCell(variableName, t);
-                    // Networking.Send(serverSocket, "unfocus ");
-                    send_edit_to_server(serverSocket, "unfocus ");
-
-                    isEditing = false;
-
-                    spreadsheetPanel1.GetValue(col, row, out string contents);
-                    System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
-                    send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
-
-                    spreadsheetPanel1.SetSelection(col, row - 1);
-                    Networking.GetData(serverSocket);
-                }
-            }
-        }*/
+        }
         /// <summary>
         /// Click event handler for the "Save" button of the menu, opens a save file dialog
         /// for the user to choose a location to save the spreadsheet to.

@@ -56,6 +56,16 @@ namespace SS
         public EnterDelegate enterDel;
         public EnterDelegate startEditingCell;
 
+        public delegate void LeftDelegate();
+        public LeftDelegate leftDel;
+
+        public delegate void RightDelegate();
+        public RightDelegate rightDel;
+
+        public delegate void UpDelegate();
+        public UpDelegate upDel;
+
+
         /// <summary>
         /// Creates an empty SpreadsheetPanel
         /// </summary>
@@ -191,6 +201,26 @@ namespace SS
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
                 enterDel();
+                return;
+            }
+            else if (e.KeyChar == Convert.ToChar(Keys.Right))
+            {
+                rightDel();
+                return;
+            }
+            else if (e.KeyChar == Convert.ToChar(Keys.Left))
+            {
+                leftDel();
+                return;
+            }
+            else if (e.KeyChar == Convert.ToChar(Keys.Down))
+            {
+                enterDel();
+                return;
+            }
+            else if (e.KeyChar == Convert.ToChar(Keys.Up))
+            {
+                upDel();
                 return;
             }
 
@@ -371,10 +401,10 @@ namespace SS
                 _firstColumn = args.NewValue;
                 Invalidate();
             }
-
             public void HandleVScroll(Object sender, ScrollEventArgs args)
             {
                 _firstRow = args.NewValue;
+
                 Invalidate();
             }
 

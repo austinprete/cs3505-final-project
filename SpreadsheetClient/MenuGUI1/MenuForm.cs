@@ -184,7 +184,7 @@ namespace MenuGUI
         {
             //socket_state = socket;
             //socket_state.callMe = MenuForm_ProcessMessage;
-            Application.Exit();
+            //Application.Exit();
         }
 
         private void CreateNewButton_Click(object sender, EventArgs e)
