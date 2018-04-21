@@ -55,14 +55,14 @@ namespace MenuGUI
                 try
                 {
                     Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                    WindowState = FormWindowState.Minimized;
+                    //WindowState = FormWindowState.Minimized;
                 }
                 catch
                 {
                     MessageBox.Show("Unable to connect to server.");
                     LoginButton.Enabled = true;
                     ServerNameTextBox.Enabled = true;
-                    WindowState = FormWindowState.Normal;
+                    //WindowState = FormWindowState.Normal;
                 }
                 LoginButton.Enabled = true;
                 ServerNameTextBox.Enabled = true;
@@ -142,10 +142,6 @@ namespace MenuGUI
             }
             if (!menuClosed)
                 Networking.GetData(ss);
-
-            lock (ss) {
-                WindowState = FormWindowState.Normal;
-            }
         }
 
 
@@ -170,11 +166,11 @@ namespace MenuGUI
                     try
                     {
                         Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                        WindowState = FormWindowState.Minimized;
+                        //WindowState = FormWindowState.Minimized;
                     }
                     catch
                     {
-                        WindowState = FormWindowState.Normal;
+                        //WindowState = FormWindowState.Normal;
                     }
                     LoginButton.Enabled = true;
                     ServerNameTextBox.Enabled = true;
@@ -221,7 +217,7 @@ namespace MenuGUI
                     try
                     {
                         Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                        WindowState = FormWindowState.Minimized;
+                        //WindowState = FormWindowState.Minimized;
                     }
                     catch
                     {
