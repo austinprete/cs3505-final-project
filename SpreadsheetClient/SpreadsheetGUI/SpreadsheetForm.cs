@@ -184,6 +184,7 @@ namespace SpreadsheetGUI
             }
         }
 
+
         private void leavecell(int c, int r, string s)
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
