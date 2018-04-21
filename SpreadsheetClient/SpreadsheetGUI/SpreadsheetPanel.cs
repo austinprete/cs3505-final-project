@@ -8,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Network;
 
 
 namespace SS
@@ -65,6 +66,8 @@ namespace SS
         public delegate void UpDelegate();
         public UpDelegate upDel;
 
+        public delegate void LeaveCell(int c, int r, string s);
+        public LeaveCell leave_cell;
 
         /// <summary>
         /// Creates an empty SpreadsheetPanel
@@ -226,8 +229,8 @@ namespace SS
 
             //Otherwise add the new key to the cell
             currentValue += e.KeyChar;
+            leave_cell(col, row, currentValue);
             SetValue(col, row, currentValue);
-
         }
 
 

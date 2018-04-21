@@ -68,6 +68,7 @@ namespace SpreadsheetGUI
             spreadsheetPanel1.leftDel = left_pressed_on_panel;
             spreadsheetPanel1.rightDel = right_pressed_on_panel;
             spreadsheetPanel1.startEditingCell = StartEditingCell;
+            spreadsheetPanel1.leave_cell = leavecell;
             FormClosing += SpreadsheetFormClosing;
             CellContentsTextBox.KeyDown += KeyDownHandler;
 
@@ -181,6 +182,26 @@ namespace SpreadsheetGUI
                 Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row));
                 isEditing = true;
             }
+        }
+
+        private void leavecell(int c, int r, string s)
+        {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+
+            string variableName = ConvertColRowToName(col, row);
+
+            // spreadsheet.SetContentsOfCell(variableName, t);
+            //Networking.Send(serverSocket, "unfocus ");
+            send_edit_to_server(serverSocket, "unfocus ");
+            isEditing = false;
+
+
+            spreadsheetPanel1.GetValue(col, row, out string contents);
+            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+            send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
+
+            //spreadsheetPanel1.SetSelection(col, row + 1);
+            Networking.GetData(serverSocket);
         }
 
         /// <summary>
