@@ -28,7 +28,7 @@ void Spreadsheet::WriteSpreadsheetToFile(const string &directory) const
   xml_node<> *root_node = doc.allocate_node(node_element, "spreadsheet");
   doc.append_node(root_node);
 
-  string undo_history_string = "";
+  string undo_history_string;
 
   for (auto &undo_entry : undo_history) {
 
@@ -320,7 +320,9 @@ std::pair<string, string> Spreadsheet::UndoLastChange()
     auto cell_search = spreadsheet_map.find(cell_name);
 
     if (cell_search != spreadsheet_map.end()) {
-      cell_search->second.pop_back();
+      if (!cell_search->second.empty()) {
+        cell_search->second.pop_back();
+      }
     }
   }
 
