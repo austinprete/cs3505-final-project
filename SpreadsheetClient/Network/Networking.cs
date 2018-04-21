@@ -172,7 +172,6 @@ namespace Network {
                 // Start listening for more parts of a message, or more new messages
                 state.callMe(state);
             } catch {
-
             }
 
 
