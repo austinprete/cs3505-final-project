@@ -406,11 +406,13 @@ namespace SpreadsheetGUI
                 }
                 else
                 {
+                    lastKeyPresses.Clear();
                     // EnterButton_Click(sender, null); //If the code is not entered, this line makes sure the enter key follows its enter key logic
                 }
+            } else {
+                lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
             }
 
-            lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
 
             if (lastKeyPresses.Count > 10)
             {
