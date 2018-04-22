@@ -229,7 +229,7 @@ namespace SS
 
             //Otherwise add the new key to the cell
             currentValue += e.KeyChar;
-            leave_cell(col, row, currentValue);
+            //leave_cell(col, row, currentValue);
             SetValue(col, row, currentValue);
         }
 
