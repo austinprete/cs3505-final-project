@@ -9,6 +9,7 @@
 #include <boost/algorithm/string.hpp>
 #include <regex>
 #include <thread>
+#include <mutex>
 
 #include <boost/regex.hpp>
 
