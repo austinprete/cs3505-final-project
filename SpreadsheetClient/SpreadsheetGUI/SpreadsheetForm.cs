@@ -112,7 +112,7 @@ namespace SpreadsheetGUI
         /// <param name="ss"></param>
         public void Spreadsheet_ProcessMessage(SocketState ss)
         {
-            lock (spreadsheet)
+            //lock (spreadsheet)
             {
                 string allData = ss.sb.ToString();
                 string[] parts = allData.Split((Char)3);
@@ -437,7 +437,7 @@ namespace SpreadsheetGUI
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string cell_name = ConvertColRowToName(col, row);
-            Networking.Send(serverSocket, "revert " + cell_name + " ");
+            Networking.Send(serverSocket, "revert " + cell_name);
         }
 
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
