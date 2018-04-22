@@ -175,7 +175,7 @@ void Server::SendMessageToAllClients(string message) const
 
 void Server::SendMessageToClient(long client_id, string message) const
 {
-  message.append(" ");
+//  message.append(" ");
   message += '\3';
 
   auto search = clients.find(client_id);

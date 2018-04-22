@@ -6,8 +6,9 @@
 #include <iostream>
 #include <vector>
 #include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/classification.hpp>
 #include <regex>
+#include <thread>
+
 #include <boost/regex.hpp>
 
 #include "Spreadsheet.h"
@@ -22,7 +23,7 @@ using namespace boost;
 Spreadsheet::Spreadsheet(std::string name, std::string file_path) : spreadsheet_map(), name(name), file_path(file_path)
 {}
 
-void Spreadsheet::WriteSpreadsheetToFile(const string &directory) const
+void Spreadsheet::WriteSpreadsheetToFile(const string &directory)
 {
   xml_document<> doc;
   xml_node<> *root_node = doc.allocate_node(node_element, "spreadsheet");
@@ -72,6 +73,8 @@ void Spreadsheet::WriteSpreadsheetToFile(const string &directory) const
 
     root_node->append_node(cell_node);
   }
+
+  std::lock_guard<std::mutex> guard(file_mutex);
 
   ofstream outfile;
   outfile.open(directory + "/" + file_path, ios::out | ios::trunc);

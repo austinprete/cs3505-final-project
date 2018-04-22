@@ -9,6 +9,8 @@
 #include <set>
 #include <string>
 #include <map>
+#include <thread>
+
 
 class Spreadsheet
 {
@@ -34,7 +36,7 @@ public:
 
   std::string GetFile() const;
 
-  void WriteSpreadsheetToFile(const std::string &directory) const;
+  void WriteSpreadsheetToFile(const std::string &directory);
 
   static void CreateSpreadsheetsMapXmlFile(const std::string &folder);
 
@@ -51,6 +53,8 @@ private:
   std::map<std::string, std::vector<std::string>> spreadsheet_map;
   std::vector<std::pair<bool, std::pair<std::string, std::string>>> undo_history;
   std::set<int> current_subscribers;
+
+  std::mutex file_mutex;
 
   std::string name;
   std::string file_path;
