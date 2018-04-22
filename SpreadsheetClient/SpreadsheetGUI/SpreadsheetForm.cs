@@ -395,29 +395,7 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void KeyDownHandler(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter) //checks if enter is pressed
-            {
-                if (lastKeyPresses.Count == 10 && lastKeyPresses.SequenceEqual(konamiCode)) //checks if there were 10 key presses and if they match the konami code
-                {
-                    lastKeyPresses.Clear();
-                    ExtraFeatureForm rick = new ExtraFeatureForm();
-                    rick.Roll(); //shows the ExtraFeatureForm 
-                    return;
-                }
-                else
-                {
-                    lastKeyPresses.Clear();
-                    // EnterButton_Click(sender, null); //If the code is not entered, this line makes sure the enter key follows its enter key logic
-                }
-            } else {
-                lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
-            }
-
-
-            if (lastKeyPresses.Count > 10)
-            {
-                lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
-            }
+            
 
         }
         /// <summary>
@@ -495,17 +473,32 @@ namespace SpreadsheetGUI
 
         private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+            /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
                 EnterButton_Click(this, EventArgs.Empty);
-            }
+            }*/
 
         }
         private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //    if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            //    {
-            //        EnterButton_Click(this, EventArgs.Empty);
-            //    }
+            if (e.KeyChar == (Char)13) //checks if enter is pressed
+             {
+                if (lastKeyPresses.Count == 10 && lastKeyPresses.SequenceEqual(konamiCode)) //checks if there were 10 key presses and if they match the konami code
+                {
+                    lastKeyPresses.Clear();
+                    ExtraFeatureForm rick = new ExtraFeatureForm();
+                    rick.Roll(); //shows the ExtraFeatureForm 
+                    return;
+                } else {
+                    EnterButton_Click(sender, EventArgs.Empty); //If the code is not entered, this line makes sure the enter key follows its enter key logic
+                }
+            } else {
+                //lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
+            }
+
+
+            if (lastKeyPresses.Count > 10) {
+                lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
+            }
 
         }
 
