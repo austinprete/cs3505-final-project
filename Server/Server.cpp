@@ -44,7 +44,7 @@ void Server::RunServerLoop()
     };
 
     if (idle) {
-      usleep(250);
+      usleep(100);
     }
   }
 }
