@@ -2,6 +2,7 @@
 // Created by Austin Prete on 4/9/18.
 //
 
+#include <cstdlib>
 #include <string>
 #include <iostream>
 #include <vector>

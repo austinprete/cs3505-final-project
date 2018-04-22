@@ -6,6 +6,7 @@
 #define SPREADSHEET_H
 
 
+#include <cstdlib>
 #include <set>
 #include <string>
 #include <map>
