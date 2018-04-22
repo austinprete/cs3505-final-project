@@ -213,6 +213,12 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
   string spreadsheet_file_name = boost::regex_replace(spreadsheet_name, boost::regex("\\s+"), "_");
   spreadsheet_file_name.append(".xml");
 
+  auto open_spreadsheet_search = open_spreadsheets_map.find(client_id);
+
+  if (open_spreadsheet_search != open_spreadsheets_map.end()) {
+    return;
+  }
+
   if (search != spreadsheets.end()) {
     Spreadsheet *sheet = search->second;
 
