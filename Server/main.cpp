@@ -17,6 +17,11 @@
 using boost::asio::ip::tcp;
 using namespace std;
 
+void RunServer(boost::asio::io_service *service)
+{
+  service->run();
+}
+
 int main(int argc, char *argv[])
 {
   const string spreadsheets_dir = "spreadsheets";
@@ -36,8 +41,24 @@ int main(int argc, char *argv[])
 
     cout << "Running server on port " << port << endl;
     std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
-    io_service.run();
-    server_loop_thread.join();
+
+    std::thread server_thread(RunServer, &io_service);
+
+    while (true) {
+      string input;
+      cin >> input;
+
+      if (input == "quit") {
+        spreadsheet_server.ShutdownServer();
+        io_service.stop();
+        server_loop_thread.join();
+        server_thread.join();
+        break;
+      } else {
+        cout << "Unrecognized command: " << input << endl;
+      }
+    }
+
   }
   catch (std::exception &e) {
     std::cerr << "Exception: " << e.what() << "\n";

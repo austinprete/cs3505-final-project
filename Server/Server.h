@@ -25,19 +25,23 @@ public:
 
   void RunServerLoop();
 
+  void ShutdownServer();
 private:
-  static long current_session_id;
 
+  static long current_session_id;
   std::map<long, std::weak_ptr<Session> > clients;
   std::mutex clients_mutex;
   std::map<std::string, Spreadsheet *> spreadsheets;
   std::map<long, Spreadsheet *> open_spreadsheets_map;
-  std::map<long, long> time_since_last_ping;
 
+  std::map<long, long> time_since_last_ping;
   boost::asio::ip::tcp::acceptor acceptor;
+
   boost::asio::ip::tcp::socket socket;
 
   MessageQueue inbound_queue;
+
+  bool shutting_down = false;
 
   void AcceptConnection();
 

@@ -38,6 +38,10 @@ void Server::RunServerLoop()
   while (true) {
     bool idle = true;
 
+    if (shutting_down) {
+      return;
+    }
+
     // Returns true if there are still messages in the queue
     if (ProcessMessageInQueue()) {
       idle = false;
@@ -439,4 +443,14 @@ void Server::UndoLastChange(long client_id)
 
   }
 
+}
+
+void Server::ShutdownServer()
+{
+  cout << "Shutting down server." << endl;
+  SendMessageToAllClients("disconnect ");
+
+  shutting_down = true;
+
+  sleep(2);
 }
