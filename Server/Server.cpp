@@ -295,6 +295,7 @@ void Server::SendMessageToAllSpreadsheetSubscribers(std::string sheet_name, std:
     set<int> subscribing_clients = spreadsheet->GetSubscribers();
 
     for (auto client_id : subscribing_clients) {
+      cout << "Sending message to client " << client_id << ": " << message << endl;
       SendMessageToClient(client_id, message);
     }
   }
