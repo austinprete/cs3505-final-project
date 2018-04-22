@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <thread>
+#include <unistd.h>
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
@@ -43,7 +44,7 @@ void Server::RunServerLoop()
     };
 
     if (idle) {
-      sleep(1);
+      usleep(250);
     }
   }
 }
