@@ -428,6 +428,31 @@ namespace SpreadsheetGUI
             Networking.Send(serverSocket, "undo ");
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+
+            if (keyData == Keys.Up) {
+                //move up row
+                row--;
+            } else if (keyData == Keys.Down) {
+                //move down row
+                row++;
+            } else if (keyData == Keys.Left) {
+                //move left column
+                col--;
+            } else if (keyData == Keys.Right || keyData == Keys.Tab) {
+                //move down column
+                col++;
+            } else {
+                return base.ProcessCmdKey(ref msg, keyData);
+            }
+
+            
+            spreadsheetPanel1.SetSelection(col, row);
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         /// <summary>
         /// send revert to server
         /// </summary>
