@@ -31,13 +31,13 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.ErrorMsgBox = new System.Windows.Forms.TextBox();
             this.CellContentsTextBox = new System.Windows.Forms.TextBox();
-            this.spreadsheetPanel1 = new SS.SpreadsheetPanel();
             this.CellValueTextBox = new System.Windows.Forms.TextBox();
             this.CellNameTextbox = new System.Windows.Forms.TextBox();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.revertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.spreadsheetPanel1 = new SS.SpreadsheetPanel();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -80,17 +80,6 @@
             this.CellContentsTextBox.Size = new System.Drawing.Size(509, 26);
             this.CellContentsTextBox.TabIndex = 3;
             this.CellContentsTextBox.Visible = false;
-            // 
-            // spreadsheetPanel1
-            // 
-            this.spreadsheetPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.spreadsheetPanel1.Location = new System.Drawing.Point(8, 90);
-            this.spreadsheetPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-            this.spreadsheetPanel1.Size = new System.Drawing.Size(1200, 601);
-            this.spreadsheetPanel1.TabIndex = 2;
             // 
             // CellValueTextBox
             // 
@@ -146,6 +135,17 @@
             this.menuStrip1.Size = new System.Drawing.Size(1208, 33);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // spreadsheetPanel1
+            // 
+            this.spreadsheetPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.spreadsheetPanel1.Location = new System.Drawing.Point(8, 90);
+            this.spreadsheetPanel1.Margin = new System.Windows.Forms.Padding(4);
+            this.spreadsheetPanel1.Name = "spreadsheetPanel1";
+            this.spreadsheetPanel1.Size = new System.Drawing.Size(1200, 601);
+            this.spreadsheetPanel1.TabIndex = 2;
             // 
             // SpreadsheetForm
             // 
