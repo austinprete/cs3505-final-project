@@ -318,7 +318,10 @@ namespace SS
 
             public void Clear()
             {
-                _values.Clear();
+                lock (_values)
+                {
+                    _values.Clear();
+                }
                 Invalidate();
             }
 
@@ -337,7 +340,10 @@ namespace SS
                 }
                 else
                 {
-                    _values[a] = c;
+                    lock (_values)
+                    {
+                        _values[a] = c;
+                    }
                 }
                 Invalidate();
                 return true;
