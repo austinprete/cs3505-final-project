@@ -122,7 +122,9 @@ namespace MenuGUI
         {
             CreateNewGUI.CreateNewForm cnf = new CreateNewGUI.CreateNewForm();
             cnf.ShowDialog();
-            CurrentSpreadsheetName = cnf.Get_SpreadsheetNameTextBox_Text();
+            
+
+            CurrentSpreadsheetName = cnf.GetSpreadsheetNameTextBox_Text();
 
             Networking.Send(SocketState, "load " + CurrentSpreadsheetName);
             SocketState.sb.Clear();
@@ -154,37 +156,8 @@ namespace MenuGUI
 
 
 
-
-
-
-        
-
-
-
-        
-      
-        
-        
-        
-
-        
-        
-
-
-        
-
-        
-
-        
-
-        
-        /// <summary>
-        /// receive message from server 
-        /// </summary>
-        /// <param name="ss"></param>
         private void MenuForm_ProcessMessage(SocketState ss)
         {
-            
             string allData = ss.sb.ToString();
             string[] parts = allData.Split((Char)3);
             
@@ -201,7 +174,7 @@ namespace MenuGUI
                     continue;
                 }
                 
-                //check if it's a "Connection_Accepted" message
+                // Check if the message is "Connection_Accepted"
                 if (data.StartsWith("full_state"))
                 {
                     List<string> cells = data.Substring(11).Split('\n').ToList<string>();
@@ -210,11 +183,12 @@ namespace MenuGUI
                 }
                 else if (data.StartsWith("connect_accepted"))
                 {
-                    string data_substring = data.Substring(17);
+                    string dataSubstring = data.Substring(17);
 
-                    List<string> names = data_substring.Split('\n').ToList<string>();
+                    List<string> names = dataSubstring.Split('\n').ToList<string>();
                     names.RemoveAt(names.Count - 1);
                 }
+
                 Console.WriteLine(data);
                 if (ss.sb.Length >= data.Length)
                     ss.sb.Remove(0, data.Length);

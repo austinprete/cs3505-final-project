@@ -54,9 +54,9 @@
             this.CreateButton.Text = "Create";
             this.CreateButton.UseVisualStyleBackColor = false;
             this.CreateButton.Click += new System.EventHandler(this.CreateButton_Click);
+            this.CreateButton.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CreateButton_KeyPress);
             this.CreateButton.MouseEnter += new System.EventHandler(this.CreateButton_MouseEnter);
             this.CreateButton.MouseLeave += new System.EventHandler(this.CreateButton_MouseLeave);
-            this.CreateButton.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.CreateButton_PreviewKeyDown);
             // 
             // SpreadsheetNameTextBox
             // 
