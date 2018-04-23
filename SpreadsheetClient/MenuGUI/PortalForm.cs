@@ -23,7 +23,7 @@ namespace MenuGUI
         private Boolean menu = true;
         private MenuForm mf;
         private Boolean menuClosed = false;
-        
+
 
         public PortalForm()
         {
@@ -83,10 +83,12 @@ namespace MenuGUI
         {
             mf = new MenuForm(spreadsheet_list, server_socket);
             mf.Text = "Spreadsheet Application -- " + ServerNameTextBox.Text;
+            mf.SetServerNameLabel(ServerNameTextBox.Text);
             mf.ShowDialog();
             menuClosed = true;
         }
-        
+
+
 
         /// <summary>
         /// begin connection with server
@@ -99,7 +101,7 @@ namespace MenuGUI
             Networking.Send(server_socket, "register");
             Networking.GetData(server_socket);
         }
-        
+
         /// <summary>
         /// Processes incoming data and adds it to the message buffer in the socket state
         /// </summary>
@@ -109,24 +111,29 @@ namespace MenuGUI
             string allData = ss.sb.ToString();
             string[] parts = allData.Split((Char)3);
 
-            if (parts.Length == 1) {
+            if (parts.Length == 1)
+            {
                 return;
             }
 
-            foreach (string currentData in parts) {
-                
-                if (currentData == ((Char)3).ToString()) {
+            foreach (string currentData in parts)
+            {
+
+                if (currentData == ((Char)3).ToString())
+                {
                     ss.sb.Remove(0, currentData.Length);
                     continue;
                 }
                 string data = currentData;
                 //check if it's a "Connection_Accepted" message
-                if (data.StartsWith("connect")) {
+                if (data.StartsWith("connect"))
+                {
                     //remove "connect_accepted"
                     data = data.Substring(17);
                     spreadsheet_list = data.Split('\n').ToList<string>();
                     spreadsheet_list.RemoveAt(spreadsheet_list.Count - 1);
-                    if (menu) {
+                    if (menu)
+                    {
                         menu = false;
                         create_menu();
                     }
@@ -135,13 +142,15 @@ namespace MenuGUI
                 }//check if it's a "Connection_Accepted" message
 
                 Console.WriteLine(data);
-                ss.sb.Remove(0, data.Length);
+                if (ss.sb.Length >= data.Length)
+                    ss.sb.Remove(0, data.Length);
 
                 if (data.StartsWith("disconnect"))
                     Show();
             }
             if (!menuClosed)
-                Networking.GetData(ss);
+                //Networking.GetData(ss);
+                Networking.Send(server_socket, "disconnect ");
         }
 
 
@@ -221,7 +230,7 @@ namespace MenuGUI
                     }
                     catch
                     {
-
+                        System.Diagnostics.Debug.WriteLine("Whoops");
                     }
                     LoginButton.Enabled = true;
                     ServerNameTextBox.Enabled = true;

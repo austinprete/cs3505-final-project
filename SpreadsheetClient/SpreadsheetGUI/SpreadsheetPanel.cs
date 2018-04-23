@@ -192,10 +192,13 @@ namespace SS
             if (e.KeyChar == Convert.ToChar(Keys.Back))
             {
                 if (currentValue == "")
-                {
                     return;
-                }
-                currentValue = currentValue.Remove(currentValue.Length - 1);
+
+                if (currentValue.Length > 1)
+                    currentValue = currentValue.Remove(currentValue.Length - 1);
+                else
+                   currentValue = "";
+
                 SetValue(col, row, currentValue);
                 return;
             }
@@ -220,7 +223,7 @@ namespace SS
             else if (e.KeyChar == Convert.ToChar(Keys.Up))
             {
                 upDel();
-                return;
+                return;5
             }*/
 
             //Otherwise add the new key to the cell
@@ -229,8 +232,9 @@ namespace SS
                 return;
             }
             currentValue += e.KeyChar;
-            //leave_cell(col, row, currentValue);
+
             SetValue(col, row, currentValue);
+            //leave_cell(col, row, currentValue);
         }
 
 
@@ -351,9 +355,9 @@ namespace SS
                 }
 
                 Address a = new Address(col, row);
-                if (c == null || c == "")
+                if (c == null)
                 {
-                    _values.Remove(a);
+                   //_values()
                 }
                 else
                 {
@@ -573,7 +577,5 @@ namespace SS
             }
 
         }
-
-
     }
 }

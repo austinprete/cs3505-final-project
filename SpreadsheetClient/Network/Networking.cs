@@ -10,13 +10,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Network.Networking;
 
-namespace Network {
+namespace Network
+{
     /// <summary>
     /// This class holds all the necessary state to represent a socket connection
     /// Note that all of its fields are public because we are using it like a "struct"
     /// It is a simple collection of fields
     /// </summary>
-    public class SocketState {
+    public class SocketState
+    {
         public Socket theSocket;
         public int ID;
         public NetworkAction callMe;
@@ -27,7 +29,8 @@ namespace Network {
         // This is a larger (growable) buffer, in case a single receive does not contain the full message.
         public StringBuilder sb = new StringBuilder();
 
-        public SocketState(Socket s, int id) {
+        public SocketState(Socket s, int id)
+        {
             theSocket = s;
             ID = id;
         }
@@ -36,17 +39,20 @@ namespace Network {
     /// <summary>
     /// ConnectionState creates objects that contain all of the information regarding a network server connection
     /// </summary>
-    public class ConnectionState {
+    public class ConnectionState
+    {
         public TcpListener listener;
         public NetworkAction callMe;
 
-        public ConnectionState(TcpListener tcpListener, NetworkAction callBack) {
+        public ConnectionState(TcpListener tcpListener, NetworkAction callBack)
+        {
             listener = tcpListener;
             callMe = callBack;
         }
     }
 
-    public class Networking {
+    public class Networking
+    {
 
         public const int DEFAULT_PORT = 2112;
 
@@ -61,29 +67,36 @@ namespace Network {
         /// <param name="hostName">The host name or IP address</param>
         /// <param name="socket">The created Socket</param>
         /// <param name="ipAddress">The created IPAddress</param>
-        public static void MakeSocket(string hostName, out Socket socket, out IPAddress ipAddress) {
+        public static void MakeSocket(string hostName, out Socket socket, out IPAddress ipAddress)
+        {
             ipAddress = IPAddress.None;
             socket = null;
-            try {
+            try
+            {
                 // Establish the remote endpoint for the socket.
                 IPHostEntry ipHostInfo;
 
                 // Determine if the server address is a URL or an IP
-                try {
+                try
+                {
                     ipHostInfo = Dns.GetHostEntry(hostName);
                     bool foundIPV4 = false;
                     foreach (IPAddress addr in ipHostInfo.AddressList)
-                        if (addr.AddressFamily != AddressFamily.InterNetworkV6) {
+                        if (addr.AddressFamily != AddressFamily.InterNetworkV6)
+                        {
                             foundIPV4 = true;
                             ipAddress = addr;
                             break;
                         }
                     // Didn't find any IPV4 addresses
-                    if (!foundIPV4) {
+                    if (!foundIPV4)
+                    {
                         System.Diagnostics.Debug.WriteLine("Invalid addres: " + hostName);
                         throw new ArgumentException("Invalid address");
                     }
-                } catch (Exception) {
+                }
+                catch (Exception)
+                {
                     // see if host name is actually an ipaddress, i.e., 155.99.123.456
                     System.Diagnostics.Debug.WriteLine("using IP");
                     ipAddress = IPAddress.Parse(hostName);
@@ -98,7 +111,9 @@ namespace Network {
                 // such as for a game
                 socket.NoDelay = true;
 
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.Diagnostics.Debug.WriteLine("Unable to create socket. Error occured: " + e);
                 MessageBox.Show("Unable to create socket. Error occured: " + e.GetType());
                 socket = null;
@@ -112,7 +127,8 @@ namespace Network {
         /// </summary>
         /// <param name="hostName"> server to connect to </param>
         /// <returns></returns>
-        public static Socket ConnectToServer(NetworkAction callMe, string hostName) {
+        public static Socket ConnectToServer(NetworkAction callMe, string hostName)
+        {
             System.Diagnostics.Debug.WriteLine("connecting  to " + hostName);
 
             // Create a TCP/IP socket.
@@ -120,7 +136,8 @@ namespace Network {
             IPAddress ipAddress;
 
             MakeSocket(hostName, out socket, out ipAddress);
-            if (socket == null) {
+            if (socket == null)
+            {
                 return socket;
             }
 
@@ -134,14 +151,18 @@ namespace Network {
         /// This function is "called" by the operating system when the remote site acknowledges connect request
         /// </summary>
         /// <param name="ar"></param>
-        private static void ConnectedToServer(IAsyncResult ar) {
+        private static void ConnectedToServer(IAsyncResult ar)
+        {
             SocketState state = (SocketState)ar.AsyncState;
 
-            try {
+            try
+            {
                 // Complete the connection.
                 state.theSocket.EndConnect(ar);
                 System.Diagnostics.Debug.WriteLine("connected!");
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.Diagnostics.Debug.WriteLine("Unable to connect to server. Error occured: " + e);
                 return;
             }
@@ -154,14 +175,17 @@ namespace Network {
         /// handshake when it gets created
         /// </summary>
         /// <param name="ar"></param>
-        private static void ReceiveCallback(IAsyncResult ar) {
+        private static void ReceiveCallback(IAsyncResult ar)
+        {
             SocketState state = (SocketState)ar.AsyncState;
-            try {
+            try
+            {
 
                 int bytesRead = state.theSocket.EndReceive(ar);
 
                 // If the socket is still open
-                if (bytesRead > 0) {
+                if (bytesRead > 0)
+                {
                     string theMessage = Encoding.UTF8.GetString(state.messageBuffer, 0, bytesRead);
                     // Append the received data to the growable buffer.
                     // It may be an incomplete message, so we need to start building it up piece by piece
@@ -171,22 +195,37 @@ namespace Network {
                 // Continue the "event loop" that was started on line 96.
                 // Start listening for more parts of a message, or more new messages
                 state.callMe(state);
-            } catch {
+            }
+            catch (System.ObjectDisposedException ode)
+            {
+                foreach (var s in connectedSockets)
+                {
+                    disconnect((Socket)s.Value);
+                }
             }
 
 
+        }
+
+        private static void disconnect(Socket socket)
+        {
+            socket.Disconnect(true);
         }
 
         /// <summary>
         /// A callback invoked when a send operation completes
         /// </summary>
         /// <param name="ar"></param>
-        private static void SendCallback(IAsyncResult ar) {
-            try {
+        private static void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
                 SocketState ss = (SocketState)ar.AsyncState;
                 // Nothing much to do here, just conclude the send operation so the socket is happy.
                 ss.theSocket.EndSend(ar);
-            } catch {
+            }
+            catch
+            {
 
             }
 
@@ -197,15 +236,19 @@ namespace Network {
         /// </summary>
         /// <param name="ss">The socketstate containing the socket</param>
         /// <param name="message">The message to send</param>
-        public static void Send(SocketState ss, string message) {
+        public static void Send(SocketState ss, string message)
+        {
 
             message += (char)3;
             // Append a newline, since that is our protocol's terminating character for a message.
-            try {
+            try
+            {
                 //TODO we shouldn't have a new line
                 byte[] messageBytes = Encoding.UTF8.GetBytes(message);
                 ss.theSocket.BeginSend(messageBytes, 0, messageBytes.Length, SocketFlags.None, SendCallback, ss);
-            } catch {
+            }
+            catch
+            {
                 Networking.connectedSockets.Remove(ss.ID);
             }
 
@@ -215,8 +258,17 @@ namespace Network {
         /// Requests data from a socket state and adds it to the sockets stringbuilder when 
         /// </summary>
         /// <param name="state"></param>
-        public static void GetData(SocketState state) {
-            state.theSocket.BeginReceive(state.messageBuffer, 0, state.messageBuffer.Length, SocketFlags.None, ReceiveCallback, state);
+        public static void GetData(SocketState state)
+        {
+            try
+            {
+                state.theSocket.BeginReceive(state.messageBuffer, 0, state.messageBuffer.Length, SocketFlags.None, ReceiveCallback, state);
+            }
+            catch
+            {
+
+            }
+            
         }
 
         /*public static void ServerAwaitingClientLoop(NetworkAction action) {

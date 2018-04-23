@@ -46,9 +46,10 @@ namespace SpreadsheetGUI
         /// The constructor for the spreadsheet form, performs the intial
         /// set up such as setting event handlers.
         /// </summary>
-        public SpreadsheetForm(SocketState socket, SpreadsheetCloseDelegate ss)
+        public SpreadsheetForm(SocketState socket, SpreadsheetCloseDelegate ss, string name)
         {
             InitializeComponent();
+            Text = name;
             closeDel = ss;
 
             serverSocket = socket;
@@ -144,19 +145,36 @@ namespace SpreadsheetGUI
                     else if (data.StartsWith("change "))
                     {
                         string cellName = data.Substring("change ".Length, data.IndexOf(":") - "change ".Length);
-                        string cellContents = data.Substring(data.IndexOf(":") + 1);
-                        ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
+                        try
+                        {
+                            string cellContents = data.Substring(data.IndexOf(":") + 1);
+                            ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
 
-                        ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
+                            ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
 
-                        // Update the displayed cell info for the newly modified cell
-                        MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
-                        //DisplayCellInfo(dependentCol, dependentRow);
-                        // Updates the displayed values of each of the dependent cells (this includes the modified cell)
-                        UpdateDependentCells(dependents);
+                            // Update the displayed cell info for the newly modified cell
+                            MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
+                            //DisplayCellInfo(dependentCol, dependentRow);
+                            // Updates the displayed values of each of the dependent cells (this includes the modified cell)
+                            UpdateDependentCells(dependents);
+                        }
+                        catch (CircularException)
+                        {
+                            string cellContents = "";
+                            MessageBox.Show("There is a circular dependency. Unacceptable");
+                            cell_edit_to_server(serverSocket,cellName, cellContents);
+                            ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
+                            ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
+
+                            // Update the displayed cell info for the newly modified cell
+                            MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
+                            //DisplayCellInfo(dependentCol, dependentRow);
+                            // Updates the displayed values of each of the dependent cells (this includes the modified cell)
+                            UpdateDependentCells(dependents);
+                        }
                     }
-                    Console.WriteLine(data);
-                    ss.sb.Remove(0, data.Length);
+                    if (data.Length <= ss.sb.Length)
+                        ss.sb.Remove(0, data.Length);
                 }
 
                 Networking.GetData(ss);
@@ -199,9 +217,10 @@ namespace SpreadsheetGUI
 
             spreadsheetPanel1.GetValue(col, row, out string contents);
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-            send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
+            cell_edit_to_server(serverSocket, variableName, contents);
 
             //spreadsheetPanel1.SetSelection(col, row + 1);
+            //Networking.GetData(serverSocket);
             Networking.GetData(serverSocket);
         }
 
@@ -222,15 +241,31 @@ namespace SpreadsheetGUI
 
             spreadsheetPanel1.GetValue(col, row, out string contents);
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-            send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
+            cell_edit_to_server(serverSocket, variableName, contents);
 
             spreadsheetPanel1.SetSelection(col, row + 1);
             Networking.GetData(serverSocket);
         }
 
-        private void send_edit_to_server(SocketState ss, string s)
+        private void cell_edit_to_server(SocketState ss, string cellname, string s)
         {
-            Networking.Send(ss, s);
+            string cellContents = s;
+            try
+            {
+                ISet<string> dependents = spreadsheet.SetContentsOfCell(cellname, cellContents);
+
+                ConvertNameToColRow(cellname, out int dependentCol, out int dependentRow);
+            }
+            catch (CircularException)
+            {
+                cellContents = "";
+                MessageBox.Show("There is a circular dependency. Unacceptable");
+                //ISet<string> dependents = spreadsheet.SetContentsOfCell(cellname, cellContents);
+                ConvertNameToColRow(cellname, out int col, out int row);
+                spreadsheetPanel1.SetValue(col, row, cellContents);
+                
+            }
+            Networking.Send(ss, "edit " + cellname + ":" + cellContents);
         }
         /// <summary>
         /// When a cell is selected
@@ -395,7 +430,7 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void KeyDownHandler(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            
+
 
         }
         /// <summary>
@@ -408,26 +443,37 @@ namespace SpreadsheetGUI
             Networking.Send(serverSocket, "undo ");
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
             spreadsheetPanel1.GetSelection(out int col, out int row);
 
-            if (keyData == Keys.Up) {
+            if (keyData == Keys.Up)
+            {
                 //move up row
                 row--;
-            } else if (keyData == Keys.Down) {
+            }
+            else if (keyData == Keys.Down)
+            {
                 //move down row
                 row++;
-            } else if (keyData == Keys.Left) {
+            }
+            else if (keyData == Keys.Left)
+            {
+
                 //move left column
                 col--;
-            } else if (keyData == Keys.Right || keyData == Keys.Tab) {
+            }
+            else if (keyData == Keys.Right || keyData == Keys.Tab)
+            {
                 //move down column
                 col++;
-            } else {
+            }
+            else
+            {
                 return base.ProcessCmdKey(ref msg, keyData);
             }
 
-            
+
             spreadsheetPanel1.SetSelection(col, row);
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -454,21 +500,29 @@ namespace SpreadsheetGUI
 
         public void load_spreadsheet(List<string> cells)
         {
-            foreach (string cell_n_contents in cells)
+            try
             {
-                string[] split = cell_n_contents.Split(':');
-                spreadsheet.SetContentsOfCell(split[0], split[1]);
+                foreach (string cell_n_contents in cells)
+                {
+                    string[] split = cell_n_contents.Split(':');
+                    spreadsheet.SetContentsOfCell(split[0], split[1]);
 
-                ISet<string> dependents = spreadsheet.SetContentsOfCell(split[0], split[1]);
+                    ISet<string> dependents = spreadsheet.SetContentsOfCell(split[0], split[1]);
 
-                ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
+                    ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
 
-                // Update the displayed cell info for the newly modified cell 
-                MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
-                //DisplayCellInfo(dependentCol, dependentRow);
-                // Updates the displayed values of each of the dependent cells (this includes the modified cell)
-                UpdateDependentCells(dependents);
+                    // Update the displayed cell info for the newly modified cell 
+                    MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
+                    //DisplayCellInfo(dependentCol, dependentRow);
+                    // Updates the displayed values of each of the dependent cells (this includes the modified cell)
+                    UpdateDependentCells(dependents);
+                }
             }
+            catch (CircularException)
+            {
+
+            }
+           
         }
 
         private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
@@ -481,28 +535,37 @@ namespace SpreadsheetGUI
         private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (Char)13) //checks if enter is pressed
-             {
+            {
                 if (lastKeyPresses.Count == 10 && lastKeyPresses.SequenceEqual(konamiCode)) //checks if there were 10 key presses and if they match the konami code
                 {
                     lastKeyPresses.Clear();
                     ExtraFeatureForm rick = new ExtraFeatureForm();
                     rick.Roll(); //shows the ExtraFeatureForm 
                     return;
-                } else {
+                }
+                else
+                {
                     EnterButton_Click(sender, EventArgs.Empty); //If the code is not entered, this line makes sure the enter key follows its enter key logic
                 }
-            } else {
+            }
+            else
+            {
                 //lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
             }
 
 
-            if (lastKeyPresses.Count > 10) {
+            if (lastKeyPresses.Count > 10)
+            {
                 lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
             }
 
         }
 
-    private void left_pressed_on_panel()
+        private void send_edit_to_server(SocketState ss, string s)
+        {
+            Networking.Send(ss, s);
+        }
+        private void left_pressed_on_panel()
         {
 
             spreadsheetPanel1.GetSelection(out int col, out int row);
@@ -516,12 +579,11 @@ namespace SpreadsheetGUI
 
             spreadsheetPanel1.GetValue(col, row, out string contents);
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-            send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
+            cell_edit_to_server(serverSocket, variableName, contents);
 
             spreadsheetPanel1.SetSelection(col + 1, row);
             Networking.GetData(serverSocket);
         }
-
 
         private void right_pressed_on_panel()
         {
@@ -538,7 +600,7 @@ namespace SpreadsheetGUI
 
                 spreadsheetPanel1.GetValue(col, row, out string contents);
                 System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
-                send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
+                cell_edit_to_server(serverSocket, variableName, contents);
 
                 spreadsheetPanel1.SetSelection(col - 1, row);
                 Networking.GetData(serverSocket);
@@ -562,7 +624,7 @@ namespace SpreadsheetGUI
 
                 spreadsheetPanel1.GetValue(col, row, out string contents);
                 System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
-                send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
+                cell_edit_to_server(serverSocket, variableName, contents);
 
                 spreadsheetPanel1.SetSelection(col, row - 1);
                 Networking.GetData(serverSocket);
@@ -723,6 +785,5 @@ namespace SpreadsheetGUI
 
             form.ShowDialog();
         }
-
     }
 }
