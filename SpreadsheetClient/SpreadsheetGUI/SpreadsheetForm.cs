@@ -517,45 +517,29 @@ namespace SpreadsheetGUI
         private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
         {
             /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
-            //    EnterButton_Click(this, EventArgs.Empty);
-            //}*/
-            //spreadsheetPanel1.GetSelection(out int c, out int r);
-
-            //string variableName = ConvertColRowToName(c, r);
-
-            //// spreadsheet.SetContentsOfCell(variableName, t);
-            ////Networking.Send(serverSocket, "unfocus ");
-            //send_edit_to_server(serverSocket, "unfocus ");
-            //isEditing = false;
-
-
-            //spreadsheetPanel1.GetValue(c, r, out string contents);
-            ////if (contents == "")
-            ////    contents += e.KeyChar;
-            ////System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-            //cell_edit_to_server(serverSocket, variableName, contents);
-
-            //Networking.GetData(serverSocket);
-            spreadsheetPanel1_KeyPress(sender, e);
-        }
-        private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
-        {
+                EnterButton_Click(this, EventArgs.Empty);
+            }*/
             spreadsheetPanel1.GetSelection(out int c, out int r);
 
             string variableName = ConvertColRowToName(c, r);
 
+            spreadsheetPanel1.GetValue(c, r, out string current_contents);
+
+            current_contents += e.KeyChar;
+
+            spreadsheetPanel1.SetValue(c, r, current_contents);
+
+            // spreadsheet.SetContentsOfCell(variableName, t);
+            //Networking.Send(serverSocket, "unfocus ");
             send_edit_to_server(serverSocket, "unfocus ");
             isEditing = false;
 
 
             spreadsheetPanel1.GetValue(c, r, out string contents);
-            //if (contents == "")
-            //    contents += e.KeyChar;
-            //System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
             cell_edit_to_server(serverSocket, variableName, contents);
 
             Networking.GetData(serverSocket);
-
         }
 
         private void send_edit_to_server(SocketState ss, string s)

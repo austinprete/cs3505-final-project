@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CreateNewGUI
 {
     public partial class CreateNewForm : Form
     {
+        private bool CreateClicked;
+
+
         public CreateNewForm()
         {
             InitializeComponent();
         }
+
 
         private void CreateNewForm_Load(object sender, EventArgs e)
         {
@@ -23,29 +21,53 @@ namespace CreateNewGUI
             Height = 175;
         }
 
-        private void CreateButton_Click(object sender, EventArgs e)
+
+        public string GetSpreadsheetNameTextBox_Text()
         {
-            Close();
+            return SpreadsheetNameTextBox.Text;
         }
 
-        private void CreateButton_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+
+        private void CreateButton_Click(object sender, EventArgs e)
         {
-            CreateButton_Click(sender, e);
+            if (SpreadsheetNameTextBox.Text != "")
+            {
+                CreateClicked = true;
+                Close();
+            }
+            //else
+                // Display a message saying to enter something...
         }
+        
+
+        public bool GetCreateClicked()
+        {
+            return CreateClicked;
+        }
+
+
+        private void CreateButton_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+                CreateButton_Click(sender, e);
+        }
+
 
         private void CreateButton_MouseEnter(object sender, EventArgs e)
         {
             CreateButton.BackColor = Color.FromArgb(239, 239, 239);
         }
 
+
         private void CreateButton_MouseLeave(object sender, EventArgs e)
         {
             CreateButton.BackColor = Color.FromArgb(187, 187, 187);
         }
 
-        public string Get_SpreadsheetNameTextBox_Text()
+        private void SpreadsheetNameTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            return SpreadsheetNameTextBox.Text;
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+                CreateButton_Click(sender, e);
         }
     }
 }
