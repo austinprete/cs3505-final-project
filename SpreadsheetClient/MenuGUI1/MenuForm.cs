@@ -234,5 +234,15 @@ namespace MenuGUI
                 LoadButton_Click(sender, e);
             }
         }
+
+        private void SpreadsheetListBox_DoubleClick(object sender, EventArgs e)
+        {
+            CurrentSpreadsheetName = (string)SpreadsheetListBox.SelectedValue;
+
+            Networking.Send(socket_state, "load " + CurrentSpreadsheetName);
+            socket_state.sb.Clear();
+            Networking.GetData(socket_state);
+            LoadButton.Enabled = false;
+        }
     }
 }
