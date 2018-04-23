@@ -470,7 +470,11 @@ namespace SpreadsheetGUI
             }
             else
             {
-               return base.ProcessCmdKey(ref msg, keyData);
+                string value = "";
+                spreadsheetPanel1.GetValue(col, row, out value);
+                value += keyData.ToString();
+                spreadsheetPanel1.SetValue(col, row, value);
+                return base.ProcessCmdKey(ref msg, keyData);
             }
 
 
