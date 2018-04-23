@@ -46,9 +46,10 @@ namespace SpreadsheetGUI
         /// The constructor for the spreadsheet form, performs the intial
         /// set up such as setting event handlers.
         /// </summary>
-        public SpreadsheetForm(SocketState socket, SpreadsheetCloseDelegate ss)
+        public SpreadsheetForm(SocketState socket, SpreadsheetCloseDelegate ss, string name)
         {
             InitializeComponent();
+            Text = name;
             closeDel = ss;
 
             serverSocket = socket;
@@ -784,6 +785,5 @@ namespace SpreadsheetGUI
 
             form.ShowDialog();
         }
-
     }
 }

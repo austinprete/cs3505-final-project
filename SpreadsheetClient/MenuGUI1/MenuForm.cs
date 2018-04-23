@@ -15,11 +15,11 @@ namespace MenuGUI
 {
     public partial class MenuForm : Form
     {
-        SpreadsheetForm spreadsheet;
         private SocketState socket_state;
         List<string> spreadsheet_names;
         private bool LoggedOut = false;
         CreateNewGUI.CreateNewForm CNF;
+        private string CurrentSpreadsheetName;
 
         public bool GetLoggedOut()
         {
@@ -103,11 +103,12 @@ namespace MenuGUI
 
         private void LoadButton_Click(object sender, EventArgs e)
         {
-            string name = (string)SpreadsheetListBox.SelectedValue;
+            CurrentSpreadsheetName = (string)SpreadsheetListBox.SelectedValue;
 
-            Networking.Send(socket_state, "load " + name);
+            Networking.Send(socket_state, "load " + CurrentSpreadsheetName);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
+            LoadButton.Enabled = false;
         }
 
         private void LogOutButton_Click(object sender, EventArgs e)
@@ -175,10 +176,11 @@ namespace MenuGUI
         /// <param name="cells"></param>
         private void create_spreadsheet(List<string> cells)
         {
-            spreadsheet = new SpreadsheetForm(socket_state, spreadsheet_closed);
-            spreadsheet.load_spreadsheet(cells);
+            SpreadsheetForm ssf;
+            ssf = new SpreadsheetForm(socket_state, spreadsheet_closed, CurrentSpreadsheetName);
+            ssf.load_spreadsheet(cells);
 
-            spreadsheet.ShowDialog();
+            ssf.ShowDialog();
         }
 
         private void spreadsheet_closed(SocketState socket)
@@ -192,12 +194,13 @@ namespace MenuGUI
         {
             CNF = new CreateNewGUI.CreateNewForm();
             CNF.ShowDialog();
-            string name = CNF.Get_SpreadsheetNameTextBox_Text();
+            CurrentSpreadsheetName = CNF.Get_SpreadsheetNameTextBox_Text();
 
 
-            Networking.Send(socket_state, "load " + name);
+            Networking.Send(socket_state, "load " + CurrentSpreadsheetName);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
+            LoadButton.Enabled = false;
 
         }
 
@@ -224,12 +227,7 @@ namespace MenuGUI
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
-                string name = (string)SpreadsheetListBox.SelectedValue;
-
-                Networking.Send(socket_state, "load " + name);
-                socket_state.sb.Clear();
-                Networking.GetData(socket_state);
-                LoadButton.Enabled = false;
+                LoadButton_Click(sender, e);
             }
         }
     }
