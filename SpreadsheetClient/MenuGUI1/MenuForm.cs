@@ -163,7 +163,8 @@ namespace MenuGUI
                     create_spreadsheet(cells);
                 }
                 Console.WriteLine(data);
-                ss.sb.Remove(0, data.Length);
+                if (ss.sb.Length >= data.Length)
+                    ss.sb.Remove(0, data.Length);
             }
             Networking.GetData(ss);
         }

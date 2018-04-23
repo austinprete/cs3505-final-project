@@ -260,7 +260,15 @@ namespace Network
         /// <param name="state"></param>
         public static void GetData(SocketState state)
         {
-            state.theSocket.BeginReceive(state.messageBuffer, 0, state.messageBuffer.Length, SocketFlags.None, ReceiveCallback, state);
+            try
+            {
+                state.theSocket.BeginReceive(state.messageBuffer, 0, state.messageBuffer.Length, SocketFlags.None, ReceiveCallback, state);
+            }
+            catch
+            {
+
+            }
+            
         }
 
         /*public static void ServerAwaitingClientLoop(NetworkAction action) {
