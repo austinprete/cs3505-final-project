@@ -84,9 +84,7 @@ namespace MenuGUI
         private void SpreadsheetListBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            {
                 LoadButton_Click(sender, e);
-            }
         }
 
 
@@ -122,22 +120,21 @@ namespace MenuGUI
         {
             CreateNewGUI.CreateNewForm cnf = new CreateNewGUI.CreateNewForm();
             cnf.ShowDialog();
-            
+            if (cnf.GetCreateClicked())
+            {
+                CurrentSpreadsheetName = cnf.GetSpreadsheetNameTextBox_Text();
 
-            CurrentSpreadsheetName = cnf.GetSpreadsheetNameTextBox_Text();
-
-            Networking.Send(SocketState, "load " + CurrentSpreadsheetName);
-            SocketState.sb.Clear();
-            Networking.GetData(SocketState);
+                Networking.Send(SocketState, "load " + CurrentSpreadsheetName);
+                SocketState.sb.Clear();
+                Networking.GetData(SocketState);
+            }
         }
 
 
         private void CreateNewButton_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            {
                 CreateNewButton_Click(sender, e);
-            }
         }
 
 
@@ -154,17 +151,13 @@ namespace MenuGUI
 
 
 
-
-
         private void MenuForm_ProcessMessage(SocketState ss)
         {
             string allData = ss.sb.ToString();
             string[] parts = allData.Split((Char)3);
             
             if (parts.Length == 1)
-            {
                 return;
-            }
 
             foreach (string data in parts)
             {

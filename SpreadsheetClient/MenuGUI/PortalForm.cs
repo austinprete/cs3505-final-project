@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Network;
-using System.Diagnostics;
-using SpreadsheetGUI;
-using System.Threading;
 
 
 
@@ -31,6 +24,7 @@ namespace MenuGUI
             spreadsheet_list = new List<string>();
         }
 
+
         private void PortalForm_Click(object sender, EventArgs e)
         {
             if (ServerNameTextBox.Text.Length == 0)
@@ -40,11 +34,7 @@ namespace MenuGUI
             }
         }
 
-        /// <summary>
-        /// connect with server after login
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        
         private void LoginButton_Click(object sender, EventArgs e)
         {
             if (ServerNameTextBox.Text != "Server Name")
