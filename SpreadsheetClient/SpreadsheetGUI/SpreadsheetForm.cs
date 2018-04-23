@@ -169,10 +169,16 @@ namespace SpreadsheetGUI
                             UpdateDependentCells(dependents);
                         }
                     }else if (data.StartsWith("focus ")) {
+                        
                         string cellName = data.Substring("focus ".Length, data.IndexOf(":") - "focus ".Length);
                         string id = data.Substring(data.IndexOf(":") + 1);
-                        spreadsheetPanel1.FocusCell(cellName, id);
-                    }else if (data.StartsWith("unfocus")) {
+
+                        spreadsheetPanel1.GetSelection(out int col, out int row);
+                        if (cellName != ConvertColRowToName(col, row)) {
+                            spreadsheetPanel1.FocusCell(cellName, id);
+                        }
+
+                    } else if (data.StartsWith("unfocus")) {
                         string id = data.Substring("unfocus ".Length);
                         spreadsheetPanel1.UnfocusCell(id);
                     }
