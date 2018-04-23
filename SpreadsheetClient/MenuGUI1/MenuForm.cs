@@ -271,7 +271,7 @@ namespace MenuGUI
             Networking.Send(socket_state, "load " + CurrentSpreadsheetName);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
-            LoadButton.Enabled = false;
+            //LoadButton.Enabled = false;
         }
     }
 }
