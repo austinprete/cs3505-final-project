@@ -195,7 +195,8 @@ namespace SS
         /// <param name="id"></param>
         public void FocusCell(string cellName, string id) {
             lock (highlightedCells) {
-                 highlightedCells.Add(id, cellName);
+                highlightedCells.Add(id, cellName);
+                drawingPanel.Invalidate();
             }
         }
 
@@ -207,6 +208,7 @@ namespace SS
         public void UnfocusCell(string id) {
             lock (highlightedCells) {
                 highlightedCells.Remove(id);
+                drawingPanel.Invalidate();
             }
         }
 
