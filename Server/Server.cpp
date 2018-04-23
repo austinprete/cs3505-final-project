@@ -85,6 +85,8 @@ void Server::ProcessMessage(long client_id, string &message)
 
   string message_type = tokenized_message.at(0);
 
+  cout << "Received message \"" << message << "\" from client " << client_id;
+
   if (message_type == "register") {
     cout << "Running RegisterClient()" << endl;
     RegisterClient(client_id);
@@ -135,6 +137,8 @@ void Server::ProcessMessage(long client_id, string &message)
       HandleUnfocusMessage(client_id);
     }
   }
+
+  cout << "-----------------------------------------" << endl;
 }
 
 /**
