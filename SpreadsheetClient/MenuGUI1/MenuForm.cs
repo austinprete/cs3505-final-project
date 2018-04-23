@@ -10,7 +10,7 @@ namespace MenuGUI
 {
     public partial class MenuForm : Form
     {
-        private SocketState SocketState;
+        private SocketState ServerSocket;
         private List<string> SpreadsheetNames;
         private string CurrentSpreadsheetName;
         private bool LoggedOut = false;
@@ -18,8 +18,8 @@ namespace MenuGUI
         public MenuForm(List<string> names, SocketState ss)
         {
             SpreadsheetNames = names;
-            SocketState = ss;
-            SocketState.callMe = MenuForm_ProcessMessage;
+            ServerSocket = ss;
+            ServerSocket.callMe = MenuForm_ProcessMessage;
             InitializeComponent();
             SpreadsheetListBox.DataSource = SpreadsheetNames;
         }
@@ -33,10 +33,10 @@ namespace MenuGUI
 
         private void MenuForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (SocketState.theSocket.Connected)
+            if (ServerSocket.theSocket.Connected)
             {
-                SocketState.theSocket.Disconnect(true);
-                SocketState.theSocket.Close();
+                ServerSocket.theSocket.Disconnect(true);
+                ServerSocket.theSocket.Close();
             }
             if (!LoggedOut)
                 Application.Exit();
@@ -52,7 +52,7 @@ namespace MenuGUI
         private void LogOutButton_Click(object sender, EventArgs e)
         {
             LoggedOut = true;
-            Networking.Send(SocketState, "disconnect ");
+            Networking.Send(ServerSocket, "disconnect ");
             Close();
         }
 
@@ -84,9 +84,7 @@ namespace MenuGUI
         private void SpreadsheetListBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            {
                 LoadButton_Click(sender, e);
-            }
         }
 
 
@@ -94,9 +92,9 @@ namespace MenuGUI
         {
             CurrentSpreadsheetName = (string)SpreadsheetListBox.SelectedValue;
 
-            Networking.Send(SocketState, "load " + CurrentSpreadsheetName);
-            SocketState.sb.Clear();
-            Networking.GetData(SocketState);
+            Networking.Send(ServerSocket, "load " + CurrentSpreadsheetName);
+            ServerSocket.sb.Clear();
+            Networking.GetData(ServerSocket);
         }
 
 
@@ -122,22 +120,21 @@ namespace MenuGUI
         {
             CreateNewGUI.CreateNewForm cnf = new CreateNewGUI.CreateNewForm();
             cnf.ShowDialog();
-            
+            if (cnf.GetCreateClicked())
+            {
+                CurrentSpreadsheetName = cnf.GetSpreadsheetNameTextBox_Text();
 
-            CurrentSpreadsheetName = cnf.GetSpreadsheetNameTextBox_Text();
-
-            Networking.Send(SocketState, "load " + CurrentSpreadsheetName);
-            SocketState.sb.Clear();
-            Networking.GetData(SocketState);
+                Networking.Send(ServerSocket, "load " + CurrentSpreadsheetName);
+                ServerSocket.sb.Clear();
+                Networking.GetData(ServerSocket);
+            }
         }
 
 
         private void CreateNewButton_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            {
                 CreateNewButton_Click(sender, e);
-            }
         }
 
 
@@ -154,17 +151,13 @@ namespace MenuGUI
 
 
 
-
-
         private void MenuForm_ProcessMessage(SocketState ss)
         {
             string allData = ss.sb.ToString();
             string[] parts = allData.Split((Char)3);
             
             if (parts.Length == 1)
-            {
                 return;
-            }
 
             foreach (string data in parts)
             {
@@ -200,7 +193,7 @@ namespace MenuGUI
         private void CreateSpreadsheet(List<string> cells)
         {
             SpreadsheetForm ssf;
-            ssf = new SpreadsheetForm(SocketState, SpreadsheetClosed, CurrentSpreadsheetName);
+            ssf = new SpreadsheetForm(ServerSocket, SpreadsheetClosed, CurrentSpreadsheetName);
             ssf.load_spreadsheet(cells);
             ssf.ShowDialog();
         }
@@ -214,11 +207,11 @@ namespace MenuGUI
 
         private void Reconnect(SocketState ss)
         {
-            SocketState = ss;
-            SocketState.callMe = MenuForm_ProcessMessage;
+            ServerSocket = ss;
+            ServerSocket.callMe = MenuForm_ProcessMessage;
 
-            Networking.Send(SocketState, "register ");
-            Networking.GetData(SocketState);
+            Networking.Send(ServerSocket, "register ");
+            Networking.GetData(ServerSocket);
         }
     }
 }

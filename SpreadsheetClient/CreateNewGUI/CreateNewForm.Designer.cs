@@ -66,6 +66,7 @@
             this.SpreadsheetNameTextBox.Name = "SpreadsheetNameTextBox";
             this.SpreadsheetNameTextBox.Size = new System.Drawing.Size(537, 44);
             this.SpreadsheetNameTextBox.TabIndex = 2;
+            this.SpreadsheetNameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpreadsheetNameTextBox_KeyPress);
             // 
             // CreateNewForm
             // 

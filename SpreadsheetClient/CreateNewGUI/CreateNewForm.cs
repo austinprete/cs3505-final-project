@@ -6,6 +6,9 @@ namespace CreateNewGUI
 {
     public partial class CreateNewForm : Form
     {
+        private bool CreateClicked;
+
+
         public CreateNewForm()
         {
             InitializeComponent();
@@ -27,13 +30,26 @@ namespace CreateNewGUI
 
         private void CreateButton_Click(object sender, EventArgs e)
         {
-            Close();
+            if (SpreadsheetNameTextBox.Text != "")
+            {
+                CreateClicked = true;
+                Close();
+            }
+            //else
+                // Display a message saying to enter something...
+        }
+        
+
+        public bool GetCreateClicked()
+        {
+            return CreateClicked;
         }
 
 
         private void CreateButton_KeyPress(object sender, KeyPressEventArgs e)
         {
-            CreateButton_Click(sender, e);
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+                CreateButton_Click(sender, e);
         }
 
 
@@ -46,6 +62,12 @@ namespace CreateNewGUI
         private void CreateButton_MouseLeave(object sender, EventArgs e)
         {
             CreateButton.BackColor = Color.FromArgb(187, 187, 187);
+        }
+
+        private void SpreadsheetNameTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+                CreateButton_Click(sender, e);
         }
     }
 }

@@ -50,9 +50,9 @@
             this.LoginButton.Text = "Login";
             this.LoginButton.UseVisualStyleBackColor = false;
             this.LoginButton.Click += new System.EventHandler(this.LoginButton_Click);
+            this.LoginButton.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.LoginButton_KeyPress);
             this.LoginButton.MouseEnter += new System.EventHandler(this.LoginButton_MouseEnter);
             this.LoginButton.MouseLeave += new System.EventHandler(this.LoginButton_MouseLeave);
-            this.LoginButton.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.LoginButton_PreviewKeyDown);
             // 
             // ServerNameTextBox
             // 
@@ -68,8 +68,8 @@
             this.ServerNameTextBox.Text = "lab1-11.eng.utah.edu";
             this.ServerNameTextBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ServerNameTextBox_MouseClick);
             this.ServerNameTextBox.Enter += new System.EventHandler(this.ServerNameTextBox_Enter);
+            this.ServerNameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ServerNameTextBox_KeyPress);
             this.ServerNameTextBox.Leave += new System.EventHandler(this.ServerNameTextBox_Leave);
-            this.ServerNameTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ServerNameTextBox_PreviewKeyDown);
             // 
             // serverLabel
             // 
