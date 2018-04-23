@@ -517,14 +517,33 @@ namespace SpreadsheetGUI
         private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
         {
             /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
-                EnterButton_Click(this, EventArgs.Empty);
-            }*/
+            //    EnterButton_Click(this, EventArgs.Empty);
+            //}*/
+            //spreadsheetPanel1.GetSelection(out int c, out int r);
+
+            //string variableName = ConvertColRowToName(c, r);
+
+            //// spreadsheet.SetContentsOfCell(variableName, t);
+            ////Networking.Send(serverSocket, "unfocus ");
+            //send_edit_to_server(serverSocket, "unfocus ");
+            //isEditing = false;
+
+
+            //spreadsheetPanel1.GetValue(c, r, out string contents);
+            ////if (contents == "")
+            ////    contents += e.KeyChar;
+            ////System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+            //cell_edit_to_server(serverSocket, variableName, contents);
+
+            //Networking.GetData(serverSocket);
+            spreadsheetPanel1_KeyPress(sender, e);
+        }
+        private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
+        {
             spreadsheetPanel1.GetSelection(out int c, out int r);
 
             string variableName = ConvertColRowToName(c, r);
 
-            // spreadsheet.SetContentsOfCell(variableName, t);
-            //Networking.Send(serverSocket, "unfocus ");
             send_edit_to_server(serverSocket, "unfocus ");
             isEditing = false;
 
@@ -536,52 +555,8 @@ namespace SpreadsheetGUI
             cell_edit_to_server(serverSocket, variableName, contents);
 
             Networking.GetData(serverSocket);
+
         }
-        /*private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            //if (e.KeyChar == (Char)13) //checks if enter is pressed
-            //{
-            //    if (lastKeyPresses.Count == 10 && lastKeyPresses.SequenceEqual(konamiCode)) //checks if there were 10 key presses and if they match the konami code
-            //    {
-            //        lastKeyPresses.Clear();
-            //        ExtraFeatureForm rick = new ExtraFeatureForm();
-            //        rick.Roll(); //shows the ExtraFeatureForm 
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        EnterButton_Click(sender, EventArgs.Empty); //If the code is not entered, this line makes sure the enter key follows its enter key logic
-            //    }
-            //}
-            //else
-            {
-                //lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
-                //spreadsheetPanel1.GetSelection(out int c, out int r);
-
-                //string variableName = ConvertColRowToName(c, r);
-
-                //// spreadsheet.SetContentsOfCell(variableName, t);
-                ////Networking.Send(serverSocket, "unfocus ");
-                ////send_edit_to_server(serverSocket, "unfocus ");
-                //isEditing = false;
-
-
-                //spreadsheetPanel1.GetValue(c, r, out string contents);
-                ////System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-                ////cell_edit_to_server(serverSocket, variableName, contents);
-
-                //Networking.GetData(serverSocket);
-                //SpreadsheetForm_KeyPress(sender, e);
-
-            }
-
-
-            if (lastKeyPresses.Count > 10)
-            {
-                lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
-            }
-
-        }*/
 
         private void send_edit_to_server(SocketState ss, string s)
         {
