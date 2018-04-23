@@ -168,6 +168,13 @@ namespace SpreadsheetGUI
                             // Updates the displayed values of each of the dependent cells (this includes the modified cell)
                             UpdateDependentCells(dependents);
                         }
+                    }else if (data.StartsWith("focus ")) {
+                        string cellName = data.Substring("focus ".Length, data.IndexOf(":") - "focus ".Length);
+                        string id = data.Substring(data.IndexOf(":") + 1);
+                        spreadsheetPanel1.FocusCell(cellName, id);
+                    }else if (data.StartsWith("unfocus")) {
+                        string id = data.Substring("unfocus ".Length);
+                        spreadsheetPanel1.UnfocusCell(id);
                     }
                     if (data.Length <= ss.sb.Length)
                         ss.sb.Remove(0, data.Length);
@@ -523,7 +530,7 @@ namespace SpreadsheetGUI
             }
             else
             {
-                spreadsheetPanel1.GetSelection(out int c, out int r);
+                /*spreadsheetPanel1.GetSelection(out int c, out int r);
 
                 string variableName = ConvertColRowToName(c, r);
 
@@ -541,17 +548,16 @@ namespace SpreadsheetGUI
                     current_contents += e.KeyChar;
                 }
 
-                spreadsheetPanel1.SetValue(c, r, current_contents);
+                spreadsheetPanel1.SetValue(c, r, current_contents);*/
 
                 // spreadsheet.SetContentsOfCell(variableName, t);
                 //Networking.Send(serverSocket, "unfocus ");
-                send_edit_to_server(serverSocket, "unfocus ");
-                isEditing = false;
+                //send_edit_to_server(serverSocket, "unfocus ");
 
 
-                spreadsheetPanel1.GetValue(c, r, out string contents);
-                System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-                cell_edit_to_server(serverSocket, variableName, contents);
+                //spreadsheetPanel1.GetValue(c, r, out string contents);
+                //System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+                //cell_edit_to_server(serverSocket, variableName, contents);
 
                 Networking.GetData(serverSocket);
             }

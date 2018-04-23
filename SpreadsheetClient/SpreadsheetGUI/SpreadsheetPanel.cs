@@ -161,6 +161,23 @@ namespace SS
             return drawingPanel.SetSelection(col, row);
         }
 
+        /// <summary>
+        /// Shows focus for a user at a certain cell
+        /// </summary>
+        /// <param name="cellName"></param>
+        /// <param name="id"></param>
+        public void FocusCell(string cellName, string id) {
+            Console.WriteLine("Focus cell " + cellName);
+        }
+
+        /// <summary>
+        /// Unfocuses a user at cell
+        /// </summary>
+        /// <param name="cellName"></param>
+        /// <param name="id"></param>
+        public void UnfocusCell(string id) {
+            Console.WriteLine("Unfocus user " + id);
+        }
 
         /// <summary>
         /// Assigns the column and row of the current selection to the
@@ -181,7 +198,8 @@ namespace SS
         /// <param name="e"></param>
         private void SpreadsheetPanel_KeyPress(object sender, KeyPressEventArgs e)
         {
-            startEditingCell();
+            if (e.KeyChar != Convert.ToChar(Keys.Enter))
+                startEditingCell();
 
             int row, col;
             GetSelection(out col, out row);
