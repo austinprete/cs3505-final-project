@@ -441,6 +441,7 @@ namespace SpreadsheetGUI
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+
             spreadsheetPanel1.GetSelection(out int col, out int row);
 
             if (keyData == Keys.Up)
@@ -516,30 +517,45 @@ namespace SpreadsheetGUI
 
         private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
                 EnterButton_Click(this, EventArgs.Empty);
-            }*/
-            spreadsheetPanel1.GetSelection(out int c, out int r);
+            }
+            else
+            {
+                spreadsheetPanel1.GetSelection(out int c, out int r);
 
-            string variableName = ConvertColRowToName(c, r);
+                string variableName = ConvertColRowToName(c, r);
 
-            spreadsheetPanel1.GetValue(c, r, out string current_contents);
+                spreadsheetPanel1.GetValue(c, r, out string current_contents);
+                if (e.KeyChar == Convert.ToChar(Keys.Back))
+                {
+                    if (current_contents != "")
+                    {
+                        current_contents = current_contents.Remove(current_contents.Length - 1);
+                    }
 
-            current_contents += e.KeyChar;
+                }
+                else
+                {
+                    current_contents += e.KeyChar;
+                }
 
-            spreadsheetPanel1.SetValue(c, r, current_contents);
+                spreadsheetPanel1.SetValue(c, r, current_contents);
 
-            // spreadsheet.SetContentsOfCell(variableName, t);
-            //Networking.Send(serverSocket, "unfocus ");
-            send_edit_to_server(serverSocket, "unfocus ");
-            isEditing = false;
+                // spreadsheet.SetContentsOfCell(variableName, t);
+                //Networking.Send(serverSocket, "unfocus ");
+                send_edit_to_server(serverSocket, "unfocus ");
+                isEditing = false;
 
 
-            spreadsheetPanel1.GetValue(c, r, out string contents);
-            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-            cell_edit_to_server(serverSocket, variableName, contents);
+                spreadsheetPanel1.GetValue(c, r, out string contents);
+                System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+                cell_edit_to_server(serverSocket, variableName, contents);
 
-            Networking.GetData(serverSocket);
+                Networking.GetData(serverSocket);
+            }
+           
         }
 
         private void send_edit_to_server(SocketState ss, string s)
