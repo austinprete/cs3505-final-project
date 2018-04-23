@@ -203,6 +203,10 @@ namespace MenuGUI
 
         }
 
+        public void SetServerNameLabel(string name)
+        {
+            ServerNameLabel.Text = name;
+        }
         //private void CloseCreateNew(object sender, EventArgs e) {
         //    createNewForm.Close();
         //}

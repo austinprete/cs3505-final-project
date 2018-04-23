@@ -83,6 +83,7 @@ namespace MenuGUI
         {
             mf = new MenuForm(spreadsheet_list, server_socket);
             mf.Text = "Spreadsheet Application -- " + ServerNameTextBox.Text;
+            mf.SetServerNameLabel(ServerNameTextBox.Text);
             mf.ShowDialog();
             menuClosed = true;
         }
@@ -222,7 +223,7 @@ namespace MenuGUI
                     }
                     catch
                     {
-
+                        System.Diagnostics.Debug.WriteLine("Whoops");
                     }
                     LoginButton.Enabled = true;
                     ServerNameTextBox.Enabled = true;
