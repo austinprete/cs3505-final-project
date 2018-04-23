@@ -203,29 +203,6 @@ namespace SS
                 return;
             }
 
-            /*/If enter is pressed
-            
-            else if (e.KeyChar == Convert.ToChar(Keys.Right))
-            {
-                rightDel();
-                return;
-            }
-            else if (e.KeyChar == Convert.ToChar(Keys.Left))
-            {
-                leftDel();
-                return;
-            }
-            else if (e.KeyChar == Convert.ToChar(Keys.Down))
-            {
-                enterDel();
-                return;
-            }
-            else if (e.KeyChar == Convert.ToChar(Keys.Up))
-            {
-                upDel();
-                return;5
-            }*/
-
             //Otherwise add the new key to the cell
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
@@ -234,7 +211,6 @@ namespace SS
             currentValue += e.KeyChar;
 
             SetValue(col, row, currentValue);
-            //leave_cell(col, row, currentValue);
         }
 
 

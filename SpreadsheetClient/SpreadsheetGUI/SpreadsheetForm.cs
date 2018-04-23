@@ -158,7 +158,7 @@ namespace SpreadsheetGUI
                         {
                             string cellContents = "";
                             MessageBox.Show("There is a circular dependency. Unacceptable");
-                            cell_edit_to_server(serverSocket,cellName, cellContents);
+                            cell_edit_to_server(serverSocket, cellName, cellContents);
                             ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
                             ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
 
@@ -234,7 +234,7 @@ namespace SpreadsheetGUI
             send_edit_to_server(serverSocket, "unfocus ");
             isEditing = false;
 
-            
+
             spreadsheetPanel1.GetValue(col, row, out string contents);
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
             cell_edit_to_server(serverSocket, variableName, contents);
@@ -259,7 +259,7 @@ namespace SpreadsheetGUI
                 //ISet<string> dependents = spreadsheet.SetContentsOfCell(cellname, cellContents);
                 ConvertNameToColRow(cellname, out int col, out int row);
                 spreadsheetPanel1.SetValue(col, row, cellContents);
-                
+
             }
             Networking.Send(ss, "edit " + cellname + ":" + cellContents);
         }
@@ -466,6 +466,10 @@ namespace SpreadsheetGUI
             }
             else
             {
+                string value = "";
+                spreadsheetPanel1.GetValue(col, row, out value);
+                value += keyData.ToString();
+                spreadsheetPanel1.SetValue(col, row, value);
                 return base.ProcessCmdKey(ref msg, keyData);
             }
 
@@ -497,29 +501,21 @@ namespace SpreadsheetGUI
 
         public void load_spreadsheet(List<string> cells)
         {
-            try
+            foreach (string cell_n_contents in cells)
             {
-                foreach (string cell_n_contents in cells)
-                {
-                    string[] split = cell_n_contents.Split(':');
-                    spreadsheet.SetContentsOfCell(split[0], split[1]);
+                string[] split = cell_n_contents.Split(':');
+                spreadsheet.SetContentsOfCell(split[0], split[1]);
 
-                    ISet<string> dependents = spreadsheet.SetContentsOfCell(split[0], split[1]);
+                ISet<string> dependents = spreadsheet.SetContentsOfCell(split[0], split[1]);
 
-                    ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
+                ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
 
-                    // Update the displayed cell info for the newly modified cell 
-                    MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
-                    //DisplayCellInfo(dependentCol, dependentRow);
-                    // Updates the displayed values of each of the dependent cells (this includes the modified cell)
-                    UpdateDependentCells(dependents);
-                }
+                // Update the displayed cell info for the newly modified cell 
+                MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
+                //DisplayCellInfo(dependentCol, dependentRow);
+                // Updates the displayed values of each of the dependent cells (this includes the modified cell)
+                UpdateDependentCells(dependents);
             }
-            catch (CircularException)
-            {
-
-            }
-           
         }
 
         private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
@@ -527,7 +523,21 @@ namespace SpreadsheetGUI
             /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
                 EnterButton_Click(this, EventArgs.Empty);
             }*/
+            spreadsheetPanel1.GetSelection(out int c, out int r);
 
+            string variableName = ConvertColRowToName(c, r);
+
+            // spreadsheet.SetContentsOfCell(variableName, t);
+            //Networking.Send(serverSocket, "unfocus ");
+            send_edit_to_server(serverSocket, "unfocus ");
+            isEditing = false;
+
+
+            spreadsheetPanel1.GetValue(c, r, out string contents);
+            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+            cell_edit_to_server(serverSocket, variableName, contents);
+
+            Networking.GetData(serverSocket);
         }
         private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
         {
