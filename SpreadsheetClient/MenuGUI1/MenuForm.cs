@@ -178,16 +178,16 @@ namespace MenuGUI
 
         private void UpdateSpreadsheetList(List<string> names)
         {
-            SpreadsheetListBox.DataSource = null;
+            //SpreadsheetListBox.DataSource = null;
 
-            spreadsheet_names.Clear();
+            //spreadsheet_names.Clear();
             
-            foreach (string n in names)
-            {
-                spreadsheet_names.Add(n);
-            }
+            //foreach (string n in names)
+            //{
+            //    spreadsheet_names.Add(n);
+            //}
 
-            SpreadsheetListBox.DataSource = spreadsheet_names;
+            //SpreadsheetListBox.DataSource = spreadsheet_names;
         }
 
         /// <summary>
