@@ -4,20 +4,21 @@
  */
 
 #include <cstdlib>
-#include <string>
 #include <iostream>
-#include <vector>
-#include <boost/algorithm/string.hpp>
-#include <regex>
-#include <thread>
 #include <mutex>
+#include <regex>
+#include <string>
+#include <thread>
+#include <vector>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
 
-#include "Spreadsheet.h"
 #include "Dependencies/rapidxml-1.13/rapidxml.hpp"
 #include "Dependencies/rapidxml-1.13/rapidxml_print.hpp"
 #include "Dependencies/rapidxml-1.13/rapidxml_utils.hpp"
+
+#include "Spreadsheet.h"
 
 using namespace std;
 using namespace rapidxml;

@@ -5,10 +5,11 @@
 
 #include <algorithm>
 #include <iostream>
-#include <vector>
 #include <map>
 #include <thread>
 #include <unistd.h>
+#include <vector>
+
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
@@ -16,7 +17,6 @@
 
 #include "Session.h"
 #include "Server.h"
-#include "Spreadsheet.h"
 
 using boost::asio::ip::tcp;
 using namespace std;
