@@ -224,13 +224,14 @@ namespace SS
             else if (e.KeyChar == Convert.ToChar(Keys.Up))
             {
                 upDel();
-                return;
+                return;5
             }*/
 
             //Otherwise add the new key to the cell
             currentValue += e.KeyChar;
-            //leave_cell(col, row, currentValue);
+
             SetValue(col, row, currentValue);
+            //leave_cell(col, row, currentValue);
         }
 
 
@@ -353,7 +354,7 @@ namespace SS
                 Address a = new Address(col, row);
                 if (c == null || c == "")
                 {
-                    _values.Remove(a);
+                   // _values.Remove(a);
                 }
                 else
                 {

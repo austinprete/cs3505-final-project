@@ -100,7 +100,7 @@ namespace SpreadsheetGUI
             pingDelay += 10;
             if (pingDelay == 60)//Connection is dead, terminate it
             {
-                TerminateConnection();
+                TerminateConnection(true);
             }
             Networking.Send(serverSocket, "ping ");
 
@@ -155,7 +155,11 @@ namespace SpreadsheetGUI
                         // Updates the displayed values of each of the dependent cells (this includes the modified cell)
                         UpdateDependentCells(dependents);
                     }
-                    Console.WriteLine(data);
+                    else if (data.StartsWith("disconnect"))
+                    {
+                        TerminateConnection(false);
+                    }
+                    //Console.WriteLine(data);
                     ss.sb.Remove(0, data.Length);
                 }
 
@@ -168,10 +172,16 @@ namespace SpreadsheetGUI
             Networking.Send(serverSocket, "ping_response ");
             System.Diagnostics.Debug.WriteLine("CLIENT: ping_response");
         }
-        private void TerminateConnection()
+        private void TerminateConnection(bool send)
         {
-            Networking.Send(serverSocket, "disconnect ");
-            serverSocket.theSocket.Disconnect(true);
+            if (send)
+                Networking.Send(serverSocket, "disconnect ");
+            serverSocket.theSocket.Shutdown(System.Net.Sockets.SocketShutdown.Both);
+            //serverSocket.theSocket.Disconnect(true);
+            serverSocket.theSocket.Close();
+            MessageBox.Show("Server Disconnected");
+            MethodInvoker invoker = new MethodInvoker(() => this.Dispose());
+            //this.Close();
         }
 
         private void StartEditingCell()
@@ -191,8 +201,6 @@ namespace SpreadsheetGUI
 
             string variableName = ConvertColRowToName(col, row);
 
-            // spreadsheet.SetContentsOfCell(variableName, t);
-            //Networking.Send(serverSocket, "unfocus ");
             send_edit_to_server(serverSocket, "unfocus ");
             isEditing = false;
 
@@ -201,7 +209,6 @@ namespace SpreadsheetGUI
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
             send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
 
-            //spreadsheetPanel1.SetSelection(col, row + 1);
             Networking.GetData(serverSocket);
         }
 
@@ -218,7 +225,6 @@ namespace SpreadsheetGUI
             //Networking.Send(serverSocket, "unfocus ");
             send_edit_to_server(serverSocket, "unfocus ");
             isEditing = false;
-
 
             spreadsheetPanel1.GetValue(col, row, out string contents);
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
@@ -428,26 +434,36 @@ namespace SpreadsheetGUI
             Networking.Send(serverSocket, "undo ");
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
             spreadsheetPanel1.GetSelection(out int col, out int row);
 
-            if (keyData == Keys.Up) {
+            if (keyData == Keys.Up)
+            {
                 //move up row
                 row--;
-            } else if (keyData == Keys.Down) {
+            }
+            else if (keyData == Keys.Down)
+            {
                 //move down row
                 row++;
-            } else if (keyData == Keys.Left) {
+            }
+            else if (keyData == Keys.Left)
+            {
                 //move left column
                 col--;
-            } else if (keyData == Keys.Right || keyData == Keys.Tab) {
+            }
+            else if (keyData == Keys.Right || keyData == Keys.Tab)
+            {
                 //move down column
                 col++;
-            } else {
+            }
+            else
+            {
                 return base.ProcessCmdKey(ref msg, keyData);
             }
 
-            
+
             spreadsheetPanel1.SetSelection(col, row);
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -467,7 +483,7 @@ namespace SpreadsheetGUI
 
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            TerminateConnection();
+            TerminateConnection(true);
             closeDel(serverSocket);
 
         }
@@ -493,7 +509,8 @@ namespace SpreadsheetGUI
 
         private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
                 EnterButton_Click(this, EventArgs.Empty);
             }
 
@@ -507,7 +524,7 @@ namespace SpreadsheetGUI
 
         }
 
-    private void left_pressed_on_panel()
+        private void left_pressed_on_panel()
         {
 
             spreadsheetPanel1.GetSelection(out int col, out int row);
