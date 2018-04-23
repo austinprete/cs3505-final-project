@@ -30,7 +30,7 @@ namespace CreateNewGUI
 
         private void CreateButton_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            // Same as click, fill when complete
+            CreateButton_Click(sender, e);
         }
 
         private void CreateButton_MouseEnter(object sender, EventArgs e)
