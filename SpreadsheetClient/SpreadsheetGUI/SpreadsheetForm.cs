@@ -395,7 +395,7 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void KeyDownHandler(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            
+
 
         }
         /// <summary>
@@ -408,26 +408,37 @@ namespace SpreadsheetGUI
             Networking.Send(serverSocket, "undo ");
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
             spreadsheetPanel1.GetSelection(out int col, out int row);
 
-            if (keyData == Keys.Up) {
+            if (keyData == Keys.Up)
+            {
                 //move up row
                 row--;
-            } else if (keyData == Keys.Down) {
+            }
+            else if (keyData == Keys.Down)
+            {
                 //move down row
                 row++;
-            } else if (keyData == Keys.Left) {
+            }
+            else if (keyData == Keys.Left)
+            {
+
                 //move left column
                 col--;
-            } else if (keyData == Keys.Right || keyData == Keys.Tab) {
+            }
+            else if (keyData == Keys.Right || keyData == Keys.Tab)
+            {
                 //move down column
                 col++;
-            } else {
+            }
+            else
+            {
                 return base.ProcessCmdKey(ref msg, keyData);
             }
 
-            
+
             spreadsheetPanel1.SetSelection(col, row);
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -481,28 +492,33 @@ namespace SpreadsheetGUI
         private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (Char)13) //checks if enter is pressed
-             {
+            {
                 if (lastKeyPresses.Count == 10 && lastKeyPresses.SequenceEqual(konamiCode)) //checks if there were 10 key presses and if they match the konami code
                 {
                     lastKeyPresses.Clear();
                     ExtraFeatureForm rick = new ExtraFeatureForm();
                     rick.Roll(); //shows the ExtraFeatureForm 
                     return;
-                } else {
+                }
+                else
+                {
                     EnterButton_Click(sender, EventArgs.Empty); //If the code is not entered, this line makes sure the enter key follows its enter key logic
                 }
-            } else {
+            }
+            else
+            {
                 //lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
             }
 
 
-            if (lastKeyPresses.Count > 10) {
+            if (lastKeyPresses.Count > 10)
+            {
                 lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
             }
 
         }
 
-    private void left_pressed_on_panel()
+        private void left_pressed_on_panel()
         {
 
             spreadsheetPanel1.GetSelection(out int col, out int row);
