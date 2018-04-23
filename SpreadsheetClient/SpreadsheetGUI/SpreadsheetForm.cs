@@ -276,6 +276,15 @@ namespace SpreadsheetGUI
         /// <param name="sender"></param>
         private void CellSelected(SpreadsheetPanel sender)
         {
+
+            // spreadsheet.SetContentsOfCell(variableName, t);
+            // Networking.Send(serverSocket, "unfocus ");
+            send_edit_to_server(serverSocket, "unfocus ");
+
+            isEditing = false;
+
+
+
             // If an error message for another cell is being displayed, this hides it.
             ErrorMsgBox.Visible = false;
 
@@ -293,6 +302,9 @@ namespace SpreadsheetGUI
 
             // Update the UI to show the currently selected cell's information
             DisplayCellInfo(col, row);
+
+            Networking.GetData(serverSocket);
+
         }
 
         /// <summary>

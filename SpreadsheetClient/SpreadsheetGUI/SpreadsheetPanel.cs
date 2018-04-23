@@ -69,6 +69,7 @@ namespace SS
         public delegate void LeaveCell(int c, int r, string s);
         public LeaveCell leave_cell;
 
+        public Dictionary<string, string> highlightedCells;
         /// <summary>
         /// Creates an empty SpreadsheetPanel
         /// </summary>
@@ -101,6 +102,8 @@ namespace SS
             // Arrange for the drawing panel to be notified when it needs to scroll itself.
             hScroll.Scroll += drawingPanel.HandleHScroll;
             vScroll.Scroll += drawingPanel.HandleVScroll;
+
+            highlightedCells = new Dictionary<string, string>();
 
 
             InitializeComponent();
@@ -167,7 +170,9 @@ namespace SS
         /// <param name="cellName"></param>
         /// <param name="id"></param>
         public void FocusCell(string cellName, string id) {
-            Console.WriteLine("Focus cell " + cellName);
+            lock (highlightedCells) {
+                highlightedCells.Add(id, cellName);
+            }
         }
 
         /// <summary>
@@ -176,7 +181,9 @@ namespace SS
         /// <param name="cellName"></param>
         /// <param name="id"></param>
         public void UnfocusCell(string id) {
-            Console.WriteLine("Unfocus user " + id);
+            lock (highlightedCells) {
+                highlightedCells.Remove(id);
+            }
         }
 
         /// <summary>
@@ -318,6 +325,7 @@ namespace SS
 
             // The containing panel
             private SpreadsheetPanel _ssp;
+
 
 
             public DrawingPanel(SpreadsheetPanel ss)
@@ -483,6 +491,24 @@ namespace SS
                                       DATA_COL_WIDTH - 2,
                                       DATA_ROW_HEIGHT - 2));
                 }
+
+                //loop through all the focused cells and highlight them
+                lock (_ssp.highlightedCells) {
+                    foreach (KeyValuePair<string, string> pair in _ssp.highlightedCells) {
+                        string name = pair.Value;
+                        int col = name.First() - 'A';
+                        int row = Int32.Parse(name.Substring(1).ToString()) - 1;
+
+                        e.Graphics.DrawRectangle(
+                        pen,
+                        new Rectangle(LABEL_COL_WIDTH + (col - _firstColumn) * DATA_COL_WIDTH + 1,
+                                      LABEL_ROW_HEIGHT + (row - _firstRow) * DATA_ROW_HEIGHT + 1,
+                                      DATA_COL_WIDTH - 2,
+                                      DATA_ROW_HEIGHT - 2));
+                        Console.WriteLine("drawing focus at cell " + name + " row: " + row + "col: " + col);
+                    }
+                }
+
                 lock (_values)
                 {
                     // Draw the text
