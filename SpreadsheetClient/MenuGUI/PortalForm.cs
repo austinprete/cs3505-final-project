@@ -86,6 +86,7 @@ namespace MenuGUI
             mf.ShowDialog();
             menuClosed = true;
         }
+
         
 
         /// <summary>
