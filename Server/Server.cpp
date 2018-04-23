@@ -85,7 +85,7 @@ void Server::ProcessMessage(long client_id, string &message)
 
   string message_type = tokenized_message.at(0);
 
-  cout << "Received message \"" << message << "\" from client " << client_id;
+  cout << "Received message \"" << message << "\" from client " << client_id << endl;
 
   if (message_type == "register") {
     cout << "Running RegisterClient()" << endl;
