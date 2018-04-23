@@ -108,7 +108,7 @@ namespace MenuGUI
             Networking.Send(socket_state, "load " + CurrentSpreadsheetName);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
-            LoadButton.Enabled = false;
+            //LoadButton.Enabled = false;
         }
 
         private void LogOutButton_Click(object sender, EventArgs e)
@@ -200,7 +200,7 @@ namespace MenuGUI
             Networking.Send(socket_state, "load " + CurrentSpreadsheetName);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
-            LoadButton.Enabled = false;
+            //LoadButton.Enabled = false;
         }
 
         public void SetServerNameLabel(string name)
