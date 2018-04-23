@@ -171,7 +171,7 @@ namespace SS
         /// <param name="id"></param>
         public void FocusCell(string cellName, string id) {
             lock (highlightedCells) {
-                highlightedCells.Add(id, cellName);
+                 highlightedCells.Add(id, cellName);
             }
         }
 
@@ -499,13 +499,17 @@ namespace SS
                         int col = name.First() - 'A';
                         int row = Int32.Parse(name.Substring(1).ToString()) - 1;
 
+                        e.Graphics.FillRectangle(new SolidBrush(Color.LightGray), new Rectangle(LABEL_COL_WIDTH + (col - _firstColumn) * DATA_COL_WIDTH + 1,
+                                      LABEL_ROW_HEIGHT + (row - _firstRow) * DATA_ROW_HEIGHT + 1,
+                                      DATA_COL_WIDTH - 2,
+                                      DATA_ROW_HEIGHT - 2));
                         e.Graphics.DrawRectangle(
                         pen,
                         new Rectangle(LABEL_COL_WIDTH + (col - _firstColumn) * DATA_COL_WIDTH + 1,
                                       LABEL_ROW_HEIGHT + (row - _firstRow) * DATA_ROW_HEIGHT + 1,
                                       DATA_COL_WIDTH - 2,
                                       DATA_ROW_HEIGHT - 2));
-                        Console.WriteLine("drawing focus at cell " + name + " row: " + row + "col: " + col);
+                        
                     }
                 }
 
