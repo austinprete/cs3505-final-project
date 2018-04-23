@@ -162,20 +162,7 @@ namespace MenuGUI
             {
                 if (ServerNameTextBox.Text != "Server Name" && ServerNameTextBox.Text.Length != 0)
                 {
-                    LoginButton.Enabled = false;
-                    ServerNameTextBox.Enabled = false;
-                    menu = true;
-                    try
-                    {
-                        Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                        //WindowState = FormWindowState.Minimized;
-                    }
-                    catch
-                    {
-                        //WindowState = FormWindowState.Normal;
-                    }
-                    LoginButton.Enabled = true;
-                    ServerNameTextBox.Enabled = true;
+                    LoginButton_Click(sender, e);
                 }
             }
         }
@@ -213,22 +200,7 @@ namespace MenuGUI
             {
                 if (ServerNameTextBox.Text != "Server Name" && ServerNameTextBox.Text.Length != 0)
                 {
-                    LoginButton.Enabled = false;
-                    ServerNameTextBox.Enabled = false;
-                    menu = true;
-                    try
-                    {
-                        Networking.ConnectToServer(firstContact, ServerNameTextBox.Text);
-                        //WindowState = FormWindowState.Minimized;
-                    }
-                    catch
-                    {
-                        System.Diagnostics.Debug.WriteLine("Whoops");
-                    }
-                    LoginButton.Enabled = true;
-                    ServerNameTextBox.Enabled = true;
-                    //ServerNameTextBox.Text = "Server Name";
-                    //ServerNameTextBox.ForeColor = Color.FromArgb(117, 117, 117);
+                    LoginButton_Click(sender, e);
                 }
             }
         }

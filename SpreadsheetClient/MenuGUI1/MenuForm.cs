@@ -201,7 +201,6 @@ namespace MenuGUI
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
             LoadButton.Enabled = false;
-
         }
 
         public void SetServerNameLabel(string name)
