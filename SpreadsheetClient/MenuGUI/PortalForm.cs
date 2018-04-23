@@ -82,7 +82,7 @@ namespace MenuGUI
         private void create_menu()
         {
             mf = new MenuForm(spreadsheet_list, server_socket);
-            mf.Text = "Spreadsheet Application -- " + ServerNameTextBox.Text;
+            //mf.Text = "Spreadsheet Application -- " + ServerNameTextBox.Text;
             mf.SetServerNameLabel(ServerNameTextBox.Text);
             mf.ShowDialog();
             menuClosed = true;
