@@ -34,7 +34,7 @@
             this.LoadButton = new System.Windows.Forms.Button();
             this.CreateNewButton = new System.Windows.Forms.Button();
             this.SpreadsheetInformationLabel = new System.Windows.Forms.Label();
-            this.TeamInformationLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.MeetTheDevsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // SpreadsheetListBox
@@ -84,7 +84,7 @@
             // 
             this.LoadButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(187)))), ((int)(((byte)(187)))));
             this.LoadButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LoadButton.Location = new System.Drawing.Point(525, 692);
+            this.LoadButton.Location = new System.Drawing.Point(525, 660);
             this.LoadButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.LoadButton.Name = "LoadButton";
             this.LoadButton.Size = new System.Drawing.Size(135, 65);
@@ -100,7 +100,7 @@
             // 
             this.CreateNewButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(187)))), ((int)(((byte)(187)))));
             this.CreateNewButton.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CreateNewButton.Location = new System.Drawing.Point(675, 692);
+            this.CreateNewButton.Location = new System.Drawing.Point(676, 660);
             this.CreateNewButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.CreateNewButton.Name = "CreateNewButton";
             this.CreateNewButton.Size = new System.Drawing.Size(208, 65);
@@ -122,28 +122,28 @@
             this.SpreadsheetInformationLabel.TabIndex = 5;
             this.SpreadsheetInformationLabel.Text = "Select a spreadsheet or start from scratch.";
             // 
-            // TeamInformationLinkLabel
+            // MeetTheDevsLinkLabel
             // 
-            this.TeamInformationLinkLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(119)))), ((int)(((byte)(119)))), ((int)(((byte)(119)))));
-            this.TeamInformationLinkLabel.AutoSize = true;
-            this.TeamInformationLinkLabel.Font = new System.Drawing.Font("Arial", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TeamInformationLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(119)))), ((int)(((byte)(119)))), ((int)(((byte)(119)))));
-            this.TeamInformationLinkLabel.Location = new System.Drawing.Point(595, 814);
-            this.TeamInformationLinkLabel.Name = "TeamInformationLinkLabel";
-            this.TeamInformationLinkLabel.Size = new System.Drawing.Size(192, 32);
-            this.TeamInformationLinkLabel.TabIndex = 6;
-            this.TeamInformationLinkLabel.TabStop = true;
-            this.TeamInformationLinkLabel.Text = "Meet the Devs";
-            this.TeamInformationLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.TeamInformationLinkLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(119)))), ((int)(((byte)(119)))), ((int)(((byte)(119)))));
+            this.MeetTheDevsLinkLabel.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(119)))), ((int)(((byte)(119)))), ((int)(((byte)(119)))));
+            this.MeetTheDevsLinkLabel.AutoSize = true;
+            this.MeetTheDevsLinkLabel.Font = new System.Drawing.Font("Arial", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MeetTheDevsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(119)))), ((int)(((byte)(119)))), ((int)(((byte)(119)))));
+            this.MeetTheDevsLinkLabel.Location = new System.Drawing.Point(599, 773);
+            this.MeetTheDevsLinkLabel.Name = "MeetTheDevsLinkLabel";
+            this.MeetTheDevsLinkLabel.Size = new System.Drawing.Size(192, 32);
+            this.MeetTheDevsLinkLabel.TabIndex = 6;
+            this.MeetTheDevsLinkLabel.TabStop = true;
+            this.MeetTheDevsLinkLabel.Text = "Meet the Devs";
+            this.MeetTheDevsLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.MeetTheDevsLinkLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(119)))), ((int)(((byte)(119)))), ((int)(((byte)(119)))));
             // 
             // MenuForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.ClientSize = new System.Drawing.Size(1924, 1050);
-            this.Controls.Add(this.TeamInformationLinkLabel);
+            this.ClientSize = new System.Drawing.Size(1924, 810);
+            this.Controls.Add(this.MeetTheDevsLinkLabel);
             this.Controls.Add(this.SpreadsheetInformationLabel);
             this.Controls.Add(this.CreateNewButton);
             this.Controls.Add(this.LoadButton);
@@ -170,7 +170,7 @@
         private System.Windows.Forms.Button LoadButton;
         private System.Windows.Forms.Button CreateNewButton;
         private System.Windows.Forms.Label SpreadsheetInformationLabel;
-        private System.Windows.Forms.LinkLabel TeamInformationLinkLabel;
+        private System.Windows.Forms.LinkLabel MeetTheDevsLinkLabel;
     }
 }
 
