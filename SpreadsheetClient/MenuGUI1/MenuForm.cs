@@ -34,10 +34,6 @@ namespace MenuGUI
             this.socket_state = ss;
             socket_state.callMe = MenuForm_ProcessMessage;
             InitializeComponent();
-            foreach (string n in names)
-            {
-                SpreadsheetListBox.Items.Add(n);
-            }
             SpreadsheetListBox.DataSource = spreadsheet_names;
         }
 
@@ -163,11 +159,35 @@ namespace MenuGUI
                     cells.RemoveAt(cells.Count - 1);
                     create_spreadsheet(cells);
                 }
+                else if (data.StartsWith("connect_accepted"))
+                {
+                    string data_substring = data.Substring(17);
+
+                    List<string> names = data_substring.Split('\n').ToList<string>();
+                    names.RemoveAt(names.Count - 1);
+
+                    UpdateSpreadsheetList(names);
+
+                }
                 Console.WriteLine(data);
                 if (ss.sb.Length >= data.Length)
                     ss.sb.Remove(0, data.Length);
             }
             Networking.GetData(ss);
+        }
+
+        private void UpdateSpreadsheetList(List<string> names)
+        {
+            //SpreadsheetListBox.DataSource = null;
+
+            //spreadsheet_names.Clear();
+            
+            //foreach (string n in names)
+            //{
+            //    spreadsheet_names.Add(n);
+            //}
+
+            //SpreadsheetListBox.DataSource = spreadsheet_names;
         }
 
         /// <summary>
@@ -185,9 +205,19 @@ namespace MenuGUI
 
         private void spreadsheet_closed(SocketState socket)
         {
+            Networking.ConnectToServer(Reconnect, "lab1-11.eng.utah.edu");
             //socket_state = socket;
             //socket_state.callMe = MenuForm_ProcessMessage;
             //Application.Exit();
+        }
+
+        private void Reconnect(SocketState ss)
+        {
+            socket_state = ss;
+            socket_state.callMe = MenuForm_ProcessMessage;
+
+            Networking.Send(socket_state, "register ");
+            Networking.GetData(socket_state);
         }
 
         private void CreateNewButton_Click(object sender, EventArgs e)
@@ -232,6 +262,16 @@ namespace MenuGUI
             {
                 LoadButton_Click(sender, e);
             }
+        }
+
+        private void SpreadsheetListBox_DoubleClick(object sender, EventArgs e)
+        {
+            CurrentSpreadsheetName = (string)SpreadsheetListBox.SelectedValue;
+
+            Networking.Send(socket_state, "load " + CurrentSpreadsheetName);
+            socket_state.sb.Clear();
+            Networking.GetData(socket_state);
+            LoadButton.Enabled = false;
         }
     }
 }
