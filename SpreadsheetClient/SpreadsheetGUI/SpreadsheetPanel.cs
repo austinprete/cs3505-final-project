@@ -102,6 +102,8 @@ namespace SS
             // Arrange for the drawing panel to be notified when it needs to scroll itself.
             hScroll.Scroll += drawingPanel.HandleHScroll;
             vScroll.Scroll += drawingPanel.HandleVScroll;
+            vScroll.KeyDown += ScrollKeyDown;
+            hScroll.KeyDown += ScrollKeyDown;
 
             highlightedCells = new Dictionary<string, string>();
 
@@ -109,6 +111,11 @@ namespace SS
             InitializeComponent();
         }
 
+        private void ScrollKeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Up || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right) {
+                e.Handled = true;
+            }
+        }
 
         /// <summary>
         /// Clears the display.
