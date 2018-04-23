@@ -135,13 +135,6 @@ void Server::ProcessMessage(long client_id, string &message)
       HandleUnfocusMessage(client_id);
     }
   }
-
-//  } else {
-//    cout << "ERROR: Received unrecognized message type \"" << message_type << "\"" << endl;
-//  }
-
-  cout << "Received message from client " << client_id << ": " << message << endl;
-
 }
 
 /**
@@ -170,10 +163,8 @@ void Server::SendMessageToAllClients(string message) const
   for (const auto &client : clients) {
     weak_ptr<Session> session = client.second;
 
-    if (auto spt = session.lock()) { // Has to be copied into a shared_ptr before usage
-//      if ((*spt).IsOpen()) {
+    if (auto spt = session.lock()) {
       (*spt).AddMessageToOutboundQueue(message);
-//      }
     }
   }
 }
@@ -214,8 +205,11 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
 
   auto search = spreadsheets.find(spreadsheet_name);
 
-  string spreadsheet_file_name = boost::regex_replace(spreadsheet_name, boost::regex("\\s+"), "_");
-  spreadsheet_file_name.append(".xml");
+//  string spreadsheet_file_name = boost::regex_replace(spreadsheet_name, boost::regex("\\s+"), "_");
+//  spreadsheet_file_name.append(".xml");
+
+  string spreadsheet_file_name = spreadsheet_name + ".xml";
+
 
   auto open_spreadsheet_search = open_spreadsheets_map.find(client_id);
 

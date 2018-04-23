@@ -1,6 +1,7 @@
-//
-// Created by Austin Prete on 4/9/18.
-//
+/**
+ * Mathew Beseris, Cindy Liao, Cole Perschon, and Austin Prete
+ * CS3505 - Spring 2018
+ */
 
 #ifndef SPREADSHEET_H
 #define SPREADSHEET_H
