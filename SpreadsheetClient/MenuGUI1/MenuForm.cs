@@ -103,11 +103,12 @@ namespace MenuGUI
 
         private void LoadButton_Click(object sender, EventArgs e)
         {
-            string name = (string)SpreadsheetListBox.SelectedValue;
+            CurrentSpreadsheetName = (string)SpreadsheetListBox.SelectedValue;
 
-            Networking.Send(socket_state, "load " + name);
+            Networking.Send(socket_state, "load " + CurrentSpreadsheetName);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
+            LoadButton.Enabled = false;
         }
 
         private void LogOutButton_Click(object sender, EventArgs e)
@@ -224,12 +225,7 @@ namespace MenuGUI
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
-                CurrentSpreadsheetName = (string)SpreadsheetListBox.SelectedValue;
-
-                Networking.Send(socket_state, "load " + CurrentSpreadsheetName);
-                socket_state.sb.Clear();
-                Networking.GetData(socket_state);
-                LoadButton.Enabled = false;
+                LoadButton_Click(sender, e);
             }
         }
     }
