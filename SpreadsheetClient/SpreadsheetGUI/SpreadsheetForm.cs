@@ -26,10 +26,9 @@ namespace SpreadsheetGUI
 
         private SocketState serverSocket;
 
-        private bool timeout;
-        private double current_time;
-
         private Stopwatch stopwatch = new Stopwatch();
+
+        private System.Timers.Timer timer;
 
         int pingDelay;
 
@@ -81,13 +80,11 @@ namespace SpreadsheetGUI
 
             // Sets the UI to display the information for cell "A1" initially
             DisplayCellInfo(0, 0);
-            timeout = false;
-            current_time = 0;
 
             //var thread = new Thread(send_ping);
             //thread.Start();
 
-            System.Timers.Timer timer = new System.Timers.Timer();
+            timer = new System.Timers.Timer();
             timer.Interval = 10000;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(send_ping);
             timer.Enabled = true;
@@ -134,7 +131,6 @@ namespace SpreadsheetGUI
                     //It's an incomplete message, wait for later
                     if (data.StartsWith("ping_response"))
                     {
-                        timeout = false;
                         pingDelay = 0;
                     }
                     else if (data.StartsWith("ping") && data.Length < 12)
@@ -494,6 +490,7 @@ namespace SpreadsheetGUI
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             TerminateConnection();
+            timer.Enabled = false;
             closeDel(serverSocket);
 
         }
