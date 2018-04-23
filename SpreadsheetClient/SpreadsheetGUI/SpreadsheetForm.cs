@@ -466,10 +466,6 @@ namespace SpreadsheetGUI
             }
             else
             {
-                string value = "";
-                spreadsheetPanel1.GetValue(col, row, out value);
-                value += keyData.ToString();
-                spreadsheetPanel1.SetValue(col, row, value);
                 return base.ProcessCmdKey(ref msg, keyData);
             }
 
@@ -534,12 +530,14 @@ namespace SpreadsheetGUI
 
 
             spreadsheetPanel1.GetValue(c, r, out string contents);
-            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+            //if (contents == "")
+            //    contents += e.KeyChar;
+            //System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
             cell_edit_to_server(serverSocket, variableName, contents);
 
             Networking.GetData(serverSocket);
         }
-        private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
+        /*private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
         {
             //if (e.KeyChar == (Char)13) //checks if enter is pressed
             //{
@@ -558,21 +556,22 @@ namespace SpreadsheetGUI
             //else
             {
                 //lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
-                spreadsheetPanel1.GetSelection(out int c, out int r);
+                //spreadsheetPanel1.GetSelection(out int c, out int r);
 
-                string variableName = ConvertColRowToName(c, r);
+                //string variableName = ConvertColRowToName(c, r);
 
-                // spreadsheet.SetContentsOfCell(variableName, t);
-                //Networking.Send(serverSocket, "unfocus ");
-                send_edit_to_server(serverSocket, "unfocus ");
-                isEditing = false;
+                //// spreadsheet.SetContentsOfCell(variableName, t);
+                ////Networking.Send(serverSocket, "unfocus ");
+                ////send_edit_to_server(serverSocket, "unfocus ");
+                //isEditing = false;
 
 
-                spreadsheetPanel1.GetValue(c, r, out string contents);
-                System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-                cell_edit_to_server(serverSocket, variableName, contents);
+                //spreadsheetPanel1.GetValue(c, r, out string contents);
+                ////System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+                ////cell_edit_to_server(serverSocket, variableName, contents);
 
-                Networking.GetData(serverSocket);
+                //Networking.GetData(serverSocket);
+                //SpreadsheetForm_KeyPress(sender, e);
 
             }
 
@@ -582,7 +581,7 @@ namespace SpreadsheetGUI
                 lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
             }
 
-        }
+        }*/
 
         private void send_edit_to_server(SocketState ss, string s)
         {
