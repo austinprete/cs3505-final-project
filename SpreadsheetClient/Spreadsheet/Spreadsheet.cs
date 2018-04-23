@@ -206,7 +206,13 @@ namespace SS
             {
                 dependencyGraph.AddDependency(variableName, name);
             }
-            return new HashSet<string>(GetCellsToRecalculate(name));
+
+            try {
+                return new HashSet<string>(GetCellsToRecalculate(name));
+            }catch (Exception) {
+                cells[name] = new Cell(name, new FormulaError());
+                return new HashSet<string>();
+            }
         }
 
         /// <summary>

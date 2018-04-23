@@ -201,11 +201,7 @@ namespace SS
             }
 
             /*/If enter is pressed
-            if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            {
-                enterDel();
-                return;
-            }
+            
             else if (e.KeyChar == Convert.ToChar(Keys.Right))
             {
                 rightDel();
@@ -228,6 +224,10 @@ namespace SS
             }*/
 
             //Otherwise add the new key to the cell
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
+                return;
+            }
             currentValue += e.KeyChar;
 
             SetValue(col, row, currentValue);

@@ -100,7 +100,7 @@ namespace SpreadsheetGUI
             pingDelay += 10;
             if (pingDelay == 60)//Connection is dead, terminate it
             {
-                TerminateConnection(true);
+                TerminateConnection();
             }
             Networking.Send(serverSocket, "ping ");
 
@@ -155,11 +155,7 @@ namespace SpreadsheetGUI
                         // Updates the displayed values of each of the dependent cells (this includes the modified cell)
                         UpdateDependentCells(dependents);
                     }
-                    else if (data.StartsWith("disconnect"))
-                    {
-                        TerminateConnection(false);
-                    }
-                    //Console.WriteLine(data);
+                    Console.WriteLine(data);
                     ss.sb.Remove(0, data.Length);
                 }
 
@@ -172,16 +168,10 @@ namespace SpreadsheetGUI
             Networking.Send(serverSocket, "ping_response ");
             System.Diagnostics.Debug.WriteLine("CLIENT: ping_response");
         }
-        private void TerminateConnection(bool send)
+        private void TerminateConnection()
         {
-            if (send)
-                Networking.Send(serverSocket, "disconnect ");
-            serverSocket.theSocket.Shutdown(System.Net.Sockets.SocketShutdown.Both);
-            //serverSocket.theSocket.Disconnect(true);
-            serverSocket.theSocket.Close();
-            MessageBox.Show("Server Disconnected");
-            MethodInvoker invoker = new MethodInvoker(() => this.Dispose());
-            //this.Close();
+            Networking.Send(serverSocket, "disconnect ");
+            serverSocket.theSocket.Disconnect(true);
         }
 
         private void StartEditingCell()
@@ -201,6 +191,8 @@ namespace SpreadsheetGUI
 
             string variableName = ConvertColRowToName(col, row);
 
+            // spreadsheet.SetContentsOfCell(variableName, t);
+            //Networking.Send(serverSocket, "unfocus ");
             send_edit_to_server(serverSocket, "unfocus ");
             isEditing = false;
 
@@ -209,6 +201,7 @@ namespace SpreadsheetGUI
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
             send_edit_to_server(serverSocket, "edit " + variableName + ":" + contents);
 
+            //spreadsheetPanel1.SetSelection(col, row + 1);
             Networking.GetData(serverSocket);
         }
 
@@ -225,6 +218,7 @@ namespace SpreadsheetGUI
             //Networking.Send(serverSocket, "unfocus ");
             send_edit_to_server(serverSocket, "unfocus ");
             isEditing = false;
+
 
             spreadsheetPanel1.GetValue(col, row, out string contents);
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
@@ -401,27 +395,7 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void KeyDownHandler(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter) //checks if enter is pressed
-            {
-                if (lastKeyPresses.Count == 10 && lastKeyPresses.SequenceEqual(konamiCode)) //checks if there were 10 key presses and if they match the konami code
-                {
-                    lastKeyPresses.Clear();
-                    ExtraFeatureForm rick = new ExtraFeatureForm();
-                    rick.Roll(); //shows the ExtraFeatureForm 
-                    return;
-                }
-                else
-                {
-                    // EnterButton_Click(sender, null); //If the code is not entered, this line makes sure the enter key follows its enter key logic
-                }
-            }
-
-            lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
-
-            if (lastKeyPresses.Count > 10)
-            {
-                lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
-            }
+            
 
         }
         /// <summary>
@@ -434,36 +408,26 @@ namespace SpreadsheetGUI
             Networking.Send(serverSocket, "undo ");
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
             spreadsheetPanel1.GetSelection(out int col, out int row);
 
-            if (keyData == Keys.Up)
-            {
+            if (keyData == Keys.Up) {
                 //move up row
                 row--;
-            }
-            else if (keyData == Keys.Down)
-            {
+            } else if (keyData == Keys.Down) {
                 //move down row
                 row++;
-            }
-            else if (keyData == Keys.Left)
-            {
+            } else if (keyData == Keys.Left) {
                 //move left column
                 col--;
-            }
-            else if (keyData == Keys.Right || keyData == Keys.Tab)
-            {
+            } else if (keyData == Keys.Right || keyData == Keys.Tab) {
                 //move down column
                 col++;
-            }
-            else
-            {
+            } else {
                 return base.ProcessCmdKey(ref msg, keyData);
             }
 
-
+            
             spreadsheetPanel1.SetSelection(col, row);
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -483,7 +447,7 @@ namespace SpreadsheetGUI
 
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            TerminateConnection(true);
+            TerminateConnection();
             closeDel(serverSocket);
 
         }
@@ -509,22 +473,36 @@ namespace SpreadsheetGUI
 
         private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            {
+            /*if (e.KeyChar == Convert.ToChar(Keys.Enter)) {
                 EnterButton_Click(this, EventArgs.Empty);
-            }
+            }*/
 
         }
         private void spreadsheetPanel1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //    if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            //    {
-            //        EnterButton_Click(this, EventArgs.Empty);
-            //    }
+            if (e.KeyChar == (Char)13) //checks if enter is pressed
+             {
+                if (lastKeyPresses.Count == 10 && lastKeyPresses.SequenceEqual(konamiCode)) //checks if there were 10 key presses and if they match the konami code
+                {
+                    lastKeyPresses.Clear();
+                    ExtraFeatureForm rick = new ExtraFeatureForm();
+                    rick.Roll(); //shows the ExtraFeatureForm 
+                    return;
+                } else {
+                    EnterButton_Click(sender, EventArgs.Empty); //If the code is not entered, this line makes sure the enter key follows its enter key logic
+                }
+            } else {
+                //lastKeyPresses.Add(e.KeyCode); //adds the key press into the list
+            }
+
+
+            if (lastKeyPresses.Count > 10) {
+                lastKeyPresses.RemoveAt(0); //always removes from the list when the number of key presses exceeds 10.
+            }
 
         }
 
-        private void left_pressed_on_panel()
+    private void left_pressed_on_panel()
         {
 
             spreadsheetPanel1.GetSelection(out int col, out int row);
