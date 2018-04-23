@@ -21,6 +21,7 @@ namespace MenuGUI
         CreateNewGUI.CreateNewForm CNF;
         private string CurrentSpreadsheetName;
 
+
         public bool GetLoggedOut()
         {
             return LoggedOut;
