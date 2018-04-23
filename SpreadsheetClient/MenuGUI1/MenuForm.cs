@@ -21,6 +21,9 @@ namespace MenuGUI
         CreateNewGUI.CreateNewForm CNF;
         private string CurrentSpreadsheetName;
 
+        public delegate void UpdateListBox(List<string> names);
+        public UpdateListBox updateListDelegate;
+
         public bool GetLoggedOut()
         {
             return LoggedOut;
@@ -35,6 +38,7 @@ namespace MenuGUI
             socket_state.callMe = MenuForm_ProcessMessage;
             InitializeComponent();
             SpreadsheetListBox.DataSource = spreadsheet_names;
+            updateListDelegate = new UpdateListBox(UpdateSpreadsheetList);
         }
 
         /// <summary>
@@ -166,8 +170,7 @@ namespace MenuGUI
                     List<string> names = data_substring.Split('\n').ToList<string>();
                     names.RemoveAt(names.Count - 1);
 
-                    UpdateSpreadsheetList(names);
-
+                    this.Invoke(updateListDelegate, names);
                 }
                 Console.WriteLine(data);
                 if (ss.sb.Length >= data.Length)
@@ -178,16 +181,19 @@ namespace MenuGUI
 
         private void UpdateSpreadsheetList(List<string> names)
         {
-            //SpreadsheetListBox.DataSource = null;
+            SpreadsheetListBox.DataSource = null;
 
-            //spreadsheet_names.Clear();
-            
-            //foreach (string n in names)
-            //{
-            //    spreadsheet_names.Add(n);
-            //}
+            spreadsheet_names.Clear();           
+            SpreadsheetListBox.Items.Clear();
 
-            //SpreadsheetListBox.DataSource = spreadsheet_names;
+            foreach (string n in names)
+            {
+                spreadsheet_names.Add(n);
+                SpreadsheetListBox.Items.Add(n);
+            }
+
+            SpreadsheetListBox.DataSource = spreadsheet_names;
+            SpreadsheetListBox.Refresh();
         }
 
         /// <summary>
