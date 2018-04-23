@@ -193,12 +193,13 @@ namespace MenuGUI
         {
             CNF = new CreateNewGUI.CreateNewForm();
             CNF.ShowDialog();
-            string name = CNF.Get_SpreadsheetNameTextBox_Text();
+            CurrentSpreadsheetName = CNF.Get_SpreadsheetNameTextBox_Text();
 
 
-            Networking.Send(socket_state, "load " + name);
+            Networking.Send(socket_state, "load " + CurrentSpreadsheetName);
             socket_state.sb.Clear();
             Networking.GetData(socket_state);
+            LoadButton.Enabled = false;
 
         }
 
