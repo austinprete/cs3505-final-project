@@ -15,13 +15,20 @@ namespace MenuGUI
         private string CurrentSpreadsheetName;
         private bool LoggedOut = false;
 
+        private delegate void ListBoxUpdate(List<string> names);
+        private ListBoxUpdate ListBoxUpdateDelegate;
+
+
         public MenuForm(List<string> names, SocketState ss)
         {
             SpreadsheetNames = names;
+            SpreadsheetNames.Sort();
             ServerSocket = ss;
             ServerSocket.callMe = MenuForm_ProcessMessage;
             InitializeComponent();
             SpreadsheetListBox.DataSource = SpreadsheetNames;
+
+            ListBoxUpdateDelegate = new ListBoxUpdate(UpdateSpreadsheetList);
         }
 
 
@@ -180,6 +187,8 @@ namespace MenuGUI
 
                     List<string> names = dataSubstring.Split('\n').ToList<string>();
                     names.RemoveAt(names.Count - 1);
+
+                    Invoke(ListBoxUpdateDelegate, names);
                 }
 
                 Console.WriteLine(data);
@@ -212,6 +221,20 @@ namespace MenuGUI
 
             Networking.Send(ServerSocket, "register ");
             Networking.GetData(ServerSocket);
+        }
+
+        private void UpdateSpreadsheetList(List<string> names)
+        {
+            SpreadsheetListBox.DataSource = null;
+
+            SpreadsheetNames.Clear();
+
+            foreach (string n in names)
+            {
+                SpreadsheetNames.Add(n);
+            }
+
+            SpreadsheetListBox.DataSource = SpreadsheetNames;
         }
     }
 }
