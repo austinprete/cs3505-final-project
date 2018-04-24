@@ -32,7 +32,7 @@ public:
 
   std::pair<std::string, std::string> UndoLastChange();
 
-  std::string GetFullStateString() const;
+  std::string GetFullStateString();
 
   std::string GetName() const;
 
@@ -57,6 +57,9 @@ private:
   std::set<int> current_subscribers;
 
   std::mutex file_mutex;
+  std::mutex spreadsheet_map_mutex;
+  std::mutex undo_history_mutex;
+  std::mutex current_subscribers_mutex;
 
   std::string name;
   std::string file_path;

@@ -51,6 +51,8 @@ void Spreadsheet::WriteSpreadsheetToFile(const string &directory)
     undo_history_string.push_back((char) 2);
   }
 
+  std::lock_guard<std::mutex> undo_guard(undo_history_mutex);
+
   // Pop final separator off
   if (!undo_history.empty()) {
     undo_history_string.pop_back();
@@ -102,6 +104,8 @@ void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_cont
 
   std::string previous_contents;
 
+  std::lock_guard<std::mutex> guard(spreadsheet_map_mutex);
+
   auto search = spreadsheet_map.find(cell_name);
 
   if (search != spreadsheet_map.end()) {
@@ -115,14 +119,18 @@ void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_cont
     spreadsheet_map.insert(std::make_pair(cell_name, contents_history));
   }
 
+  std::lock_guard<std::mutex> undo_guard(undo_history_mutex);
+
   undo_history.emplace_back(true, std::make_pair(cell_name, previous_contents));
 }
 
-std::string Spreadsheet::GetFullStateString() const
+std::string Spreadsheet::GetFullStateString()
 {
   ostringstream full_state_stream;
 
   full_state_stream << "full_state ";
+
+  std::lock_guard<std::mutex> guard(spreadsheet_map_mutex);
 
   for (const auto &cell : spreadsheet_map) {
     string name = cell.first;
@@ -273,11 +281,13 @@ map<string, Spreadsheet *> Spreadsheet::LoadSpreadsheetsMapFromXml(const std::st
 
 void Spreadsheet::AddSubscriber(int client_id)
 {
+  std::lock_guard<std::mutex> guard(current_subscribers_mutex);
   current_subscribers.insert(client_id);
 }
 
 void Spreadsheet::RemoveSubscriber(int client_id)
 {
+  std::lock_guard<std::mutex> guard(current_subscribers_mutex);
   current_subscribers.erase(client_id);
 }
 
@@ -298,11 +308,15 @@ std::string Spreadsheet::GetFile() const
 
 string Spreadsheet::RevertCellContents(string cell_name)
 {
+  std::lock_guard<std::mutex> guard(spreadsheet_map_mutex);
+
   auto search = spreadsheet_map.find(cell_name);
 
   if (search != spreadsheet_map.end()) {
     if (!(*search).second.empty()) {
       string previous_contents = (*search).second.back();
+
+      std::lock_guard<std::mutex> undo_guard(undo_history_mutex);
       undo_history.emplace_back(false, std::make_pair(cell_name, previous_contents));
 
       (*search).second.pop_back();
@@ -318,12 +332,16 @@ string Spreadsheet::RevertCellContents(string cell_name)
 
 std::pair<string, string> Spreadsheet::UndoLastChange()
 {
+  std::lock_guard<std::mutex> undo_guard(undo_history_mutex);
+
   if (undo_history.empty()) {
     return make_pair("", "");
   }
 
   auto undo = undo_history.back();
   undo_history.pop_back();
+
+  std::lock_guard<std::mutex> guard(spreadsheet_map_mutex);
 
   if (undo.first) {
     string cell_name = undo.second.first;
