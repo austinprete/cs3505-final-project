@@ -7,8 +7,7 @@ using SpreadsheetUtilities;
 using SS;
 using Network;
 using System.Diagnostics;
-
-
+using System.Net.Sockets;
 
 namespace SpreadsheetGUI
 {
@@ -372,7 +371,7 @@ namespace SpreadsheetGUI
         private void TerminateConnection()
         {
             Networking.Send(ServerSocket, "disconnect ");
-            ServerSocket.theSocket.Disconnect(true);
+            ServerSocket.theSocket.DisconnectAsync(new SocketAsyncEventArgs());
         }
 
         private void StartEditingCell()
