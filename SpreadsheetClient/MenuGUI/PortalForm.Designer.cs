@@ -123,7 +123,7 @@
             this.Name = "PortalForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Spreadsheet Portal";
+            this.Text = "Spreadsheet Application V1.0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PortalForm_FormClosing);
             this.Click += new System.EventHandler(this.PortalForm_Click);
             this.ResumeLayout(false);
