@@ -228,7 +228,7 @@ namespace MenuGUI
             SpreadsheetListBox.DataSource = null;
 
             SpreadsheetNames.Clear();
-
+            names.Sort();
             foreach (string n in names)
             {
                 SpreadsheetNames.Add(n);
