@@ -5,11 +5,8 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <mutex>
 #include <regex>
-#include <string>
 #include <thread>
-#include <vector>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
@@ -92,8 +89,6 @@ void Spreadsheet::WriteSpreadsheetToFile(const string &directory)
 
 void Spreadsheet::ChangeCellContents(std::string cell_name, std::string new_contents)
 {
-  cout << "Changing cell contents of cell " << cell_name << " to: " << new_contents << endl;
-
   boost::to_upper(cell_name);
 
   boost::regex cell_name_pattern("^[A-Z]{1}[1-9]{1}[0-9]{0,1}$");
