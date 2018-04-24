@@ -11,9 +11,6 @@
 
 #include "Server.h"
 
-#include "Dependencies/rapidxml-1.13/rapidxml_utils.hpp"
-#include "Spreadsheet.h"
-
 using boost::asio::ip::tcp;
 using namespace std;
 
@@ -39,7 +36,8 @@ int main(int argc, char *argv[])
 
     Server spreadsheet_server(io_service, port);
 
-    cout << "Running server on port " << port << endl;
+    Server::LogMessage("Running server on port " + to_string(port), false);
+
     std::thread server_loop_thread(&Server::RunServerLoop, &spreadsheet_server);
 
     std::thread server_thread(RunServer, &io_service);
@@ -55,7 +53,7 @@ int main(int argc, char *argv[])
         server_thread.join();
         break;
       } else {
-        cout << "Unrecognized command: " << input << endl;
+        Server::LogMessage("Unrecognized command: " + input, true);
       }
     }
 

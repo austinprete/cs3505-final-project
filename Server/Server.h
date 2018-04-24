@@ -26,6 +26,9 @@ public:
   void RunServerLoop();
 
   void ShutdownServer();
+
+  static void LogMessage(const std::string &message, bool is_error);
+
 private:
 
   static long current_session_id;
