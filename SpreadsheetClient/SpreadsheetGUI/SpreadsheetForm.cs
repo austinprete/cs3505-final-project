@@ -55,32 +55,181 @@ namespace SpreadsheetGUI
 
             // Assign event handlers
             spreadsheetPanel1.SelectionChanged += CellSelected;
-            spreadsheetPanel1.EnterDel = EnterPressedOnPanel;
-            spreadsheetPanel1.UpDel = up_pressed_on_panel;
-            spreadsheetPanel1.LeftDel = left_pressed_on_panel;
-            spreadsheetPanel1.RightDel = right_pressed_on_panel;
+            spreadsheetPanel1.EnterDel = SpreadsheetForm_EnterPress;
+            spreadsheetPanel1.UpDel = SpreadsheetForm_UpPress;
+            spreadsheetPanel1.LeftDel = SpreadsheetForm_LeftPress;
+            spreadsheetPanel1.RightDel = SpreadsheetForm_RightPress;
             spreadsheetPanel1.StartEditingCellDel = StartEditingCell;
             spreadsheetPanel1.LeaveCellDel = leavecell;
-            FormClosing += SpreadsheetFormClosing;
-            CellContentsTextBox.KeyDown += KeyDownHandler;
 
             // Instantiate the backing Spreadsheet instance
             Spread = new Spreadsheet(s => true, s => s.ToUpper(), "CHANGE ME");
 
-            // Sets control focus to the cell contents text box at startup
-            //ActiveControl = CellContentsTextBox;
-
             // Sets the UI to display the information for cell "A1" initially
             DisplayCellInfo(0, 0);
-
-            //var thread = new Thread(send_ping);
-            //thread.Start();
 
             timer = new System.Timers.Timer();
             timer.Interval = 10000;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(send_ping);
             timer.Enabled = true;
         }
+
+
+        private void EnterButton_Click(object sender, EventArgs e)
+        {
+            ErrorMsgBox.Visible = false;
+            SpreadsheetForm_EnterPress();
+        }
+
+
+        private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+                EnterButton_Click(this, EventArgs.Empty);
+            else if (e.KeyChar == Convert.ToChar(Keys.Escape))
+            {
+                TerminateConnection();
+                timer.Enabled = false;
+                closeDel(ServerSocket);
+            }
+            else
+                Networking.GetData(ServerSocket);
+
+        }
+
+        
+        private void SpreadsheetForm_EnterPress()
+        {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+
+            string variableName = ConvertColRowToName(col, row);
+
+            // spreadsheet.SetContentsOfCell(variableName, t);
+            //Networking.Send(serverSocket, "unfocus ");
+            send_edit_to_server(ServerSocket, "unfocus ");
+            isEditing = false;
+
+
+            spreadsheetPanel1.GetValue(col, row, out string contents);
+            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+            cell_edit_to_server(ServerSocket, variableName, contents);
+
+            spreadsheetPanel1.SetSelection(col, row + 1);
+            Networking.GetData(ServerSocket);
+        }
+
+
+        private void SpreadsheetForm_UpPress()
+        {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            if (row != 0)
+            {
+                string variableName = ConvertColRowToName(col, row);
+
+                // spreadsheet.SetContentsOfCell(variableName, t);
+                // Networking.Send(serverSocket, "unfocus ");
+                send_edit_to_server(ServerSocket, "unfocus ");
+
+                isEditing = false;
+
+                spreadsheetPanel1.GetValue(col, row, out string contents);
+                System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
+                cell_edit_to_server(ServerSocket, variableName, contents);
+
+                spreadsheetPanel1.SetSelection(col, row - 1);
+                Networking.GetData(ServerSocket);
+            }
+        }
+
+
+        private void SpreadsheetForm_LeftPress()
+        {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            string variableName = ConvertColRowToName(col, row);
+
+            // spreadsheet.SetContentsOfCell(variableName, t);
+            // Networking.Send(serverSocket, "unfocus ");
+            send_edit_to_server(ServerSocket, "unfocus ");
+
+            isEditing = false;
+
+            spreadsheetPanel1.GetValue(col, row, out string contents);
+            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
+            cell_edit_to_server(ServerSocket, variableName, contents);
+
+            spreadsheetPanel1.SetSelection(col + 1, row);
+            Networking.GetData(ServerSocket);
+        }
+
+
+        private void SpreadsheetForm_RightPress()
+        {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            if (col != 0)
+            {
+                string variableName = ConvertColRowToName(col, row);
+
+                // spreadsheet.SetContentsOfCell(variableName, t);
+                // Networking.Send(serverSocket, "unfocus ");
+                send_edit_to_server(ServerSocket, "unfocus ");
+
+                isEditing = false;
+
+                spreadsheetPanel1.GetValue(col, row, out string contents);
+                System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
+                cell_edit_to_server(ServerSocket, variableName, contents);
+
+                spreadsheetPanel1.SetSelection(col - 1, row);
+                Networking.GetData(ServerSocket);
+            }
+        }
+
+
+        private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HelpForm form = new HelpForm();
+
+            form.ShowDialog();
+        }
+
+
+        private void UndoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Networking.Send(ServerSocket, "undo ");
+        }
+
+
+        private void RevertToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            string cell_name = ConvertColRowToName(col, row);
+            Networking.Send(ServerSocket, "revert " + cell_name);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         /// <summary>
@@ -226,28 +375,8 @@ namespace SpreadsheetGUI
             Networking.GetData(ServerSocket);
         }
 
-        /// <summary>
-        /// Is called from spreadsheet panel and indicates that the enter button was pressed
-        /// </summary>
-        private void EnterPressedOnPanel()
-        {
-            spreadsheetPanel1.GetSelection(out int col, out int row);
 
-            string variableName = ConvertColRowToName(col, row);
-
-            // spreadsheet.SetContentsOfCell(variableName, t);
-            //Networking.Send(serverSocket, "unfocus ");
-            send_edit_to_server(ServerSocket, "unfocus ");
-            isEditing = false;
-
-
-            spreadsheetPanel1.GetValue(col, row, out string contents);
-            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-            cell_edit_to_server(ServerSocket, variableName, contents);
-
-            spreadsheetPanel1.SetSelection(col, row + 1);
-            Networking.GetData(ServerSocket);
-        }
+        
 
         private void cell_edit_to_server(SocketState ss, string cellname, string s)
         {
@@ -356,31 +485,8 @@ namespace SpreadsheetGUI
 
             return variableName;
         }
-
-        /// <summary>
-        /// The event handler for when the enter button has been clicked. Updates the 
-        /// currently selected cell's contents with the input of the contents text box.
-        /// 
-        /// Note: this is also called for a key press of the enter key from the KeyDownHandler()
-        /// method. Normally this could be done by setting the AcceptButton to the EnterButton,
-        /// but our additional feature introduced some complexity with that approach.
-        /// </summary>
-        /// <param name="sender">the sender of the event</param>
-        /// <param name="e">the arguments of the event</param>
-
-        private void EnterButton_Click(object sender, EventArgs e)
-        {
-            // If the ErrorMsgBox was being displayed, it should now be hidden.
-            ErrorMsgBox.Visible = false;
-
-            //spreadsheetPanel1.GetSelection(out int col, out int row);
-            //string variableName = ConvertColRowToName(col, row);
-            //spreadsheetPanel1.GetValue(col, row, out string contents);
-            //Networking.Send(serverSocket, "edit " + variableName + ":" + contents);
-            EnterPressedOnPanel();
-
-
-        }
+        
+        
 
         /// <summary>
         /// Provided a set of cell names, updates their corresponding cells on the
@@ -420,277 +526,6 @@ namespace SpreadsheetGUI
         {
             col = name.First() - 'A';
             row = Int32.Parse(name.Substring(1).ToString()) - 1;
-        }
-
-        /// <summary>
-        /// Click event handler for the "New" menu button, opens a new spreadsheet window.
-        /// <param name="sender">the sender of the event</param>
-        /// <param name="e">the event arguments</param>
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Open a new spreadsheet window
-            //new SpreadsheetForm().Show();
-        }
-
-        /// <summary>
-        /// This method keeps track of the extra feature. During spreadsheet use
-        /// This method keeps track of the last 10 key presses the user entered
-        /// into the contents text box on the spreadsheet. When the user presses
-        /// enter, this method checks if the user's last 10 key presses match the 
-        /// konami code (list that contains a specific sequence of key presses). 
-        /// If the last key presses match the code, our extra feature form is activated.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void KeyDownHandler(object sender, System.Windows.Forms.KeyEventArgs e)
-        {
-            
-
-        }
-        
-        /// <summary>
-        /// send undo to server
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Networking.Send(ServerSocket, "undo ");
-        }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-
-            if (keyData == Keys.Up)
-            {
-                //move up row
-                row--;
-            }
-            else if (keyData == Keys.Down)
-            {
-                //move down row
-                row++;
-            }
-            else if (keyData == Keys.Left)
-            {
-
-                //move left column
-                col--;
-            }
-            else if (keyData == Keys.Right || keyData == Keys.Tab)
-            {
-                //move down column
-                col++;
-            }
-            else
-            {
-                return base.ProcessCmdKey(ref msg, keyData);
-            }
-
-
-            spreadsheetPanel1.SetSelection(col, row);
-
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        /// <summary>
-        /// send revert to server
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void revertToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-            string cell_name = ConvertColRowToName(col, row);
-            Networking.Send(ServerSocket, "revert " + cell_name);
-        }
-
-        private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            TerminateConnection();
-            timer.Enabled = false;
-            closeDel(ServerSocket);
-
-        }
-
-        public void load_spreadsheet(List<string> cells)
-        {
-            foreach (string cell_n_contents in cells)
-            {
-                string[] split = cell_n_contents.Split(':');
-                Spread.SetContentsOfCell(split[0], split[1]);
-
-                ISet<string> dependents = Spread.SetContentsOfCell(split[0], split[1]);
-
-                ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
-
-                // Update the displayed cell info for the newly modified cell 
-                MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
-                //DisplayCellInfo(dependentCol, dependentRow);
-                // Updates the displayed values of each of the dependent cells (this includes the modified cell)
-                UpdateDependentCells(dependents);
-            }
-        }
-
-        private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == Convert.ToChar(Keys.Enter))
-            {
-                EnterButton_Click(this, EventArgs.Empty);
-            }
-            else
-            {
-                /*spreadsheetPanel1.GetSelection(out int c, out int r);
-
-                string variableName = ConvertColRowToName(c, r);
-
-                spreadsheetPanel1.GetValue(c, r, out string current_contents);
-                if (e.KeyChar == Convert.ToChar(Keys.Back))
-                {
-                    if (current_contents != "")
-                    {
-                        current_contents = current_contents.Remove(current_contents.Length - 1);
-                    }
-
-                }
-                else
-                {
-                    current_contents += e.KeyChar;
-                }
-
-                spreadsheetPanel1.SetValue(c, r, current_contents);*/
-
-                // spreadsheet.SetContentsOfCell(variableName, t);
-                //Networking.Send(serverSocket, "unfocus ");
-                //send_edit_to_server(serverSocket, "unfocus ");
-
-
-                //spreadsheetPanel1.GetValue(c, r, out string contents);
-                //System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-                //cell_edit_to_server(serverSocket, variableName, contents);
-
-                Networking.GetData(ServerSocket);
-            }
-           
-        }
-
-        private void send_edit_to_server(SocketState ss, string s)
-        {
-            Networking.Send(ss, s);
-        }
-        private void left_pressed_on_panel()
-        {
-
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-            string variableName = ConvertColRowToName(col, row);
-
-            // spreadsheet.SetContentsOfCell(variableName, t);
-            // Networking.Send(serverSocket, "unfocus ");
-            send_edit_to_server(ServerSocket, "unfocus ");
-
-            isEditing = false;
-
-            spreadsheetPanel1.GetValue(col, row, out string contents);
-            System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-            cell_edit_to_server(ServerSocket, variableName, contents);
-
-            spreadsheetPanel1.SetSelection(col + 1, row);
-            Networking.GetData(ServerSocket);
-        }
-
-        private void right_pressed_on_panel()
-        {
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-            if (col != 0)
-            {
-                string variableName = ConvertColRowToName(col, row);
-
-                // spreadsheet.SetContentsOfCell(variableName, t);
-                // Networking.Send(serverSocket, "unfocus ");
-                send_edit_to_server(ServerSocket, "unfocus ");
-
-                isEditing = false;
-
-                spreadsheetPanel1.GetValue(col, row, out string contents);
-                System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
-                cell_edit_to_server(ServerSocket, variableName, contents);
-
-                spreadsheetPanel1.SetSelection(col - 1, row);
-                Networking.GetData(ServerSocket);
-            }
-
-        }
-
-        private void up_pressed_on_panel()
-        {
-
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-            if (row != 0)
-            {
-                string variableName = ConvertColRowToName(col, row);
-
-                // spreadsheet.SetContentsOfCell(variableName, t);
-                // Networking.Send(serverSocket, "unfocus ");
-                send_edit_to_server(ServerSocket, "unfocus ");
-
-                isEditing = false;
-
-                spreadsheetPanel1.GetValue(col, row, out string contents);
-                System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
-                cell_edit_to_server(ServerSocket, variableName, contents);
-
-                spreadsheetPanel1.SetSelection(col, row - 1);
-                Networking.GetData(ServerSocket);
-            }
-        }
-        /// <summary>
-        /// Click event handler for the "Save" button of the menu, opens a save file dialog
-        /// for the user to choose a location to save the spreadsheet to.
-        /// </summary>
-        /// <param name="sender">the sender of the event</param>
-        /// <param name="e">the event arguments</param>
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Create a new save file dialog that defaults to the .sprd extension
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.DefaultExt = "sprd";
-            dialog.Filter = "Spreadsheet Files (*.sprd)|*.sprd|All files (*.*)|*.*";
-
-            // If the dialog result is OK, attempt to save the spreadsheet to the chosen location
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                try
-                {
-                    // Attempt to save the spreadsheet to disk.
-                    Spread.Save(dialog.FileName);
-                }
-                catch (SpreadsheetReadWriteException)
-                {
-                    // Display a message box alerting the user that the file couldn't be saved.
-                    MessageBox.Show("Couldn't save file", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Click event handler for the "Open" button of the menu. Opens a dialog window
-        /// for the user to chose a spreadsheet file to open in the editor. 
-        /// </summary>
-        /// <param name="sender">the sender of the event</param>
-        /// <param name="e">the event arguments</param>
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Create a new open file dialog with filter options for the .sprd extension and all files
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Spreadsheet Files (*.sprd)|*.sprd|All files (*.*)|*.*";
-
-            // If the result of the dialog is OK, attempt to load spreadsheet file and update UI
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                UpdateSpreadsheetUIFromFile(dialog.FileName);
-            }
         }
 
         /// <summary>
@@ -752,55 +587,73 @@ namespace SpreadsheetGUI
             }
         }
 
-        /// <summary>
-        /// This method allows the user to close the spreadhseet in any other way
-        /// other than the close menu item.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
 
-        /// <summary>
-        /// This method keeps track of the closing event on the spreadsheet.
-        /// If changes have been made to the spreadsheet, a dialog box will open asking
-        /// the user if they still want to exit without saving. If the user clicks no,
-        /// the closing event is cancelled.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SpreadsheetFormClosing(object sender, FormClosingEventArgs e)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
 
-            /*if (spreadsheet.Changed)
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+
+            if (keyData == Keys.Up)
             {
-                DialogResult result = MessageBox.Show(
-                    "Current spreadsheet has unsaved changes. Do you want to exit without saving?",
-                    "WARNING", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                //move up row
+                row--;
+            }
+            else if (keyData == Keys.Down)
+            {
+                //move down row
+                row++;
+            }
+            else if (keyData == Keys.Left)
+            {
 
-                if (result.Equals(DialogResult.No))
-                {
-                    e.Cancel = true; //cancels the form closing event
-                    return;
-                }
-            }*/
+                //move left column
+                col--;
+            }
+            else if (keyData == Keys.Right || keyData == Keys.Tab)
+            {
+                //move down column
+                col++;
+            }
+            else
+            {
+                return base.ProcessCmdKey(ref msg, keyData);
+            }
+
+
+            spreadsheetPanel1.SetSelection(col, row);
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
-
-        /// <summary>
-        /// This method will show the HelpForm when the help menu item is clicked.
-        /// Creates a new HelpForm object and shows the dialog box.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            HelpForm form = new HelpForm();
-
-            form.ShowDialog();
-        }
-
         
+        private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            TerminateConnection();
+            timer.Enabled = false;
+            closeDel(ServerSocket);
+        }
+
+        public void load_spreadsheet(List<string> cells)
+        {
+            foreach (string cell_n_contents in cells)
+            {
+                string[] split = cell_n_contents.Split(':');
+                Spread.SetContentsOfCell(split[0], split[1]);
+
+                ISet<string> dependents = Spread.SetContentsOfCell(split[0], split[1]);
+
+                ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
+
+                // Update the displayed cell info for the newly modified cell 
+                MethodInvoker invoker = new MethodInvoker(() => DisplayCellInfo(dependentCol, dependentRow));
+                //DisplayCellInfo(dependentCol, dependentRow);
+                // Updates the displayed values of each of the dependent cells (this includes the modified cell)
+                UpdateDependentCells(dependents);
+            }
+        }
+
+        private void send_edit_to_server(SocketState ss, string s)
+        {
+            Networking.Send(ss, s);
+        }
     }
 }

@@ -34,12 +34,12 @@
             this.spreadsheetPanel1 = new SS.SpreadsheetPanel();
             this.CellValueTextBox = new System.Windows.Forms.TextBox();
             this.CellNameTextbox = new System.Windows.Forms.TextBox();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.revertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.UndoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RevertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolsMenuStrip = new System.Windows.Forms.MenuStrip();
             this.panel1.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
+            this.ToolsMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -117,40 +117,40 @@
             this.CellNameTextbox.Size = new System.Drawing.Size(72, 31);
             this.CellNameTextbox.TabIndex = 0;
             // 
-            // helpToolStripMenuItem
+            // HelpToolStripMenuItem
             // 
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(77, 36);
-            this.helpToolStripMenuItem.Text = "Help";
-            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
+            this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
+            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(77, 38);
+            this.HelpToolStripMenuItem.Text = "Help";
+            this.HelpToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
             // 
-            // undoToolStripMenuItem
+            // UndoToolStripMenuItem
             // 
-            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(85, 36);
-            this.undoToolStripMenuItem.Text = "Undo";
-            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
+            this.UndoToolStripMenuItem.Name = "UndoToolStripMenuItem";
+            this.UndoToolStripMenuItem.Size = new System.Drawing.Size(85, 38);
+            this.UndoToolStripMenuItem.Text = "Undo";
+            this.UndoToolStripMenuItem.Click += new System.EventHandler(this.UndoToolStripMenuItem_Click);
             // 
-            // revertToolStripMenuItem
+            // RevertToolStripMenuItem
             // 
-            this.revertToolStripMenuItem.Name = "revertToolStripMenuItem";
-            this.revertToolStripMenuItem.Size = new System.Drawing.Size(94, 36);
-            this.revertToolStripMenuItem.Text = "Revert";
-            this.revertToolStripMenuItem.Click += new System.EventHandler(this.revertToolStripMenuItem_Click);
+            this.RevertToolStripMenuItem.Name = "RevertToolStripMenuItem";
+            this.RevertToolStripMenuItem.Size = new System.Drawing.Size(94, 38);
+            this.RevertToolStripMenuItem.Text = "Revert";
+            this.RevertToolStripMenuItem.Click += new System.EventHandler(this.RevertToolStripMenuItem_Click);
             // 
-            // menuStrip1
+            // ToolsMenuStrip
             // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(36, 36);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.helpToolStripMenuItem,
-            this.undoToolStripMenuItem,
-            this.revertToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1611, 40);
-            this.menuStrip1.TabIndex = 1;
-            this.menuStrip1.Text = "menuStrip1";
+            this.ToolsMenuStrip.ImageScalingSize = new System.Drawing.Size(36, 36);
+            this.ToolsMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.HelpToolStripMenuItem,
+            this.UndoToolStripMenuItem,
+            this.RevertToolStripMenuItem});
+            this.ToolsMenuStrip.Location = new System.Drawing.Point(0, 0);
+            this.ToolsMenuStrip.Name = "ToolsMenuStrip";
+            this.ToolsMenuStrip.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
+            this.ToolsMenuStrip.Size = new System.Drawing.Size(1611, 40);
+            this.ToolsMenuStrip.TabIndex = 1;
+            this.ToolsMenuStrip.Text = "menuStrip1";
             // 
             // SpreadsheetForm
             // 
@@ -158,18 +158,17 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1611, 905);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.ToolsMenuStrip);
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SpreadsheetForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Spreadsheet Editor";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SpreadsheetForm_FormClosed);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpreadsheetForm_KeyPress);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.ToolsMenuStrip.ResumeLayout(false);
+            this.ToolsMenuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -182,10 +181,10 @@
         private SS.SpreadsheetPanel spreadsheetPanel1;
         private System.Windows.Forms.TextBox CellContentsTextBox;
         private System.Windows.Forms.TextBox ErrorMsgBox;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem revertToolStripMenuItem;
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem HelpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem UndoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RevertToolStripMenuItem;
+        private System.Windows.Forms.MenuStrip ToolsMenuStrip;
     }
 }
 
