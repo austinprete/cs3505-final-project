@@ -62,8 +62,8 @@ void Server::AcceptConnection()
           std::cout << "Client " << current_session_id << " connected from "
                     << socket.remote_endpoint().address().to_string() << std::endl;
 
-          shared_ptr<Session> session = std::make_shared<Session>(std::move(socket), current_session_id,
-                                                                  (&inbound_queue));
+          shared_ptr <Session> session = std::make_shared<Session>(std::move(socket), current_session_id,
+                                                                   (&inbound_queue));
 
 
           session->Start();
@@ -80,7 +80,7 @@ void Server::AcceptConnection()
 
 void Server::ProcessMessage(long client_id, string &message)
 {
-  vector<string> tokenized_message;
+  vector <string> tokenized_message;
   split(tokenized_message, message, boost::is_any_of(" \t"), boost::token_compress_on);
 
   string message_type = tokenized_message.at(0);
@@ -110,7 +110,7 @@ void Server::ProcessMessage(long client_id, string &message)
   } else if (message_type == "edit") {
     cout << "Running EditSpreadsheet()" << endl;
     string edit_info = boost::replace_all_copy(message, "edit ", "");
-    vector<string> tokenized_edit_info;
+    vector <string> tokenized_edit_info;
     split(tokenized_edit_info, edit_info, boost::is_any_of(":"), boost::token_compress_on);
 
     if (tokenized_edit_info.size() == 2) {
@@ -166,7 +166,7 @@ void Server::SendMessageToAllClients(string message) const
   message += '\3';
 
   for (const auto &client : clients) {
-    weak_ptr<Session> session = client.second;
+    weak_ptr <Session> session = client.second;
 
     if (auto spt = session.lock()) {
       (*spt).AddMessageToOutboundQueue(message);
@@ -182,7 +182,7 @@ void Server::SendMessageToClient(long client_id, string message) const
   auto search = clients.find(client_id);
 
   if (search != clients.end()) {
-    weak_ptr<Session> session = search->second;
+    weak_ptr <Session> session = search->second;
 
     if (auto spt = session.lock()) {
       (*spt).AddMessageToOutboundQueue(message);
@@ -253,11 +253,14 @@ void Server::DisconnectClient(long client_id)
 
   auto open_sheet_search = open_spreadsheets_map.find(client_id);
 
+  string spreadsheet_name;
+
   if (open_sheet_search != open_spreadsheets_map.end()) {
     open_sheet_search->second->RemoveSubscriber(client_id);
-  }
+    spreadsheet_name = open_sheet_search->second->GetName();
 
-  open_spreadsheets_map.erase(client_id);
+    open_spreadsheets_map.erase(client_id);
+  }
 
   auto session_search = clients.find(client_id);
 
@@ -265,6 +268,15 @@ void Server::DisconnectClient(long client_id)
     auto session = session_search->second;
 
     if (auto spt = session.lock()) {
+      if ((*spt).IsFocused()) {
+        string message = "unfocus client_" + to_string(client_id);
+
+        if (!spreadsheet_name.empty()) {
+
+          SendMessageToAllSpreadsheetSubscribers(spreadsheet_name, message);
+        }
+      }
+
       if ((*spt).IsOpen()) {
         (*spt).Close();
       }
@@ -373,7 +385,7 @@ void Server::HandleFocusMessage(int client_id, std::string cell_id)
     return;
   }
 
-  weak_ptr<Session> session = search->second;
+  weak_ptr <Session> session = search->second;
 
   if (auto spt = session.lock()) {
     if ((*spt).IsFocused()) {
@@ -403,7 +415,7 @@ void Server::HandleUnfocusMessage(int client_id)
     return;
   }
 
-  weak_ptr<Session> session = search->second;
+  weak_ptr <Session> session = search->second;
 
   if (auto spt = session.lock()) {
     if (!(*spt).IsFocused()) {
