@@ -134,6 +134,11 @@ std::string Spreadsheet::GetFullStateString()
 
   for (const auto &cell : spreadsheet_map) {
     string name = cell.first;
+
+    if (cell.second.empty()) {
+      continue;
+    }
+
     string contents = cell.second.back();
 
     full_state_stream << name << ":" << contents << '\n';
