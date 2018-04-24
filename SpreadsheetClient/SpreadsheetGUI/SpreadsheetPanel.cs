@@ -2,24 +2,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Network;
 
 
 namespace SS
 {
-
-
     /// <summary>
     /// The type of delegate used to register for SelectionChanged events
     /// </summary>
     /// <param name="sender"></param>
-
     public delegate void SelectionChangedHandler(SpreadsheetPanel sender);
 
 
@@ -32,15 +25,13 @@ namespace SS
     /// 
     /// None of the cells are editable.  They are for display purposes only.
     /// </summary>
-
     public partial class SpreadsheetPanel : UserControl
     {
-
         // The SpreadsheetPanel is composed of a DrawingPanel (where the grid is drawn),
         // a horizontal scroll bar, and a vertical scroll bar.
-        private DrawingPanel drawingPanel;
-        private HScrollBar hScroll;
-        private VScrollBar vScroll;
+        private DrawingPanel DrawingPan;
+        private HScrollBar HScrol;
+        private VScrollBar VScrol;
 
         // These constants control the layout of the spreadsheet grid.  The height and
         // width measurements are in pixels.
@@ -54,93 +45,84 @@ namespace SS
         private const int ROW_COUNT = 99;
 
         public delegate void EnterDelegate();
-        public EnterDelegate enterDel;
-        public EnterDelegate startEditingCell;
+        public EnterDelegate EnterDel;
+        public EnterDelegate StartEditingCellDel;
 
         public delegate void LeftDelegate();
-        public LeftDelegate leftDel;
+        public LeftDelegate LeftDel;
 
         public delegate void RightDelegate();
-        public RightDelegate rightDel;
+        public RightDelegate RightDel;
 
         public delegate void UpDelegate();
-        public UpDelegate upDel;
+        public UpDelegate UpDel;
 
         public delegate void LeaveCell(int c, int r, string s);
-        public LeaveCell leave_cell;
+        public LeaveCell LeaveCellDel;
 
-        public Dictionary<string, string> highlightedCells;
-        /// <summary>
-        /// Creates an empty SpreadsheetPanel
-        /// </summary>
+        public Dictionary<string, string> HighlightedCells;
+        
 
         public SpreadsheetPanel()
         {
-
             // The DrawingPanel is quite large, since it has 26 columns and 99 rows.  The
             // SpreadsheetPanel itself will usually be smaller, which is why scroll bars
             // are necessary.
-            drawingPanel = new DrawingPanel(this);
-            drawingPanel.Location = new Point(0, 0);
-            drawingPanel.AutoScroll = false;
+            DrawingPan = new DrawingPanel(this);
+            DrawingPan.Location = new Point(0, 0);
+            DrawingPan.AutoScroll = false;
 
             // A custom vertical scroll bar.  It is designed to scroll in multiples of rows.
-            vScroll = new VScrollBar();
-            vScroll.SmallChange = 1;
-            vScroll.Maximum = ROW_COUNT;
+            VScrol = new VScrollBar();
+            VScrol.SmallChange = 1;
+            VScrol.Maximum = ROW_COUNT;
 
             // A custom horizontal scroll bar.  It is designed to scroll in multiples of columns.
-            hScroll = new HScrollBar();
-            hScroll.SmallChange = 1;
-            hScroll.Maximum = COL_COUNT;
+            HScrol = new HScrollBar();
+            HScrol.SmallChange = 1;
+            HScrol.Maximum = COL_COUNT;
 
             // Add the drawing panel and the scroll bars to the SpreadsheetPanel.
-            Controls.Add(drawingPanel);
-            Controls.Add(vScroll);
-            Controls.Add(hScroll);
+            Controls.Add(DrawingPan);
+            Controls.Add(VScrol);
+            Controls.Add(HScrol);
 
             // Arrange for the drawing panel to be notified when it needs to scroll itself.
-            hScroll.Scroll += drawingPanel.HandleHScroll;
-            vScroll.Scroll += drawingPanel.HandleVScroll;
+            HScrol.Scroll += DrawingPan.HandleHScroll;
+            VScrol.Scroll += DrawingPan.HandleVScroll;
+            
+            VScrol.KeyDown += ScrollKeyDown;
+            HScrol.KeyDown += ScrollKeyDown;
+            VScrol.TabStop = false;
+            HScrol.TabStop = false;
+            VScrol.GotFocus += ScrollBarGotFocus;
+            HScrol.GotFocus += ScrollBarGotFocus;
 
-            vScroll.PreviewKeyDown += ScrollPreviewKeyDown;
-            hScroll.PreviewKeyDown += ScrollPreviewKeyDown;
-            vScroll.KeyDown += ScrollKeyDown;
-            hScroll.KeyDown += ScrollKeyDown;
-            vScroll.TabStop = false;
-            hScroll.TabStop = false;
-            vScroll.GotFocus += ScrollBarGotFocus;
-            hScroll.GotFocus += ScrollBarGotFocus;
-
-            highlightedCells = new Dictionary<string, string>();
+            HighlightedCells = new Dictionary<string, string>();
 
 
             InitializeComponent();
         }
 
+
         private void ScrollBarGotFocus(object sender, EventArgs e) {
             this.Focus();
         }
+
 
         private void ScrollKeyDown(object sender, KeyEventArgs e) {
             if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Up || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right) {
                 e.Handled = true;
             }
         }
-
-        private void ScrollPreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {
-            if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Up || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right) {
-                //e.IsInputKey = true;
-            }
-        }
+        
 
         /// <summary>
         /// Clears the display.
         /// </summary>
-
         public void Clear()
         {
-            drawingPanel.Clear();
+            DrawingPan.Clear();
         }
 
 
@@ -155,7 +137,7 @@ namespace SS
 
         public bool SetValue(int col, int row, string value)
         {
-            return drawingPanel.SetValue(col, row, value);
+            return DrawingPan.SetValue(col, row, value);
         }
 
 
@@ -171,7 +153,7 @@ namespace SS
 
         public bool GetValue(int col, int row, out string value)
         {
-            return drawingPanel.GetValue(col, row, out value);
+            return DrawingPan.GetValue(col, row, out value);
         }
 
 
@@ -185,8 +167,9 @@ namespace SS
 
         public bool SetSelection(int col, int row)
         {
-            return drawingPanel.SetSelection(col, row);
+            return DrawingPan.SetSelection(col, row);
         }
+
 
         /// <summary>
         /// Shows focus for a user at a certain cell
@@ -194,11 +177,12 @@ namespace SS
         /// <param name="cellName"></param>
         /// <param name="id"></param>
         public void FocusCell(string cellName, string id) {
-            lock (highlightedCells) {
-                highlightedCells.Add(id, cellName);
-                drawingPanel.Invalidate();
+            lock (HighlightedCells) {
+                HighlightedCells.Add(id, cellName);
+                DrawingPan.Invalidate();
             }
         }
+
 
         /// <summary>
         /// Unfocuses a user at cell
@@ -206,11 +190,12 @@ namespace SS
         /// <param name="cellName"></param>
         /// <param name="id"></param>
         public void UnfocusCell(string id) {
-            lock (highlightedCells) {
-                highlightedCells.Remove(id);
-                drawingPanel.Invalidate();
+            lock (HighlightedCells) {
+                HighlightedCells.Remove(id);
+                DrawingPan.Invalidate();
             }
         }
+
 
         /// <summary>
         /// Assigns the column and row of the current selection to the
@@ -221,8 +206,9 @@ namespace SS
 
         public void GetSelection(out int col, out int row)
         {
-            drawingPanel.GetSelection(out col, out row);
+            DrawingPan.GetSelection(out col, out row);
         }
+
 
         /// <summary>
         /// Detects when a key is pressed on the spreadsheet panel and updates the cell accordingly
@@ -232,11 +218,12 @@ namespace SS
         private void SpreadsheetPanel_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar != Convert.ToChar(Keys.Enter))
-                startEditingCell();
+                StartEditingCellDel();
 
             int row, col;
-            GetSelection(out col, out row);
             string currentValue;
+
+            GetSelection(out col, out row);
             GetValue(col, row, out currentValue);
 
             //If backspace is pressed
@@ -276,13 +263,13 @@ namespace SS
             base.OnResize(eventargs);
             if (FindForm() == null || FindForm().WindowState != FormWindowState.Minimized)
             {
-                drawingPanel.Size = new Size(Width - SCROLLBAR_WIDTH, Height - SCROLLBAR_WIDTH);
-                vScroll.Location = new Point(Width - SCROLLBAR_WIDTH, 0);
-                vScroll.Size = new Size(SCROLLBAR_WIDTH, Height - SCROLLBAR_WIDTH);
-                vScroll.LargeChange = (Height - SCROLLBAR_WIDTH) / DATA_ROW_HEIGHT;
-                hScroll.Location = new Point(0, Height - SCROLLBAR_WIDTH);
-                hScroll.Size = new Size(Width - SCROLLBAR_WIDTH, SCROLLBAR_WIDTH);
-                hScroll.LargeChange = (Width - SCROLLBAR_WIDTH) / DATA_COL_WIDTH;
+                DrawingPan.Size = new Size(Width - SCROLLBAR_WIDTH, Height - SCROLLBAR_WIDTH);
+                VScrol.Location = new Point(Width - SCROLLBAR_WIDTH, 0);
+                VScrol.Size = new Size(SCROLLBAR_WIDTH, Height - SCROLLBAR_WIDTH);
+                VScrol.LargeChange = (Height - SCROLLBAR_WIDTH) / DATA_ROW_HEIGHT;
+                HScrol.Location = new Point(0, Height - SCROLLBAR_WIDTH);
+                HScrol.Size = new Size(Width - SCROLLBAR_WIDTH, SCROLLBAR_WIDTH);
+                HScrol.LargeChange = (Width - SCROLLBAR_WIDTH) / DATA_COL_WIDTH;
             }
         }
 
@@ -327,9 +314,7 @@ namespace SS
 
         }
 
-
-
-
+        
         /// <summary>
         /// The panel where the spreadsheet grid is drawn.  It keeps track of the
         /// current selection as well as what is supposed to be drawn in each cell.
@@ -351,8 +336,7 @@ namespace SS
 
             // The containing panel
             private SpreadsheetPanel _ssp;
-
-
+            
 
             public DrawingPanel(SpreadsheetPanel ss)
             {
@@ -387,9 +371,7 @@ namespace SS
 
                 Address a = new Address(col, row);
                 if (c == null)
-                {
-                   //_values()
-                }
+                { }
                 else
                 {
                     lock (_values)
@@ -452,7 +434,6 @@ namespace SS
 
             protected override void OnPaint(PaintEventArgs e)
             {
-
                 // Clip based on what needs to be refreshed.
                 Region clip = new Region(e.ClipRectangle);
                 e.Graphics.Clip = clip;
@@ -519,8 +500,8 @@ namespace SS
                 }
 
                 //loop through all the focused cells and highlight them
-                lock (_ssp.highlightedCells) {
-                    foreach (KeyValuePair<string, string> pair in _ssp.highlightedCells) {
+                lock (_ssp.HighlightedCells) {
+                    foreach (KeyValuePair<string, string> pair in _ssp.HighlightedCells) {
                         string name = pair.Value;
                         int col = name.First() - 'A';
                         int row = Int32.Parse(name.Substring(1).ToString()) - 1;
@@ -566,8 +547,6 @@ namespace SS
                         }
                     }
                 }
-              
-
             }
 
 
@@ -633,7 +612,6 @@ namespace SS
                 }
                 Invalidate();
             }
-
         }
     }
 }

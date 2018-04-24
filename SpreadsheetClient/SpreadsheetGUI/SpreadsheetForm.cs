@@ -63,12 +63,12 @@ namespace SpreadsheetGUI
 
             // Assign event handlers
             spreadsheetPanel1.SelectionChanged += CellSelected;
-            spreadsheetPanel1.enterDel = EnterPressedOnPanel;
-            spreadsheetPanel1.upDel = up_pressed_on_panel;
-            spreadsheetPanel1.leftDel = left_pressed_on_panel;
-            spreadsheetPanel1.rightDel = right_pressed_on_panel;
-            spreadsheetPanel1.startEditingCell = StartEditingCell;
-            spreadsheetPanel1.leave_cell = leavecell;
+            spreadsheetPanel1.EnterDel = EnterPressedOnPanel;
+            spreadsheetPanel1.UpDel = up_pressed_on_panel;
+            spreadsheetPanel1.LeftDel = left_pressed_on_panel;
+            spreadsheetPanel1.RightDel = right_pressed_on_panel;
+            spreadsheetPanel1.StartEditingCellDel = StartEditingCell;
+            spreadsheetPanel1.LeaveCellDel = leavecell;
             FormClosing += SpreadsheetFormClosing;
             CellContentsTextBox.KeyDown += KeyDownHandler;
 
