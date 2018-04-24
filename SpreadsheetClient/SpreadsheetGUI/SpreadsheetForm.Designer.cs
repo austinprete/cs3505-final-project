@@ -51,7 +51,7 @@
             this.panel1.Controls.Add(this.CellNameTextbox);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 40);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1611, 865);
             this.panel1.TabIndex = 2;
@@ -64,7 +64,7 @@
             this.ErrorMsgBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.ErrorMsgBox.Enabled = false;
             this.ErrorMsgBox.Location = new System.Drawing.Point(11, 62);
-            this.ErrorMsgBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ErrorMsgBox.Margin = new System.Windows.Forms.Padding(4);
             this.ErrorMsgBox.Name = "ErrorMsgBox";
             this.ErrorMsgBox.ReadOnly = true;
             this.ErrorMsgBox.Size = new System.Drawing.Size(1589, 31);
@@ -78,7 +78,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.CellContentsTextBox.Enabled = false;
             this.CellContentsTextBox.Location = new System.Drawing.Point(740, 12);
-            this.CellContentsTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CellContentsTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.CellContentsTextBox.Name = "CellContentsTextBox";
             this.CellContentsTextBox.Size = new System.Drawing.Size(677, 31);
             this.CellContentsTextBox.TabIndex = 3;
@@ -90,7 +90,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.spreadsheetPanel1.Location = new System.Drawing.Point(11, 112);
-            this.spreadsheetPanel1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.spreadsheetPanel1.Margin = new System.Windows.Forms.Padding(5);
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
             this.spreadsheetPanel1.Size = new System.Drawing.Size(1600, 752);
             this.spreadsheetPanel1.TabIndex = 2;
@@ -100,7 +100,7 @@
             this.CellValueTextBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CellValueTextBox.Enabled = false;
             this.CellValueTextBox.Location = new System.Drawing.Point(104, 12);
-            this.CellValueTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CellValueTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.CellValueTextBox.Name = "CellValueTextBox";
             this.CellValueTextBox.ReadOnly = true;
             this.CellValueTextBox.Size = new System.Drawing.Size(623, 31);
@@ -111,7 +111,7 @@
             this.CellNameTextbox.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CellNameTextbox.Enabled = false;
             this.CellNameTextbox.Location = new System.Drawing.Point(11, 12);
-            this.CellNameTextbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CellNameTextbox.Margin = new System.Windows.Forms.Padding(4);
             this.CellNameTextbox.Name = "CellNameTextbox";
             this.CellNameTextbox.ReadOnly = true;
             this.CellNameTextbox.Size = new System.Drawing.Size(72, 31);
@@ -160,8 +160,9 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SpreadsheetForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Spreadsheet Editor";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SpreadsheetForm_FormClosed);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpreadsheetForm_KeyPress);

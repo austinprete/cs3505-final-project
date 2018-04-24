@@ -7,7 +7,7 @@ using SpreadsheetUtilities;
 using SS;
 using Network;
 using System.Diagnostics;
-using System.Threading;
+
 
 
 namespace SpreadsheetGUI
@@ -18,26 +18,21 @@ namespace SpreadsheetGUI
     public partial class SpreadsheetForm : Form
     {
         // Provides the backend logic for the spreadsheet GUI
-        private Spreadsheet spreadsheet;
+        private Spreadsheet Spread;
 
         // The following variables are utilized for the extra feature.
         private List<Keys> lastKeyPresses = new List<Keys>();
         private static List<Keys> konamiCode = new List<Keys> { Keys.Up, Keys.Up, Keys.Down, Keys.Down, Keys.Left, Keys.Right, Keys.Left, Keys.Right, Keys.B, Keys.A };
 
-        private SocketState serverSocket;
-
-        private Stopwatch stopwatch = new Stopwatch();
-
+        private SocketState ServerSocket;
+        private Stopwatch StopWat = new Stopwatch();
         private System.Timers.Timer timer;
-
-        int pingDelay;
-
-        private string name;
-
+        private int PingDelay;
         private bool isEditing = false;
-
         public delegate void SpreadsheetCloseDelegate(SocketState ss);
         private SpreadsheetCloseDelegate closeDel;
+
+
 
         //these variables are to keep track of what commands were pressed
         //private bool revert, undo, edit;
@@ -51,14 +46,11 @@ namespace SpreadsheetGUI
             Text = name;
             closeDel = ss;
 
-            serverSocket = socket;
-            serverSocket.callMe = Spreadsheet_ProcessMessage;
-            Networking.GetData(serverSocket);
+            ServerSocket = socket;
+            ServerSocket.callMe = Spreadsheet_ProcessMessage;
+            Networking.GetData(ServerSocket);
 
-            //name = spreadsheet_name;
-
-            pingDelay = 0;
-
+            PingDelay = 0;
             Size = new Size(1200, 600);
 
             // Assign event handlers
@@ -73,7 +65,7 @@ namespace SpreadsheetGUI
             CellContentsTextBox.KeyDown += KeyDownHandler;
 
             // Instantiate the backing Spreadsheet instance
-            spreadsheet = new Spreadsheet(s => true, s => s.ToUpper(), "CHANGE ME");
+            Spread = new Spreadsheet(s => true, s => s.ToUpper(), "CHANGE ME");
 
             // Sets control focus to the cell contents text box at startup
             //ActiveControl = CellContentsTextBox;
@@ -88,19 +80,20 @@ namespace SpreadsheetGUI
             timer.Interval = 10000;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(send_ping);
             timer.Enabled = true;
-
         }
+
+
         /// <summary>
         /// send ping every 60 sec
         /// </summary>
         private void send_ping(object source, System.Timers.ElapsedEventArgs e)
         {
-            pingDelay += 10;
-            if (pingDelay == 60)//Connection is dead, terminate it
+            PingDelay += 10;
+            if (PingDelay == 60)//Connection is dead, terminate it
             {
                 TerminateConnection();
             }
-            Networking.Send(serverSocket, "ping ");
+            Networking.Send(ServerSocket, "ping ");
 
             System.Diagnostics.Debug.WriteLine("CLIENT: ping");
         }
@@ -131,7 +124,7 @@ namespace SpreadsheetGUI
                     //It's an incomplete message, wait for later
                     if (data.StartsWith("ping_response"))
                     {
-                        pingDelay = 0;
+                        PingDelay = 0;
                     }
                     else if (data.StartsWith("ping") && data.Length < 12)
                     {
@@ -144,7 +137,7 @@ namespace SpreadsheetGUI
                         try
                         {
                             string cellContents = data.Substring(data.IndexOf(":") + 1);
-                            ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
+                            ISet<string> dependents = Spread.SetContentsOfCell(cellName, cellContents);
 
                             ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
 
@@ -158,8 +151,8 @@ namespace SpreadsheetGUI
                         {
                             string cellContents = "";
                             MessageBox.Show("There is a circular dependency. Unacceptable");
-                            cell_edit_to_server(serverSocket, cellName, cellContents);
-                            ISet<string> dependents = spreadsheet.SetContentsOfCell(cellName, cellContents);
+                            cell_edit_to_server(ServerSocket, cellName, cellContents);
+                            ISet<string> dependents = Spread.SetContentsOfCell(cellName, cellContents);
                             ConvertNameToColRow(cellName, out int dependentCol, out int dependentRow);
 
                             // Update the displayed cell info for the newly modified cell
@@ -192,13 +185,13 @@ namespace SpreadsheetGUI
 
         private void send_ping_response()
         {
-            Networking.Send(serverSocket, "ping_response ");
+            Networking.Send(ServerSocket, "ping_response ");
             System.Diagnostics.Debug.WriteLine("CLIENT: ping_response");
         }
         private void TerminateConnection()
         {
-            Networking.Send(serverSocket, "disconnect ");
-            serverSocket.theSocket.Disconnect(true);
+            Networking.Send(ServerSocket, "disconnect ");
+            ServerSocket.theSocket.Disconnect(true);
         }
 
         private void StartEditingCell()
@@ -206,7 +199,7 @@ namespace SpreadsheetGUI
             spreadsheetPanel1.GetSelection(out int col, out int row);
             if (!isEditing)
             {
-                Networking.Send(serverSocket, "focus " + ConvertColRowToName(col, row));
+                Networking.Send(ServerSocket, "focus " + ConvertColRowToName(col, row));
                 isEditing = true;
             }
         }
@@ -220,17 +213,17 @@ namespace SpreadsheetGUI
 
             // spreadsheet.SetContentsOfCell(variableName, t);
             //Networking.Send(serverSocket, "unfocus ");
-            send_edit_to_server(serverSocket, "unfocus ");
+            send_edit_to_server(ServerSocket, "unfocus ");
             isEditing = false;
 
 
             spreadsheetPanel1.GetValue(col, row, out string contents);
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-            cell_edit_to_server(serverSocket, variableName, contents);
+            cell_edit_to_server(ServerSocket, variableName, contents);
 
             //spreadsheetPanel1.SetSelection(col, row + 1);
             //Networking.GetData(serverSocket);
-            Networking.GetData(serverSocket);
+            Networking.GetData(ServerSocket);
         }
 
         /// <summary>
@@ -244,16 +237,16 @@ namespace SpreadsheetGUI
 
             // spreadsheet.SetContentsOfCell(variableName, t);
             //Networking.Send(serverSocket, "unfocus ");
-            send_edit_to_server(serverSocket, "unfocus ");
+            send_edit_to_server(ServerSocket, "unfocus ");
             isEditing = false;
 
 
             spreadsheetPanel1.GetValue(col, row, out string contents);
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-            cell_edit_to_server(serverSocket, variableName, contents);
+            cell_edit_to_server(ServerSocket, variableName, contents);
 
             spreadsheetPanel1.SetSelection(col, row + 1);
-            Networking.GetData(serverSocket);
+            Networking.GetData(ServerSocket);
         }
 
         private void cell_edit_to_server(SocketState ss, string cellname, string s)
@@ -261,7 +254,7 @@ namespace SpreadsheetGUI
             string cellContents = s;
             try
             {
-                ISet<string> dependents = spreadsheet.SetContentsOfCell(cellname, cellContents);
+                ISet<string> dependents = Spread.SetContentsOfCell(cellname, cellContents);
 
                 ConvertNameToColRow(cellname, out int dependentCol, out int dependentRow);
             }
@@ -285,7 +278,7 @@ namespace SpreadsheetGUI
 
             // spreadsheet.SetContentsOfCell(variableName, t);
             // Networking.Send(serverSocket, "unfocus ");
-            send_edit_to_server(serverSocket, "unfocus ");
+            send_edit_to_server(ServerSocket, "unfocus ");
 
             isEditing = false;
 
@@ -297,8 +290,8 @@ namespace SpreadsheetGUI
             // Gets the coordinates for the currently selected cell from the spreadsheet panel.
             sender.GetSelection(out int col, out int row);
 
-            object originalObj = spreadsheet.GetCellContents(ConvertColRowToName(col, row));
-            string originalString = spreadsheet.GetCellContents(ConvertColRowToName(col, row)).ToString();
+            object originalObj = Spread.GetCellContents(ConvertColRowToName(col, row));
+            string originalString = Spread.GetCellContents(ConvertColRowToName(col, row)).ToString();
             if (originalObj as Formula != null)
             {
                 originalString = "=" + originalString;
@@ -309,7 +302,7 @@ namespace SpreadsheetGUI
             // Update the UI to show the currently selected cell's information
             DisplayCellInfo(col, row);
 
-            Networking.GetData(serverSocket);
+            Networking.GetData(ServerSocket);
 
         }
 
@@ -324,7 +317,7 @@ namespace SpreadsheetGUI
             string variableName = ConvertColRowToName(col, row);
             CellNameTextbox.Text = variableName;
 
-            Object cellValue = spreadsheet.GetCellValue(variableName);
+            Object cellValue = Spread.GetCellValue(variableName);
 
             // If the value is a formula error we display the reason for it
             if (cellValue is FormulaError)
@@ -336,7 +329,7 @@ namespace SpreadsheetGUI
                 CellValueTextBox.Text = cellValue.ToString();
             }
 
-            Object cellContents = spreadsheet.GetCellContents(variableName);
+            Object cellContents = Spread.GetCellContents(variableName);
             string contentString = cellContents.ToString();
 
             // If the contents are a formula, we need to prepend an equals sign
@@ -401,7 +394,7 @@ namespace SpreadsheetGUI
                 // Convert the cell name to the corresponding integer coordinates
                 ConvertNameToColRow(dependent, out int col, out int row);
 
-                Object cellValue = spreadsheet.GetCellValue(dependent);
+                Object cellValue = Spread.GetCellValue(dependent);
 
                 // If the value of the cell is a formula error, we display an error string
                 // in that cell on the spreadsheet panel.
@@ -462,7 +455,7 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Networking.Send(serverSocket, "undo ");
+            Networking.Send(ServerSocket, "undo ");
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -511,14 +504,14 @@ namespace SpreadsheetGUI
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string cell_name = ConvertColRowToName(col, row);
-            Networking.Send(serverSocket, "revert " + cell_name);
+            Networking.Send(ServerSocket, "revert " + cell_name);
         }
 
         private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             TerminateConnection();
             timer.Enabled = false;
-            closeDel(serverSocket);
+            closeDel(ServerSocket);
 
         }
 
@@ -527,9 +520,9 @@ namespace SpreadsheetGUI
             foreach (string cell_n_contents in cells)
             {
                 string[] split = cell_n_contents.Split(':');
-                spreadsheet.SetContentsOfCell(split[0], split[1]);
+                Spread.SetContentsOfCell(split[0], split[1]);
 
-                ISet<string> dependents = spreadsheet.SetContentsOfCell(split[0], split[1]);
+                ISet<string> dependents = Spread.SetContentsOfCell(split[0], split[1]);
 
                 ConvertNameToColRow(split[0], out int dependentCol, out int dependentRow);
 
@@ -578,7 +571,7 @@ namespace SpreadsheetGUI
                 //System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
                 //cell_edit_to_server(serverSocket, variableName, contents);
 
-                Networking.GetData(serverSocket);
+                Networking.GetData(ServerSocket);
             }
            
         }
@@ -595,16 +588,16 @@ namespace SpreadsheetGUI
 
             // spreadsheet.SetContentsOfCell(variableName, t);
             // Networking.Send(serverSocket, "unfocus ");
-            send_edit_to_server(serverSocket, "unfocus ");
+            send_edit_to_server(ServerSocket, "unfocus ");
 
             isEditing = false;
 
             spreadsheetPanel1.GetValue(col, row, out string contents);
             System.Diagnostics.Debug.WriteLine("CLIENT: edit " + variableName + ":" + contents);
-            cell_edit_to_server(serverSocket, variableName, contents);
+            cell_edit_to_server(ServerSocket, variableName, contents);
 
             spreadsheetPanel1.SetSelection(col + 1, row);
-            Networking.GetData(serverSocket);
+            Networking.GetData(ServerSocket);
         }
 
         private void right_pressed_on_panel()
@@ -616,16 +609,16 @@ namespace SpreadsheetGUI
 
                 // spreadsheet.SetContentsOfCell(variableName, t);
                 // Networking.Send(serverSocket, "unfocus ");
-                send_edit_to_server(serverSocket, "unfocus ");
+                send_edit_to_server(ServerSocket, "unfocus ");
 
                 isEditing = false;
 
                 spreadsheetPanel1.GetValue(col, row, out string contents);
                 System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
-                cell_edit_to_server(serverSocket, variableName, contents);
+                cell_edit_to_server(ServerSocket, variableName, contents);
 
                 spreadsheetPanel1.SetSelection(col - 1, row);
-                Networking.GetData(serverSocket);
+                Networking.GetData(ServerSocket);
             }
 
         }
@@ -640,16 +633,16 @@ namespace SpreadsheetGUI
 
                 // spreadsheet.SetContentsOfCell(variableName, t);
                 // Networking.Send(serverSocket, "unfocus ");
-                send_edit_to_server(serverSocket, "unfocus ");
+                send_edit_to_server(ServerSocket, "unfocus ");
 
                 isEditing = false;
 
                 spreadsheetPanel1.GetValue(col, row, out string contents);
                 System.Diagnostics.Debug.WriteLine("edit " + variableName + ":" + contents);
-                cell_edit_to_server(serverSocket, variableName, contents);
+                cell_edit_to_server(ServerSocket, variableName, contents);
 
                 spreadsheetPanel1.SetSelection(col, row - 1);
-                Networking.GetData(serverSocket);
+                Networking.GetData(ServerSocket);
             }
         }
         /// <summary>
@@ -671,7 +664,7 @@ namespace SpreadsheetGUI
                 try
                 {
                     // Attempt to save the spreadsheet to disk.
-                    spreadsheet.Save(dialog.FileName);
+                    Spread.Save(dialog.FileName);
                 }
                 catch (SpreadsheetReadWriteException)
                 {
@@ -709,7 +702,7 @@ namespace SpreadsheetGUI
             try
             {
                 // Check if the current spreadsheet has been changed
-                if (spreadsheet.Changed)
+                if (Spread.Changed)
                 {
                     DialogResult result = MessageBox.Show(
                         "Current spreadsheet has unsaved changes. Do you want to exit without saving?",
@@ -725,7 +718,7 @@ namespace SpreadsheetGUI
                 }
 
                 // Attempt to load the specified spreadsheet file as a Spreadsheet instance
-                spreadsheet = new Spreadsheet(filename, s => true, s => s.ToUpper(), "ps6");
+                Spread = new Spreadsheet(filename, s => true, s => s.ToUpper(), "ps6");
 
                 // For every cell displayed in our UI, see if that cell is set in the loaded
                 // spreadsheet and update the UI as necessary.
@@ -744,7 +737,7 @@ namespace SpreadsheetGUI
 
                 // Set the selected cell to "A1"
                 spreadsheetPanel1.SetSelection(0, 0);
-                Networking.Send(serverSocket, "unfocus ");
+                Networking.Send(ServerSocket, "unfocus ");
                 DisplayCellInfo(0, 0);
             }
             catch (SpreadsheetReadWriteException)
