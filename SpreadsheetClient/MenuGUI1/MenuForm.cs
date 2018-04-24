@@ -158,6 +158,8 @@ namespace MenuGUI
 
 
 
+
+
         private void MenuForm_ProcessMessage(SocketState ss)
         {
             string allData = ss.sb.ToString();
@@ -197,7 +199,7 @@ namespace MenuGUI
             }
             Networking.GetData(ss);
         }
-        
+
 
         private void CreateSpreadsheet(List<string> cells)
         {
