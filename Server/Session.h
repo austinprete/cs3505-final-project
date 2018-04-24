@@ -26,9 +26,18 @@ public:
 
   void Start();
 
+  void Close();
+
+  bool IsFocused() const;
+
+  void Focus();
+
+  void Unfocus();
+
 private:
   boost::asio::ip::tcp::socket socket;
   long id;
+  bool focused;
 
   boost::asio::streambuf buffer;
 

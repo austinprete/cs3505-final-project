@@ -17,7 +17,7 @@ using boost::asio::ip::tcp;
 
 using namespace std;
 
-Session::Session(boost::asio::ip::tcp::socket socket, long session_id, MessageQueue *queue)
+Session::Session(tcp::socket socket, long session_id, MessageQueue *queue)
     : socket(std::move(socket)), inbound_queue(queue), id(session_id)
 {
 }
@@ -27,7 +27,7 @@ void Session::AddMessageToOutboundQueue(std::string message)
   outbound_queue.AddMessage(this->id, std::move(message));
   WriteOutboundMessage();
 }
-
+//
 const string Session::GetAddress() const
 {
   return this->socket.remote_endpoint().address().to_string();
@@ -40,60 +40,55 @@ void Session::Start()
 
 void Session::ReadMessage()
 {
-  if (!IsOpen()) {
-    return;
-  }
+//  if (!IsOpen()) {
+//    return;
+//  }
 
   auto self(shared_from_this());
-  try {
-    boost::asio::async_read_until(
-        socket,
-        buffer,
-        '\3',
-        [this, self](boost::system::error_code ec, std::size_t length) {
+  boost::asio::async_read_until(
+      (socket),
+      buffer,
+      '\3',
+      [this, self](boost::system::error_code ec, std::size_t length) {
 
-          if ((boost::asio::error::eof == ec) ||
-              (boost::asio::error::connection_reset == ec)) {
-            Shutdown(ec);
-            return;
+        if (!ec) {
+
+          std::string message_string;
+          std::istream buffer_stream(&buffer);
+          std::getline(buffer_stream, message_string);
+
+          std::string::size_type pos = message_string.find('\3');
+          if (pos != std::string::npos) {
+            message_string = message_string.substr(0, pos);
           }
 
-          if (!ec) {
+//          if (IsOpen()) {
 
-            std::string message_string;
-            std::istream buffer_stream(&buffer);
-            std::getline(buffer_stream, message_string);
-
-            std::string::size_type pos = message_string.find('\3');
-            if (pos != std::string::npos) {
-              message_string = message_string.substr(0, pos);
-            }
-
-            std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
+//            std::cout << "Received message from " << GetAddress() << ": " << message_string << std::endl;
             inbound_queue->AddMessage(this->id, message_string);
 
             ReadMessage();
-          }
+//          }
+        } else {
+          Shutdown(ec);
         }
-    );
-  } catch (std::exception e) {
-    cout << "Encountered exception" << endl;
-  }
+      }
+  );
+
 }
 
 void Session::WriteOutboundMessage()
 {
-  if (!IsOpen()) {
-    return;
-  }
+//  if (!IsOpen()) {
+//    return;
+//  }
   if (!outbound_queue.IsEmpty()) {
     auto self(shared_from_this());
     boost::asio::async_write(
-        socket,
+        (socket),
         boost::asio::buffer(outbound_queue.PopMessage().second),
         [this, self](boost::system::error_code ec, std::size_t /*length*/) {
-          if ((boost::asio::error::eof == ec) ||
-              (boost::asio::error::connection_reset == ec)) {
+          if (ec) {
 
             Shutdown(ec);
             return;
@@ -110,7 +105,26 @@ bool Session::IsOpen() const
 
 void Session::Shutdown(boost::system::error_code ec)
 {
-  cout << "Client at address " << GetAddress() << " disconnected" << endl;
   socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
-  socket.close();
+//  socket.close();
+}
+
+void Session::Close()
+{
+  Shutdown(boost::system::errc::make_error_code(static_cast<boost::system::errc::errc_t>(0)));
+}
+
+bool Session::IsFocused() const
+{
+  return focused;
+}
+
+void Session::Focus()
+{
+  focused = true;
+}
+
+void Session::Unfocus()
+{
+  focused = false;
 }
