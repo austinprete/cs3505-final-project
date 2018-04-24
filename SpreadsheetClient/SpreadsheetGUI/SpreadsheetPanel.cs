@@ -217,7 +217,10 @@ namespace SS
         /// <param name="e"></param>
         private void SpreadsheetPanel_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar != Convert.ToChar(Keys.Enter))
+            if (e.KeyChar == Convert.ToChar(Keys.Escape))
+                return;
+
+            else if (e.KeyChar != Convert.ToChar(Keys.Enter))
                 StartEditingCellDel();
 
             int row, col;
@@ -225,6 +228,7 @@ namespace SS
 
             GetSelection(out col, out row);
             GetValue(col, row, out currentValue);
+
 
             //If backspace is pressed
             if (e.KeyChar == Convert.ToChar(Keys.Back))
@@ -242,7 +246,7 @@ namespace SS
             }
 
             //Otherwise add the new key to the cell
-            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            else if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
                 return;
             }
