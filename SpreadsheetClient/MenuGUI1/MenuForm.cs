@@ -17,7 +17,7 @@ namespace MenuGUI
 
         private delegate void ListBoxUpdate(List<string> names);
         private ListBoxUpdate ListBoxUpdateDelegate;
-
+        
 
         public MenuForm(List<string> names, SocketState ss)
         {

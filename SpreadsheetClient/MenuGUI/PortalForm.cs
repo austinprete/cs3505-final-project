@@ -191,7 +191,5 @@ namespace MenuGUI
             mf.ShowDialog();
             MenuClosed = true;
         }
-
-        
     }
 }
