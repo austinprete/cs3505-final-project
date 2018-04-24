@@ -164,6 +164,7 @@
             this.Name = "SpreadsheetForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Spreadsheet Editor";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SpreadsheetForm_FormClosed);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpreadsheetForm_KeyPress);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

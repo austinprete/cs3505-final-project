@@ -75,26 +75,27 @@ namespace SpreadsheetGUI
         }
 
 
-        private void EnterButton_Click(object sender, EventArgs e)
+        private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            ErrorMsgBox.Visible = false;
-            SpreadsheetForm_EnterPress();
+            TerminateConnection();
+            timer.Enabled = false;
+            closeDel(ServerSocket);
         }
 
 
         private void SpreadsheetForm_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
-                EnterButton_Click(this, EventArgs.Empty);
+                SpreadsheetForm_EnterPress();
             else if (e.KeyChar == Convert.ToChar(Keys.Escape))
             {
-                TerminateConnection();
+                Close();
+                //TerminateConnection();
                 timer.Enabled = false;
                 closeDel(ServerSocket);
             }
             else
                 Networking.GetData(ServerSocket);
-
         }
 
         
@@ -227,9 +228,40 @@ namespace SpreadsheetGUI
 
 
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
 
+            if (keyData == Keys.Up)
+            {
+                //move up row
+                row--;
+            }
+            else if (keyData == Keys.Down)
+            {
+                //move down row
+                row++;
+            }
+            else if (keyData == Keys.Left)
+            {
 
+                //move left column
+                col--;
+            }
+            else if (keyData == Keys.Right || keyData == Keys.Tab)
+            {
+                //move down column
+                col++;
+            }
+            else
+            {
+                return base.ProcessCmdKey(ref msg, keyData);
+            }
 
+            spreadsheetPanel1.SetSelection(col, row);
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
 
 
         /// <summary>
@@ -587,51 +619,7 @@ namespace SpreadsheetGUI
             }
         }
 
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-
-            if (keyData == Keys.Up)
-            {
-                //move up row
-                row--;
-            }
-            else if (keyData == Keys.Down)
-            {
-                //move down row
-                row++;
-            }
-            else if (keyData == Keys.Left)
-            {
-
-                //move left column
-                col--;
-            }
-            else if (keyData == Keys.Right || keyData == Keys.Tab)
-            {
-                //move down column
-                col++;
-            }
-            else
-            {
-                return base.ProcessCmdKey(ref msg, keyData);
-            }
-
-
-            spreadsheetPanel1.SetSelection(col, row);
-
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
         
-        private void SpreadsheetForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            TerminateConnection();
-            timer.Enabled = false;
-            closeDel(ServerSocket);
-        }
-
         public void load_spreadsheet(List<string> cells)
         {
             foreach (string cell_n_contents in cells)
