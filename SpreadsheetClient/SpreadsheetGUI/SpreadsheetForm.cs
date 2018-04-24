@@ -269,14 +269,23 @@ namespace SpreadsheetGUI
         private void send_ping(object source, System.Timers.ElapsedEventArgs e)
         {
             PingDelay += 10;
-            if (PingDelay == 60)//Connection is dead, terminate it
+            if (PingDelay >= 60)//Connection is dead, terminate it
             {
                 TerminateConnection();
-            }
-            Networking.Send(ServerSocket, "ping ");
 
-            System.Diagnostics.Debug.WriteLine("CLIENT: ping");
+                this.Invoke((MethodInvoker)delegate {
+                    this.Close();
+                });
+            } else {
+                Networking.Send(ServerSocket, "ping ");
+
+                System.Diagnostics.Debug.WriteLine("CLIENT: ping");
+            }
+            
         }
+        
+
+
         /// <summary>
         /// A command was received from the server, we need to process it
         /// </summary>
