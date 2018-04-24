@@ -65,7 +65,7 @@
             this.ServerNameTextBox.Name = "ServerNameTextBox";
             this.ServerNameTextBox.Size = new System.Drawing.Size(281, 44);
             this.ServerNameTextBox.TabIndex = 1;
-            this.ServerNameTextBox.Text = "lab1-11.eng.utah.edu";
+            this.ServerNameTextBox.Text = "Server Name";
             this.ServerNameTextBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ServerNameTextBox_MouseClick);
             this.ServerNameTextBox.Enter += new System.EventHandler(this.ServerNameTextBox_Enter);
             this.ServerNameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ServerNameTextBox_KeyPress);

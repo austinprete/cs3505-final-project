@@ -50,6 +50,8 @@ namespace CreateNewGUI
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
                 CreateButton_Click(sender, e);
+            else if (e.KeyChar == Convert.ToChar(Keys.Escape))
+                Close();
         }
 
 

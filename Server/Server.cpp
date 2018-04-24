@@ -59,12 +59,11 @@ void Server::AcceptConnection()
       socket,
       [this](boost::system::error_code ec) {
         if (!ec) {
-          std::cout << "Client " << current_session_id << " connected from "
-                    << socket.remote_endpoint().address().to_string() << std::endl;
+          LogMessage("Client " + to_string(current_session_id) +
+                     " connected from " + socket.remote_endpoint().address().to_string(), false);
 
-          shared_ptr <Session> session = std::make_shared<Session>(std::move(socket), current_session_id,
-                                                                   (&inbound_queue));
-
+          shared_ptr<Session> session = std::make_shared<Session>(std::move(socket), current_session_id,
+                                                                  (&inbound_queue));
 
           session->Start();
 
@@ -80,66 +79,59 @@ void Server::AcceptConnection()
 
 void Server::ProcessMessage(long client_id, string &message)
 {
-  vector <string> tokenized_message;
+  vector<string> tokenized_message;
   split(tokenized_message, message, boost::is_any_of(" \t"), boost::token_compress_on);
 
   string message_type = tokenized_message.at(0);
 
-  cout << "-----------------------------------------" << endl;
-  cout << "Received message \"" << message << "\" from client " << client_id << endl;
+  LogMessage("Received message \"" + message + "\" from client " + to_string(client_id), false);
 
   if (message_type == "register") {
-    cout << "Running RegisterClient()" << endl;
+
     RegisterClient(client_id);
   } else if (message_type == "disconnect") {
-    cout << "Running DisconnectClient()" << endl;
+
     DisconnectClient(client_id);
   } else if (message_type == "load") {
-    cout << "Running LoadSpreadsheet()" << endl;
+
     string spreadsheet_name = boost::replace_all_copy(message, "load ", "");
     if (spreadsheet_name.length() != 0) {
       LoadSpreadsheet(client_id, spreadsheet_name);
     }
   } else if (message_type == "ping") {
-    cout << "Running RespondToPing()" << endl;
+
     RespondToPing(client_id);
   } else if (message_type == "ping_response") {
-    cout << "Running HandlePingResponse()" << endl;
 
     HandlePingResponse(client_id);
   } else if (message_type == "edit") {
-    cout << "Running EditSpreadsheet()" << endl;
+
     string edit_info = boost::replace_all_copy(message, "edit ", "");
-    vector <string> tokenized_edit_info;
+    vector<string> tokenized_edit_info;
     split(tokenized_edit_info, edit_info, boost::is_any_of(":"), boost::token_compress_on);
 
     if (tokenized_edit_info.size() == 2) {
       EditSpreadsheet(client_id, tokenized_edit_info.at(0), tokenized_edit_info.at(1));
     }
   } else if (message_type == "undo") {
-    cout << "Running UndoLastChange()" << endl;
+
     UndoLastChange(client_id);
   } else if (message_type == "revert") {
-    cout << "Running RevertSpreadsheetCell()" << endl;
 
     if (tokenized_message.size() == 2) {
       RevertSpreadsheetCell(client_id, tokenized_message.at(1));
     }
   } else if (message_type == "focus") {
-    cout << "Running HandleFocusMessage()" << endl;
 
     if (tokenized_message.size() == 2) {
       HandleFocusMessage(client_id, tokenized_message.at(1));
     }
   } else if (message_type == "unfocus") {
-    cout << "Running HandleUnfocusMessage()" << endl;
 
     if (message == "unfocus ") {
       HandleUnfocusMessage(client_id);
     }
   }
-
-  cout << "-----------------------------------------\n" << endl;
 }
 
 /**
@@ -162,11 +154,12 @@ bool Server::ProcessMessageInQueue()
 
 void Server::SendMessageToAllClients(string message) const
 {
-  message.append(" ");
   message += '\3';
 
   for (const auto &client : clients) {
-    weak_ptr <Session> session = client.second;
+    LogMessage("Sending message to client " + to_string(client.first) + ": " + message, false);
+
+    weak_ptr<Session> session = client.second;
 
     if (auto spt = session.lock()) {
       (*spt).AddMessageToOutboundQueue(message);
@@ -176,13 +169,14 @@ void Server::SendMessageToAllClients(string message) const
 
 void Server::SendMessageToClient(long client_id, string message) const
 {
-//  message.append(" ");
+  LogMessage("Sending message to client " + to_string(client_id) + ": " + message, false);
+
   message += '\3';
 
   auto search = clients.find(client_id);
 
   if (search != clients.end()) {
-    weak_ptr <Session> session = search->second;
+    weak_ptr<Session> session = search->second;
 
     if (auto spt = session.lock()) {
       (*spt).AddMessageToOutboundQueue(message);
@@ -192,8 +186,6 @@ void Server::SendMessageToClient(long client_id, string message) const
 
 void Server::RegisterClient(long client_id)
 {
-  // temporarily hardcoding example message
-
   string accept_message = "connect_accepted ";
 
   for (auto spreadsheet : spreadsheets) {
@@ -210,11 +202,7 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
 
   auto search = spreadsheets.find(spreadsheet_name);
 
-//  string spreadsheet_file_name = boost::regex_replace(spreadsheet_name, boost::regex("\\s+"), "_");
-//  spreadsheet_file_name.append(".xml");
-
   string spreadsheet_file_name = spreadsheet_name + ".xml";
-
 
   auto open_spreadsheet_search = open_spreadsheets_map.find(client_id);
 
@@ -249,7 +237,7 @@ void Server::LoadSpreadsheet(long client_id, string spreadsheet_name)
 
 void Server::DisconnectClient(long client_id)
 {
-  cout << "Disconnected client " << client_id << endl;
+  LogMessage("Disconnected client " + to_string(client_id), false);
 
   auto open_sheet_search = open_spreadsheets_map.find(client_id);
 
@@ -301,7 +289,6 @@ void Server::EditSpreadsheet(long client_id, string cell_id, string cell_content
 
     spreadsheet->ChangeCellContents(cell_id, cell_contents);
     spreadsheet->WriteSpreadsheetToFile(spreadsheets_directory);
-//    spreadsheet->
 
     SendMessageToAllSpreadsheetSubscribers(spreadsheet->GetName(), "change " + cell_id + ":" + cell_contents);
   }
@@ -317,7 +304,6 @@ void Server::SendMessageToAllSpreadsheetSubscribers(std::string sheet_name, std:
     set<int> subscribing_clients = spreadsheet->GetSubscribers();
 
     for (auto client_id : subscribing_clients) {
-      cout << "Sending message to client " << client_id << ": " << message << endl;
       SendMessageToClient(client_id, message);
     }
   }
@@ -372,8 +358,6 @@ void Server::HandlePingResponse(int client_id)
     search = time_since_last_ping.find(client_id);
   }
 
-  cout << "resetting ping time for client " << client_id << endl;
-
   search->second = 0;
 }
 
@@ -385,7 +369,7 @@ void Server::HandleFocusMessage(int client_id, std::string cell_id)
     return;
   }
 
-  weak_ptr <Session> session = search->second;
+  weak_ptr<Session> session = search->second;
 
   if (auto spt = session.lock()) {
     if ((*spt).IsFocused()) {
@@ -415,7 +399,7 @@ void Server::HandleUnfocusMessage(int client_id)
     return;
   }
 
-  weak_ptr <Session> session = search->second;
+  weak_ptr<Session> session = search->second;
 
   if (auto spt = session.lock()) {
     if (!(*spt).IsFocused()) {
@@ -458,10 +442,17 @@ void Server::UndoLastChange(long client_id)
 
 void Server::ShutdownServer()
 {
-  cout << "Shutting down server." << endl;
+  LogMessage("Shutting down server", false);
   SendMessageToAllClients("disconnect ");
 
   shutting_down = true;
 
   sleep(2);
+}
+
+void Server::LogMessage(const std::string &message, bool is_error)
+{
+  string prefix = is_error ? "ERROR: " : "INFO: ";
+
+  cout << prefix << message << "\n-----------------------------------------" << endl;
 }
